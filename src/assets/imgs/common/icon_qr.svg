@@ -1,0 +1,21 @@
+<svg id="icon_qr" xmlns="http://www.w3.org/2000/svg" width="28" height="28.001" viewBox="0 0 28 28.001">
+  <path id="빼기_7" data-name="빼기 7" d="M28,28H21.778V26.963h5.185V21.779H28V28ZM6.223,28H0V21.779H1.037v5.184H6.223V28ZM28,6.222H26.963V1.037H21.778V0H28V6.221Zm-26.963,0H0V0H6.223V1.037H1.037V6.221Z" fill="#cacfd4"/>
+  <g id="그룹_939" data-name="그룹 939" transform="translate(5.5 5.5)">
+    <g id="사각형_1739" data-name="사각형 1739" fill="none" stroke="#fff" stroke-width="1.5">
+      <rect width="8" height="8" rx="1" stroke="none"/>
+      <rect x="0.75" y="0.75" width="6.5" height="6.5" rx="0.25" fill="none"/>
+    </g>
+    <g id="사각형_1741" data-name="사각형 1741" transform="translate(0 9)" fill="none" stroke="#fff" stroke-width="1.5">
+      <rect width="8" height="8" rx="1" stroke="none"/>
+      <rect x="0.75" y="0.75" width="6.5" height="6.5" rx="0.25" fill="none"/>
+    </g>
+    <g id="사각형_1740" data-name="사각형 1740" transform="translate(9)" fill="none" stroke="#fff" stroke-width="1.5">
+      <rect width="8" height="8" rx="1" stroke="none"/>
+      <rect x="0.75" y="0.75" width="6.5" height="6.5" rx="0.25" fill="none"/>
+    </g>
+    <g id="사각형_1742" data-name="사각형 1742" transform="translate(9 9)" fill="none" stroke="#fff" stroke-width="1.5">
+      <rect width="8" height="8" rx="1" stroke="none"/>
+      <rect x="0.75" y="0.75" width="6.5" height="6.5" rx="0.25" fill="none"/>
+    </g>
+  </g>
+</svg>

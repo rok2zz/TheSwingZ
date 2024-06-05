@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_레이어_1" data-name="레이어 1" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1000 1000">
+  <defs>
+    <style>
+      .cls-1 {
+        stroke-width: 0px;
+      }
+
+      .cls-1, .cls-2 {
+        fill: none;
+      }
+
+      .cls-3 {
+        clip-path: url(#clippath-1);
+      }
+
+      .cls-2 {
+        stroke: #f500f5;
+        stroke-linecap: round;
+        stroke-miterlimit: 10;
+        stroke-width: 10px;
+      }
+
+      .cls-4 {
+        clip-path: url(#clippath);
+      }
+    </style>
+    <clipPath id="clippath">
+      <path class="cls-1" d="M503.6,999.8l-3.6.2c-27.5,1.3-50.9-20-52.2-47.5-1.3-27.4,19.8-50.6,47.1-52.2l5.1-.3,2.9-.2.7,100Z"/>
+    </clipPath>
+    <clipPath id="clippath-1">
+      <path class="cls-1" d="M215.2,780.7l2,2.1,1.7,1.7c19,20,18.2,51.6-1.8,70.7-20,19-51.5,18.3-70.6-1.7l-2.5-2.6,71.2-70.2Z"/>
+    </clipPath>
+  </defs>
+  <path class="cls-2" d="M181.8,818.2"/>
+  <g>
+    <g class="cls-4">
+      <image width="211" height="111" transform="translate(300 899)" xlink:href="loading-1.png"/>
+    </g>
+    <image width="1000" height="1000" xlink:href="loading-2.png"/>
+    <g class="cls-3">
+      <image width="217" height="223" transform="translate(138 776)" xlink:href="loading-3.png"/>
+    </g>
+  </g>
+</svg>

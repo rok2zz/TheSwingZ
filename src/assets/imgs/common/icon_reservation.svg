@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+    <g id="그룹_606" data-name="그룹 606" transform="translate(-168 -77)">
+      <rect id="사각형_1655" data-name="사각형 1655" width="32" height="32" transform="translate(168 77)" fill="none"/>
+      <rect id="사각형_3163" data-name="사각형 3163" width="20" height="18" rx="3" transform="translate(174 85)" fill="#cccccc"/>
+      <path id="패스_190" data-name="패스 190" d="M8,13a1,1,0,1,1,1-1A1,1,0,0,1,8,13Z" transform="translate(196.5 107) rotate(180)" fill="#fff"/>
+      <path id="패스_191" data-name="패스 191" d="M8,17a1,1,0,1,1,1-1A1,1,0,0,1,8,17Z" transform="translate(196.5 115.5) rotate(180)" fill="#fff"/>
+      <path id="패스_192" data-name="패스 192" d="M11,16a1,1,0,1,0,1-1A1,1,0,0,0,11,16Z" transform="translate(196 115.5) rotate(180)" fill="#fff"/>
+      <path id="패스_193" data-name="패스 193" d="M16,17a1,1,0,1,1,1-1A1,1,0,0,1,16,17Z" transform="translate(195.5 115.5) rotate(180)" fill="#fff"/>
+      <path id="패스_194" data-name="패스 194" d="M11,12a1,1,0,1,0,1-1A1,1,0,0,0,11,12Z" transform="translate(196 107) rotate(180)" fill="#fff"/>
+      <path id="패스_195" data-name="패스 195" d="M16,13a1,1,0,1,1,1-1A1,1,0,0,1,16,13Z" transform="translate(195.5 107) rotate(180)" fill="#fff"/>
+      <rect id="사각형_1672" data-name="사각형 1672" width="2" height="6" rx="1" transform="translate(178.5 82)" fill="#cccccc"/>
+      <rect id="사각형_1673" data-name="사각형 1673" width="2" height="6" rx="1" transform="translate(187.5 82)" fill="#cccccc"/>
+      <rect id="사각형_3164" data-name="사각형 3164" width="20" height="2" transform="translate(174 89)" fill="#fff"/>
+    </g>
+</svg>
+  

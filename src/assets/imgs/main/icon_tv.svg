@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+  <g id="icon_tv" transform="translate(-42 -357)">
+    <rect id="사각형_3132" data-name="사각형 3132" width="28" height="28" transform="translate(42 357)" fill="none"/>
+    <g id="icon">
+      <g id="사각형_3131" data-name="사각형 3131" transform="translate(42 361)" fill="none" stroke="#fff" stroke-width="1">
+        <rect width="28" height="20" rx="1" stroke="none"/>
+        <rect x="0.5" y="0.5" width="27" height="19" rx="0.5" fill="none"/>
+      </g>
+      <g id="다각형_11" data-name="다각형 11" transform="translate(61 366) rotate(90)" fill="none">
+        <path d="M5,0l5,8H0Z" stroke="none"/>
+        <path d="M 5 1.886799812316895 L 1.80424976348877 7 L 8.19575023651123 7 L 5 1.886799812316895 M 5 0 L 10 8 L 0 8 L 5 0 Z" stroke="none" fill="#fff"/>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+  <g id="icon_search" transform="translate(-42 -357)">
+    <rect id="사각형_3132" data-name="사각형 3132" width="28" height="28" transform="translate(42 357)" fill="none"/>
+    <g id="icon" transform="translate(3 -1)">
+      <path id="패스_5774" data-name="패스 5774" d="M8,0H18a1,1,0,0,1,1,1V21a1,1,0,0,1-1,1H1a1,1,0,0,1-1-1V10" transform="translate(61 382) rotate(180)" fill="none" stroke="#fff" stroke-width="1"/>
+      <path id="패스_5775" data-name="패스 5775" d="M0,0,3,3" transform="translate(62 382)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
+      <g id="타원_135" data-name="타원 135" transform="translate(50 370)" fill="none" stroke="#fff" stroke-width="1">
+        <circle cx="7" cy="7" r="7" stroke="none"/>
+        <circle cx="7" cy="7" r="6.5" fill="none"/>
+      </g>
+    </g>
+  </g>
+</svg>

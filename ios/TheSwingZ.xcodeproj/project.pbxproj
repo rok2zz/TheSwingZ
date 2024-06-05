@@ -7,13 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		003DBB80DC9342BB86A0DABD /* Pretendard-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C92FB04E6EF846CDAC350263 /* Pretendard-Bold.ttf */; };
 		00E356F31AD99517003FC87E /* TheSwingZTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* TheSwingZTests.m */; };
-		0C80B921A6F3F58F76C31292 /* libPods-TheSwingZ.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-TheSwingZ.a */; };
+		06DE57A35BE14ED7A24A4C42 /* Pretendard-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9D3594DC2FD6428EB9F1A6FB /* Pretendard-ExtraLight.ttf */; };
+		0A456204CC14733F481551E6 /* libPods-TheSwingZ-TheSwingZTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3729431E4F547D88469E1887 /* libPods-TheSwingZ-TheSwingZTests.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		7699B88040F8A987B510C191 /* libPods-TheSwingZ-TheSwingZTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-TheSwingZ-TheSwingZTests.a */; };
+		1C53A4F730BE4B5F865EC438 /* Pretendard-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 340E9C8C47334F4F9DBF86BC /* Pretendard-Thin.ttf */; };
+		292E9BCB7A394CB5B0CF3A03 /* Pretendard-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FF3E78D733EF44B7AC51392D /* Pretendard-SemiBold.ttf */; };
+		48B81E1A36B344C9BD03E8C0 /* Pretendard-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 60E7635225B841FD92527EFA /* Pretendard-ExtraBold.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		927CDF147488E78E5166EEE7 /* libPods-TheSwingZ.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F9739AA769952B3C2FB5DB /* libPods-TheSwingZ.a */; };
+		96C7D0BFB1024D42886F91A9 /* Pretendard-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A638B32C20184787BB11F5F8 /* Pretendard-Light.ttf */; };
+		A69997E93EAF4C3F93291800 /* Pretendard-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3338C93EC23D4952927EEEA3 /* Pretendard-Black.ttf */; };
+		BB9270815630484D83E2F623 /* Pretendard-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C72C6E0459294A6FB1D23822 /* Pretendard-Medium.ttf */; };
+		CD5531ACA7224CF582968F64 /* Pretendard-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 38845A9467EE48C9B0EB095B /* Pretendard-Regular.ttf */; };
+		E82B9F552B9835930001A10B /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = E82B9F542B9835930001A10B /* fonts */; };
+		E89C3C702C0F0ECC00B7C4DB /* assets in Resources */ = {isa = PBXBuildFile; fileRef = E89C3C6F2C0F0ECC00B7C4DB /* assets */; };
+		E89C3C722C0F0ED500B7C4DB /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = E89C3C712C0F0ED500B7C4DB /* main.jsbundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,6 +38,19 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		E8B012A72C0DACE600F3A4E6 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		00E356EE1AD99517003FC87E /* TheSwingZTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TheSwingZTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -36,14 +61,84 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = TheSwingZ/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = TheSwingZ/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = TheSwingZ/main.m; sourceTree = "<group>"; };
-		19F6CBCC0A4E27FBF8BF4A61 /* libPods-TheSwingZ-TheSwingZTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TheSwingZ-TheSwingZTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3B4392A12AC88292D35C810B /* Pods-TheSwingZ.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheSwingZ.debug.xcconfig"; path = "Target Support Files/Pods-TheSwingZ/Pods-TheSwingZ.debug.xcconfig"; sourceTree = "<group>"; };
-		5709B34CF0A7D63546082F79 /* Pods-TheSwingZ.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheSwingZ.release.xcconfig"; path = "Target Support Files/Pods-TheSwingZ/Pods-TheSwingZ.release.xcconfig"; sourceTree = "<group>"; };
-		5B7EB9410499542E8C5724F5 /* Pods-TheSwingZ-TheSwingZTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheSwingZ-TheSwingZTests.debug.xcconfig"; path = "Target Support Files/Pods-TheSwingZ-TheSwingZTests/Pods-TheSwingZ-TheSwingZTests.debug.xcconfig"; sourceTree = "<group>"; };
-		5DCACB8F33CDC322A6C60F78 /* libPods-TheSwingZ.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TheSwingZ.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		20C08AB222BDF7F23B22B8D9 /* Pods-TheSwingZ-TheSwingZTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheSwingZ-TheSwingZTests.release.xcconfig"; path = "Target Support Files/Pods-TheSwingZ-TheSwingZTests/Pods-TheSwingZ-TheSwingZTests.release.xcconfig"; sourceTree = "<group>"; };
+		20F9739AA769952B3C2FB5DB /* libPods-TheSwingZ.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TheSwingZ.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3338C93EC23D4952927EEEA3 /* Pretendard-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Black.ttf"; path = "../src/assets/fonts/Pretendard-Black.ttf"; sourceTree = "<group>"; };
+		340E9C8C47334F4F9DBF86BC /* Pretendard-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Thin.ttf"; path = "../src/assets/fonts/Pretendard-Thin.ttf"; sourceTree = "<group>"; };
+		3729431E4F547D88469E1887 /* libPods-TheSwingZ-TheSwingZTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TheSwingZ-TheSwingZTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		38845A9467EE48C9B0EB095B /* Pretendard-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Regular.ttf"; path = "../src/assets/fonts/Pretendard-Regular.ttf"; sourceTree = "<group>"; };
+		60E7635225B841FD92527EFA /* Pretendard-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-ExtraBold.ttf"; path = "../src/assets/fonts/Pretendard-ExtraBold.ttf"; sourceTree = "<group>"; };
+		67BE44CC14033FB73564DC6F /* Pods-TheSwingZ.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheSwingZ.debug.xcconfig"; path = "Target Support Files/Pods-TheSwingZ/Pods-TheSwingZ.debug.xcconfig"; sourceTree = "<group>"; };
+		759F8291FC7548CEB4146B53 /* Pods-TheSwingZ-TheSwingZTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheSwingZ-TheSwingZTests.debug.xcconfig"; path = "Target Support Files/Pods-TheSwingZ-TheSwingZTests/Pods-TheSwingZ-TheSwingZTests.debug.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TheSwingZ/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		89C6BE57DB24E9ADA2F236DE /* Pods-TheSwingZ-TheSwingZTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheSwingZ-TheSwingZTests.release.xcconfig"; path = "Target Support Files/Pods-TheSwingZ-TheSwingZTests/Pods-TheSwingZ-TheSwingZTests.release.xcconfig"; sourceTree = "<group>"; };
+		9D3594DC2FD6428EB9F1A6FB /* Pretendard-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-ExtraLight.ttf"; path = "../src/assets/fonts/Pretendard-ExtraLight.ttf"; sourceTree = "<group>"; };
+		A638B32C20184787BB11F5F8 /* Pretendard-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Light.ttf"; path = "../src/assets/fonts/Pretendard-Light.ttf"; sourceTree = "<group>"; };
+		C72C6E0459294A6FB1D23822 /* Pretendard-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Medium.ttf"; path = "../src/assets/fonts/Pretendard-Medium.ttf"; sourceTree = "<group>"; };
+		C92FB04E6EF846CDAC350263 /* Pretendard-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Bold.ttf"; path = "../src/assets/fonts/Pretendard-Bold.ttf"; sourceTree = "<group>"; };
+		E6669FE05A0FDB41BC898AD4 /* Pods-TheSwingZ.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheSwingZ.release.xcconfig"; path = "Target Support Files/Pods-TheSwingZ/Pods-TheSwingZ.release.xcconfig"; sourceTree = "<group>"; };
+		E82B9F542B9835930001A10B /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = fonts; path = TheSwingZ/fonts; sourceTree = "<group>"; };
+		E89C3C152C0EA44700B7C4DB /* hermes.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = hermes.xcframework; path = "Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework"; sourceTree = "<group>"; };
+		E89C3C172C0EB11600B7C4DB /* main.jsbundle */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
+		E89C3C1F2C0EB11F00B7C4DB /* back-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back-icon@3x.png"; sourceTree = "<group>"; };
+		E89C3C202C0EB11F00B7C4DB /* back-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back-icon@2x.png"; sourceTree = "<group>"; };
+		E89C3C212C0EB11F00B7C4DB /* back-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back-icon.png"; sourceTree = "<group>"; };
+		E89C3C222C0EB11F00B7C4DB /* back-icon-mask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back-icon-mask.png"; sourceTree = "<group>"; };
+		E89C3C272C0EB11F00B7C4DB /* course_detail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = course_detail.png; sourceTree = "<group>"; };
+		E89C3C282C0EB11F00B7C4DB /* course_main.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = course_main.png; sourceTree = "<group>"; };
+		E89C3C2A2C0EB11F00B7C4DB /* intro_5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = intro_5.png; sourceTree = "<group>"; };
+		E89C3C2B2C0EB11F00B7C4DB /* intro_4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = intro_4.png; sourceTree = "<group>"; };
+		E89C3C2C2C0EB11F00B7C4DB /* intro_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = intro_1.png; sourceTree = "<group>"; };
+		E89C3C2D2C0EB11F00B7C4DB /* intro_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = intro_3.png; sourceTree = "<group>"; };
+		E89C3C2E2C0EB11F00B7C4DB /* intro_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = intro_2.png; sourceTree = "<group>"; };
+		E89C3C2F2C0EB11F00B7C4DB /* splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splash.png; sourceTree = "<group>"; };
+		E89C3C312C0EB11F00B7C4DB /* brand_4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = brand_4.jpg; sourceTree = "<group>"; };
+		E89C3C322C0EB11F00B7C4DB /* brand_5.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = brand_5.jpg; sourceTree = "<group>"; };
+		E89C3C332C0EB11F00B7C4DB /* brand_7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = brand_7.png; sourceTree = "<group>"; };
+		E89C3C342C0EB11F00B7C4DB /* brand_6.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = brand_6.jpg; sourceTree = "<group>"; };
+		E89C3C352C0EB11F00B7C4DB /* brand_2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = brand_2.jpg; sourceTree = "<group>"; };
+		E89C3C362C0EB11F00B7C4DB /* brand_3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = brand_3.jpg; sourceTree = "<group>"; };
+		E89C3C372C0EB11F00B7C4DB /* brand_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = brand_1.jpg; sourceTree = "<group>"; };
+		E89C3C382C0EB11F00B7C4DB /* brand_film_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = brand_film_1.jpg; sourceTree = "<group>"; };
+		E89C3C392C0EB11F00B7C4DB /* brand_film_2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = brand_film_2.jpg; sourceTree = "<group>"; };
+		E89C3C3A2C0EB11F00B7C4DB /* brand_8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = brand_8.png; sourceTree = "<group>"; };
+		E89C3C3C2C0EB11F00B7C4DB /* loading_circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loading_circle.png; sourceTree = "<group>"; };
+		E89C3C3D2C0EB11F00B7C4DB /* home_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = home_on.png; sourceTree = "<group>"; };
+		E89C3C3E2C0EB11F00B7C4DB /* home_off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = home_off.png; sourceTree = "<group>"; };
+		E89C3C402C0EB11F00B7C4DB /* main_bg_round.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = main_bg_round.png; sourceTree = "<group>"; };
+		E89C3C422C0EB11F00B7C4DB /* store_default.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = store_default.jpg; sourceTree = "<group>"; };
+		E89C3C432C0EB11F00B7C4DB /* map_pin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = map_pin.png; sourceTree = "<group>"; };
+		E89C3C4A2C0F0D7100B7C4DB /* back-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back-icon@3x.png"; sourceTree = "<group>"; };
+		E89C3C4B2C0F0D7100B7C4DB /* back-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back-icon@2x.png"; sourceTree = "<group>"; };
+		E89C3C4C2C0F0D7100B7C4DB /* back-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back-icon.png"; sourceTree = "<group>"; };
+		E89C3C4D2C0F0D7100B7C4DB /* back-icon-mask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back-icon-mask.png"; sourceTree = "<group>"; };
+		E89C3C522C0F0D7100B7C4DB /* course_detail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = course_detail.png; sourceTree = "<group>"; };
+		E89C3C532C0F0D7100B7C4DB /* course_main.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = course_main.png; sourceTree = "<group>"; };
+		E89C3C552C0F0D7100B7C4DB /* intro_5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = intro_5.png; sourceTree = "<group>"; };
+		E89C3C562C0F0D7100B7C4DB /* intro_4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = intro_4.png; sourceTree = "<group>"; };
+		E89C3C572C0F0D7100B7C4DB /* intro_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = intro_1.png; sourceTree = "<group>"; };
+		E89C3C582C0F0D7100B7C4DB /* intro_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = intro_3.png; sourceTree = "<group>"; };
+		E89C3C592C0F0D7100B7C4DB /* intro_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = intro_2.png; sourceTree = "<group>"; };
+		E89C3C5A2C0F0D7100B7C4DB /* splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splash.png; sourceTree = "<group>"; };
+		E89C3C5C2C0F0D7100B7C4DB /* brand_4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = brand_4.jpg; sourceTree = "<group>"; };
+		E89C3C5D2C0F0D7100B7C4DB /* brand_5.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = brand_5.jpg; sourceTree = "<group>"; };
+		E89C3C5E2C0F0D7100B7C4DB /* brand_7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = brand_7.png; sourceTree = "<group>"; };
+		E89C3C5F2C0F0D7100B7C4DB /* brand_6.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = brand_6.jpg; sourceTree = "<group>"; };
+		E89C3C602C0F0D7100B7C4DB /* brand_2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = brand_2.jpg; sourceTree = "<group>"; };
+		E89C3C612C0F0D7100B7C4DB /* brand_3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = brand_3.jpg; sourceTree = "<group>"; };
+		E89C3C622C0F0D7100B7C4DB /* brand_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = brand_1.jpg; sourceTree = "<group>"; };
+		E89C3C632C0F0D7100B7C4DB /* brand_film_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = brand_film_1.jpg; sourceTree = "<group>"; };
+		E89C3C642C0F0D7100B7C4DB /* brand_film_2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = brand_film_2.jpg; sourceTree = "<group>"; };
+		E89C3C652C0F0D7100B7C4DB /* brand_8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = brand_8.png; sourceTree = "<group>"; };
+		E89C3C672C0F0D7100B7C4DB /* loading_circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loading_circle.png; sourceTree = "<group>"; };
+		E89C3C682C0F0D7100B7C4DB /* home_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = home_on.png; sourceTree = "<group>"; };
+		E89C3C692C0F0D7100B7C4DB /* home_off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = home_off.png; sourceTree = "<group>"; };
+		E89C3C6B2C0F0D7100B7C4DB /* main_bg_round.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = main_bg_round.png; sourceTree = "<group>"; };
+		E89C3C6D2C0F0D7100B7C4DB /* store_default.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = store_default.jpg; sourceTree = "<group>"; };
+		E89C3C6E2C0F0D7100B7C4DB /* map_pin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = map_pin.png; sourceTree = "<group>"; };
+		E89C3C6F2C0F0ECC00B7C4DB /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
+		E89C3C712C0F0ED500B7C4DB /* main.jsbundle */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		FF3E78D733EF44B7AC51392D /* Pretendard-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-SemiBold.ttf"; path = "../src/assets/fonts/Pretendard-SemiBold.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,7 +146,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7699B88040F8A987B510C191 /* libPods-TheSwingZ-TheSwingZTests.a in Frameworks */,
+				0A456204CC14733F481551E6 /* libPods-TheSwingZ-TheSwingZTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,7 +154,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C80B921A6F3F58F76C31292 /* libPods-TheSwingZ.a in Frameworks */,
+				927CDF147488E78E5166EEE7 /* libPods-TheSwingZ.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,9 +194,10 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E89C3C152C0EA44700B7C4DB /* hermes.xcframework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				5DCACB8F33CDC322A6C60F78 /* libPods-TheSwingZ.a */,
-				19F6CBCC0A4E27FBF8BF4A61 /* libPods-TheSwingZ-TheSwingZTests.a */,
+				20F9739AA769952B3C2FB5DB /* libPods-TheSwingZ.a */,
+				3729431E4F547D88469E1887 /* libPods-TheSwingZ-TheSwingZTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -116,12 +212,19 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				E89C3C712C0F0ED500B7C4DB /* main.jsbundle */,
+				E89C3C192C0EB11F00B7C4DB /* assets */,
+				E89C3C442C0F0D7100B7C4DB /* assets */,
+				E89C3C6F2C0F0ECC00B7C4DB /* assets */,
+				E89C3C172C0EB11600B7C4DB /* main.jsbundle */,
+				E82B9F542B9835930001A10B /* fonts */,
 				13B07FAE1A68108700A75B9A /* TheSwingZ */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* TheSwingZTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				FDEEF2ADAEE84743A79B6DD6 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -140,12 +243,322 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				3B4392A12AC88292D35C810B /* Pods-TheSwingZ.debug.xcconfig */,
-				5709B34CF0A7D63546082F79 /* Pods-TheSwingZ.release.xcconfig */,
-				5B7EB9410499542E8C5724F5 /* Pods-TheSwingZ-TheSwingZTests.debug.xcconfig */,
-				89C6BE57DB24E9ADA2F236DE /* Pods-TheSwingZ-TheSwingZTests.release.xcconfig */,
+				67BE44CC14033FB73564DC6F /* Pods-TheSwingZ.debug.xcconfig */,
+				E6669FE05A0FDB41BC898AD4 /* Pods-TheSwingZ.release.xcconfig */,
+				759F8291FC7548CEB4146B53 /* Pods-TheSwingZ-TheSwingZTests.debug.xcconfig */,
+				20C08AB222BDF7F23B22B8D9 /* Pods-TheSwingZ-TheSwingZTests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		E89C3C192C0EB11F00B7C4DB /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C1A2C0EB11F00B7C4DB /* node_modules */,
+				E89C3C232C0EB11F00B7C4DB /* src */,
+			);
+			path = assets;
+			sourceTree = "<group>";
+		};
+		E89C3C1A2C0EB11F00B7C4DB /* node_modules */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C1B2C0EB11F00B7C4DB /* @react-navigation */,
+			);
+			path = node_modules;
+			sourceTree = "<group>";
+		};
+		E89C3C1B2C0EB11F00B7C4DB /* @react-navigation */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C1C2C0EB11F00B7C4DB /* elements */,
+			);
+			path = "@react-navigation";
+			sourceTree = "<group>";
+		};
+		E89C3C1C2C0EB11F00B7C4DB /* elements */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C1D2C0EB11F00B7C4DB /* src */,
+			);
+			path = elements;
+			sourceTree = "<group>";
+		};
+		E89C3C1D2C0EB11F00B7C4DB /* src */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C1E2C0EB11F00B7C4DB /* assets */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		E89C3C1E2C0EB11F00B7C4DB /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C1F2C0EB11F00B7C4DB /* back-icon@3x.png */,
+				E89C3C202C0EB11F00B7C4DB /* back-icon@2x.png */,
+				E89C3C212C0EB11F00B7C4DB /* back-icon.png */,
+				E89C3C222C0EB11F00B7C4DB /* back-icon-mask.png */,
+			);
+			path = assets;
+			sourceTree = "<group>";
+		};
+		E89C3C232C0EB11F00B7C4DB /* src */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C242C0EB11F00B7C4DB /* assets */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		E89C3C242C0EB11F00B7C4DB /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C252C0EB11F00B7C4DB /* imgs */,
+			);
+			path = assets;
+			sourceTree = "<group>";
+		};
+		E89C3C252C0EB11F00B7C4DB /* imgs */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C262C0EB11F00B7C4DB /* course */,
+				E89C3C292C0EB11F00B7C4DB /* intro */,
+				E89C3C302C0EB11F00B7C4DB /* brand */,
+				E89C3C3B2C0EB11F00B7C4DB /* common */,
+				E89C3C3F2C0EB11F00B7C4DB /* main */,
+				E89C3C412C0EB11F00B7C4DB /* store */,
+			);
+			path = imgs;
+			sourceTree = "<group>";
+		};
+		E89C3C262C0EB11F00B7C4DB /* course */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C272C0EB11F00B7C4DB /* course_detail.png */,
+				E89C3C282C0EB11F00B7C4DB /* course_main.png */,
+			);
+			path = course;
+			sourceTree = "<group>";
+		};
+		E89C3C292C0EB11F00B7C4DB /* intro */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C2A2C0EB11F00B7C4DB /* intro_5.png */,
+				E89C3C2B2C0EB11F00B7C4DB /* intro_4.png */,
+				E89C3C2C2C0EB11F00B7C4DB /* intro_1.png */,
+				E89C3C2D2C0EB11F00B7C4DB /* intro_3.png */,
+				E89C3C2E2C0EB11F00B7C4DB /* intro_2.png */,
+				E89C3C2F2C0EB11F00B7C4DB /* splash.png */,
+			);
+			path = intro;
+			sourceTree = "<group>";
+		};
+		E89C3C302C0EB11F00B7C4DB /* brand */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C312C0EB11F00B7C4DB /* brand_4.jpg */,
+				E89C3C322C0EB11F00B7C4DB /* brand_5.jpg */,
+				E89C3C332C0EB11F00B7C4DB /* brand_7.png */,
+				E89C3C342C0EB11F00B7C4DB /* brand_6.jpg */,
+				E89C3C352C0EB11F00B7C4DB /* brand_2.jpg */,
+				E89C3C362C0EB11F00B7C4DB /* brand_3.jpg */,
+				E89C3C372C0EB11F00B7C4DB /* brand_1.jpg */,
+				E89C3C382C0EB11F00B7C4DB /* brand_film_1.jpg */,
+				E89C3C392C0EB11F00B7C4DB /* brand_film_2.jpg */,
+				E89C3C3A2C0EB11F00B7C4DB /* brand_8.png */,
+			);
+			path = brand;
+			sourceTree = "<group>";
+		};
+		E89C3C3B2C0EB11F00B7C4DB /* common */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C3C2C0EB11F00B7C4DB /* loading_circle.png */,
+				E89C3C3D2C0EB11F00B7C4DB /* home_on.png */,
+				E89C3C3E2C0EB11F00B7C4DB /* home_off.png */,
+			);
+			path = common;
+			sourceTree = "<group>";
+		};
+		E89C3C3F2C0EB11F00B7C4DB /* main */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C402C0EB11F00B7C4DB /* main_bg_round.png */,
+			);
+			path = main;
+			sourceTree = "<group>";
+		};
+		E89C3C412C0EB11F00B7C4DB /* store */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C422C0EB11F00B7C4DB /* store_default.jpg */,
+				E89C3C432C0EB11F00B7C4DB /* map_pin.png */,
+			);
+			path = store;
+			sourceTree = "<group>";
+		};
+		E89C3C442C0F0D7100B7C4DB /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C452C0F0D7100B7C4DB /* node_modules */,
+				E89C3C4E2C0F0D7100B7C4DB /* src */,
+			);
+			path = assets;
+			sourceTree = "<group>";
+		};
+		E89C3C452C0F0D7100B7C4DB /* node_modules */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C462C0F0D7100B7C4DB /* @react-navigation */,
+			);
+			path = node_modules;
+			sourceTree = "<group>";
+		};
+		E89C3C462C0F0D7100B7C4DB /* @react-navigation */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C472C0F0D7100B7C4DB /* elements */,
+			);
+			path = "@react-navigation";
+			sourceTree = "<group>";
+		};
+		E89C3C472C0F0D7100B7C4DB /* elements */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C482C0F0D7100B7C4DB /* src */,
+			);
+			path = elements;
+			sourceTree = "<group>";
+		};
+		E89C3C482C0F0D7100B7C4DB /* src */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C492C0F0D7100B7C4DB /* assets */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		E89C3C492C0F0D7100B7C4DB /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C4A2C0F0D7100B7C4DB /* back-icon@3x.png */,
+				E89C3C4B2C0F0D7100B7C4DB /* back-icon@2x.png */,
+				E89C3C4C2C0F0D7100B7C4DB /* back-icon.png */,
+				E89C3C4D2C0F0D7100B7C4DB /* back-icon-mask.png */,
+			);
+			path = assets;
+			sourceTree = "<group>";
+		};
+		E89C3C4E2C0F0D7100B7C4DB /* src */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C4F2C0F0D7100B7C4DB /* assets */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		E89C3C4F2C0F0D7100B7C4DB /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C502C0F0D7100B7C4DB /* imgs */,
+			);
+			path = assets;
+			sourceTree = "<group>";
+		};
+		E89C3C502C0F0D7100B7C4DB /* imgs */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C512C0F0D7100B7C4DB /* course */,
+				E89C3C542C0F0D7100B7C4DB /* intro */,
+				E89C3C5B2C0F0D7100B7C4DB /* brand */,
+				E89C3C662C0F0D7100B7C4DB /* common */,
+				E89C3C6A2C0F0D7100B7C4DB /* main */,
+				E89C3C6C2C0F0D7100B7C4DB /* store */,
+			);
+			path = imgs;
+			sourceTree = "<group>";
+		};
+		E89C3C512C0F0D7100B7C4DB /* course */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C522C0F0D7100B7C4DB /* course_detail.png */,
+				E89C3C532C0F0D7100B7C4DB /* course_main.png */,
+			);
+			path = course;
+			sourceTree = "<group>";
+		};
+		E89C3C542C0F0D7100B7C4DB /* intro */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C552C0F0D7100B7C4DB /* intro_5.png */,
+				E89C3C562C0F0D7100B7C4DB /* intro_4.png */,
+				E89C3C572C0F0D7100B7C4DB /* intro_1.png */,
+				E89C3C582C0F0D7100B7C4DB /* intro_3.png */,
+				E89C3C592C0F0D7100B7C4DB /* intro_2.png */,
+				E89C3C5A2C0F0D7100B7C4DB /* splash.png */,
+			);
+			path = intro;
+			sourceTree = "<group>";
+		};
+		E89C3C5B2C0F0D7100B7C4DB /* brand */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C5C2C0F0D7100B7C4DB /* brand_4.jpg */,
+				E89C3C5D2C0F0D7100B7C4DB /* brand_5.jpg */,
+				E89C3C5E2C0F0D7100B7C4DB /* brand_7.png */,
+				E89C3C5F2C0F0D7100B7C4DB /* brand_6.jpg */,
+				E89C3C602C0F0D7100B7C4DB /* brand_2.jpg */,
+				E89C3C612C0F0D7100B7C4DB /* brand_3.jpg */,
+				E89C3C622C0F0D7100B7C4DB /* brand_1.jpg */,
+				E89C3C632C0F0D7100B7C4DB /* brand_film_1.jpg */,
+				E89C3C642C0F0D7100B7C4DB /* brand_film_2.jpg */,
+				E89C3C652C0F0D7100B7C4DB /* brand_8.png */,
+			);
+			path = brand;
+			sourceTree = "<group>";
+		};
+		E89C3C662C0F0D7100B7C4DB /* common */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C672C0F0D7100B7C4DB /* loading_circle.png */,
+				E89C3C682C0F0D7100B7C4DB /* home_on.png */,
+				E89C3C692C0F0D7100B7C4DB /* home_off.png */,
+			);
+			path = common;
+			sourceTree = "<group>";
+		};
+		E89C3C6A2C0F0D7100B7C4DB /* main */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C6B2C0F0D7100B7C4DB /* main_bg_round.png */,
+			);
+			path = main;
+			sourceTree = "<group>";
+		};
+		E89C3C6C2C0F0D7100B7C4DB /* store */ = {
+			isa = PBXGroup;
+			children = (
+				E89C3C6D2C0F0D7100B7C4DB /* store_default.jpg */,
+				E89C3C6E2C0F0D7100B7C4DB /* map_pin.png */,
+			);
+			path = store;
+			sourceTree = "<group>";
+		};
+		FDEEF2ADAEE84743A79B6DD6 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				3338C93EC23D4952927EEEA3 /* Pretendard-Black.ttf */,
+				C92FB04E6EF846CDAC350263 /* Pretendard-Bold.ttf */,
+				60E7635225B841FD92527EFA /* Pretendard-ExtraBold.ttf */,
+				9D3594DC2FD6428EB9F1A6FB /* Pretendard-ExtraLight.ttf */,
+				A638B32C20184787BB11F5F8 /* Pretendard-Light.ttf */,
+				C72C6E0459294A6FB1D23822 /* Pretendard-Medium.ttf */,
+				38845A9467EE48C9B0EB095B /* Pretendard-Regular.ttf */,
+				FF3E78D733EF44B7AC51392D /* Pretendard-SemiBold.ttf */,
+				340E9C8C47334F4F9DBF86BC /* Pretendard-Thin.ttf */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -155,12 +568,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "TheSwingZTests" */;
 			buildPhases = (
-				A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */,
+				E82B311BC04402F86FFE8099 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				C59DA0FBD6956966B86A3779 /* [CP] Embed Pods Frameworks */,
-				F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */,
+				5DA7DEFDBD9F192F1D46024C /* [CP] Embed Pods Frameworks */,
+				7DB8AD60C603BA647E1176A1 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -176,13 +589,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "TheSwingZ" */;
 			buildPhases = (
-				C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */,
+				430133B16902A82931FCD0E2 /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
-				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
+				E8B012A72C0DACE600F3A4E6 /* Embed Frameworks */,
+				CA4405056651441BC2006B42 /* [CP] Embed Pods Frameworks */,
+				159D9B0FCFF5C9F381325ED8 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -199,7 +613,8 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1210;
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1510;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
@@ -241,8 +656,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E89C3C722C0F0ED500B7C4DB /* main.jsbundle in Resources */,
+				E89C3C702C0F0ECC00B7C4DB /* assets in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				A69997E93EAF4C3F93291800 /* Pretendard-Black.ttf in Resources */,
+				E82B9F552B9835930001A10B /* fonts in Resources */,
+				003DBB80DC9342BB86A0DABD /* Pretendard-Bold.ttf in Resources */,
+				48B81E1A36B344C9BD03E8C0 /* Pretendard-ExtraBold.ttf in Resources */,
+				06DE57A35BE14ED7A24A4C42 /* Pretendard-ExtraLight.ttf in Resources */,
+				96C7D0BFB1024D42886F91A9 /* Pretendard-Light.ttf in Resources */,
+				BB9270815630484D83E2F623 /* Pretendard-Medium.ttf in Resources */,
+				CD5531ACA7224CF582968F64 /* Pretendard-Regular.ttf in Resources */,
+				292E9BCB7A394CB5B0CF3A03 /* Pretendard-SemiBold.ttf in Resources */,
+				1C53A4F730BE4B5F865EC438 /* Pretendard-Thin.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -251,7 +678,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			files = (
 			);
 			inputPaths = (
@@ -261,50 +688,28 @@
 			name = "Bundle React Native code and images";
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */ = {
+		159D9B0FCFF5C9F381325ED8 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TheSwingZ/Pods-TheSwingZ-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-TheSwingZ/Pods-TheSwingZ-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TheSwingZ/Pods-TheSwingZ-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-TheSwingZ/Pods-TheSwingZ-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TheSwingZ/Pods-TheSwingZ-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TheSwingZ/Pods-TheSwingZ-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TheSwingZ-TheSwingZTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */ = {
+		430133B16902A82931FCD0E2 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -326,7 +731,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C59DA0FBD6956966B86A3779 /* [CP] Embed Pods Frameworks */ = {
+		5DA7DEFDBD9F192F1D46024C /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -343,24 +748,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TheSwingZ-TheSwingZTests/Pods-TheSwingZ-TheSwingZTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TheSwingZ/Pods-TheSwingZ-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TheSwingZ/Pods-TheSwingZ-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TheSwingZ/Pods-TheSwingZ-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */ = {
+		7DB8AD60C603BA647E1176A1 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -375,6 +763,45 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TheSwingZ-TheSwingZTests/Pods-TheSwingZ-TheSwingZTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CA4405056651441BC2006B42 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TheSwingZ/Pods-TheSwingZ-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TheSwingZ/Pods-TheSwingZ-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TheSwingZ/Pods-TheSwingZ-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E82B311BC04402F86FFE8099 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TheSwingZ-TheSwingZTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -410,9 +837,12 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-TheSwingZ-TheSwingZTests.debug.xcconfig */;
+			baseConfigurationReference = 759F8291FC7548CEB4146B53 /* Pods-TheSwingZ-TheSwingZTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				DEVELOPMENT_TEAM = 628PRY6WC2;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -437,10 +867,13 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-TheSwingZ-TheSwingZTests.release.xcconfig */;
+			baseConfigurationReference = 20C08AB222BDF7F23B22B8D9 /* Pods-TheSwingZ-TheSwingZTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 628PRY6WC2;
 				INFOPLIST_FILE = TheSwingZTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -461,52 +894,70 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-TheSwingZ.debug.xcconfig */;
+			baseConfigurationReference = 67BE44CC14033FB73564DC6F /* Pods-TheSwingZ.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 8;
+				DEVELOPMENT_TEAM = 628PRY6WC2;
 				ENABLE_BITCODE = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = TheSwingZ/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "더스윙제트";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+					"\"${PODS_CONFIGURATION _BUILD_DIR}/RNFastImage\"",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.theswinggolf.theswingz;
 				PRODUCT_NAME = TheSwingZ;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-TheSwingZ.release.xcconfig */;
+			baseConfigurationReference = E6669FE05A0FDB41BC898AD4 /* Pods-TheSwingZ.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 8;
+				DEVELOPMENT_TEAM = 628PRY6WC2;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = TheSwingZ/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "더스윙제트";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+					"\"${PODS_CONFIGURATION _BUILD_DIR}/RNFastImage\"",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.theswinggolf.theswingz;
 				PRODUCT_NAME = TheSwingZ;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -544,6 +995,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -580,10 +1032,7 @@
 					"-DFOLLY_USE_LIBCPP=1",
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -623,6 +1072,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -651,10 +1101,7 @@
 					"-DFOLLY_USE_LIBCPP=1",
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;

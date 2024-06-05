@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>TheSwingZ</string>
+	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -26,25 +26,51 @@
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-	  <!-- Do not change NSAllowsArbitraryLoads to true, or you will risk app rejection! -->
 		<key>NSAllowsArbitraryLoads</key>
 		<false/>
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>QR로그인 서비스를 제공하기 위해 카메라를 사용합니다.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>앱 내에서 원하는 매장 선택 후, 전화 연결 시 사용합니다.​ 연락처 정보는 서버로 전송될 수 있습니다.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>주변의 가까운 매장을 찾기 위해 항상 위치정보를 사용합니다.​</string>
+	<key>NSLocationUsageDescription</key>
+	<string>주변의 가까운 매장을 찾기 위해 정확한 위치정보를 사용합니다.​</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>주변의 가까운 매장을 찾기 위해 위치정보를 사용합니다.​</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>스윙영상(나의스윙)을 내 폰에 저장 기능 이용 시 사용합니다.​</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>스윙영상(나의스윙)을 내 폰에 저장 기능 이용 시 사용합니다.​</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>사용자의 데이터는 예약 안내 및 개인화된 광고 제공목적으로 사용됩니다.</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>fonts/Pretendard-Regular.ttf</string>
+		<string>fonts/Pretendard-Black.ttf</string>
+		<string>fonts/Pretendard-SemiBold.ttf</string>
+		<string>fonts/Pretendard-ExtraBold.ttf</string>
+		<string>fonts/Pretendard-Bold.ttf</string>
+		<string>fonts/Pretendard-Light.ttf</string>
+		<string>fonts/Pretendard-Medium.ttf</string>
+		<string>fonts/Pretendard-Thin.ttf</string>
+		<string>fonts/Pretendard-ExtraLight.ttf</string>
+		<string>fonts/MaterialIcons.ttf</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIStatusBarStyle</key>
+	<string></string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>

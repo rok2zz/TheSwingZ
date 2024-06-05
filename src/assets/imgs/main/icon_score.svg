@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+  <g id="icon_score" transform="translate(-42 -357)">
+    <rect id="사각형_3132" data-name="사각형 3132" width="28" height="28" transform="translate(42 357)" fill="none"/>
+    <g id="icon" transform="translate(0 -2.5)">
+      <g id="사각형_3131" data-name="사각형 3131" transform="translate(42 362.5)" fill="none" stroke="#fff" stroke-width="1">
+        <rect width="28" height="22" rx="1" stroke="none"/>
+        <rect x="0.5" y="0.5" width="27" height="21" rx="0.5" fill="none"/>
+      </g>
+      <g id="그룹_1059" data-name="그룹 1059" transform="translate(46 369.864)">
+        <rect id="사각형_3135" data-name="사각형 3135" width="2" height="1" rx="0.5" transform="translate(0 0.636)" fill="#fff"/>
+        <rect id="사각형_3140" data-name="사각형 3140" width="8" height="1" rx="0.5" transform="translate(3 0.636)" fill="#fff"/>
+        <rect id="사각형_3143" data-name="사각형 3143" width="8" height="1" rx="0.5" transform="translate(12 0.636)" fill="#fff"/>
+        <rect id="사각형_3136" data-name="사각형 3136" width="2" height="1" rx="0.5" transform="translate(0 3.636)" fill="#fff"/>
+        <rect id="사각형_3139" data-name="사각형 3139" width="8" height="1" rx="0.5" transform="translate(3 3.636)" fill="#fff"/>
+        <rect id="사각형_3142" data-name="사각형 3142" width="8" height="1" rx="0.5" transform="translate(12 3.636)" fill="#fff"/>
+        <rect id="사각형_3137" data-name="사각형 3137" width="2" height="1" rx="0.5" transform="translate(0 6.636)" fill="#fff"/>
+        <rect id="사각형_3138" data-name="사각형 3138" width="8" height="1" rx="0.5" transform="translate(3 6.636)" fill="#fff"/>
+        <rect id="사각형_3141" data-name="사각형 3141" width="8" height="1" rx="0.5" transform="translate(12 6.636)" fill="#fff"/>
+        <rect id="사각형_3174" data-name="사각형 3174" width="2" height="1" rx="0.5" transform="translate(0 9.636)" fill="#fff"/>
+        <rect id="사각형_3175" data-name="사각형 3175" width="8" height="1" rx="0.5" transform="translate(3 9.636)" fill="#fff"/>
+        <rect id="사각형_3176" data-name="사각형 3176" width="8" height="1" rx="0.5" transform="translate(12 9.636)" fill="#fff"/>
+      </g>
+      <rect id="사각형_3173" data-name="사각형 3173" width="26" height="1" transform="translate(43 366.5)" fill="#fff"/>
+    </g>
+  </g>
+</svg>

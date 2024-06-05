@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <g id="Icon_contetns_time" data-name="Icon / contetns / time" transform="translate(-42 -357)">
+      <rect id="사각형_3132" data-name="사각형 3132" width="24" height="24" transform="translate(42 357)" fill="none"/>
+      <g id="icon" transform="translate(0 -1.5)">
+        <rect id="사각형_3327" data-name="사각형 3327" width="2" height="9" transform="translate(53 363.5)" fill="#fd780f"/>
+        <rect id="사각형_3328" data-name="사각형 3328" width="6" height="2" transform="translate(53 370.5)" fill="#fd780f"/>
+      </g>
+      <g id="타원_171" data-name="타원 171" transform="translate(42 357)" fill="none" stroke="#121619" stroke-width="2">
+        <circle cx="12" cy="12" r="12" stroke="none"/>
+        <circle cx="12" cy="12" r="11" fill="none"/>
+      </g>
+    </g>
+</svg>
+  

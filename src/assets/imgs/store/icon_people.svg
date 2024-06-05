@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <g id="Icon_contetns_people" data-name="Icon / contetns / people" transform="translate(-42 -357)">
+      <rect id="사각형_3132" data-name="사각형 3132" width="24" height="24" transform="translate(42 357)" fill="none"/>
+      <g id="타원_172" data-name="타원 172" transform="translate(49 358)" fill="none" stroke="#fd780f" stroke-width="2">
+        <circle cx="5" cy="5" r="5" stroke="none"/>
+        <circle cx="5" cy="5" r="4" fill="none"/>
+      </g>
+      <path id="패스_5772" data-name="패스 5772" d="M8.5,0a8,8,0,0,1,0,16" transform="translate(46 387.25) rotate(-90)" fill="none" stroke="#121619" stroke-width="2"/>
+    </g>
+</svg>
+  

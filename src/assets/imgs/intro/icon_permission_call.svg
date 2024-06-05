@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+  <g id="phone" transform="translate(1 -1)">
+    <rect id="사각형_3305" data-name="사각형 3305" width="18" height="18" transform="translate(-1 1)" fill="none"/>
+    <path id="패스_972" data-name="패스 972" d="M2,9.333V4.889A.889.889,0,0,1,2.889,4H7.333a.889.889,0,0,1,.889.889V8.444a.889.889,0,0,1-.889.889H5.556a7.111,7.111,0,0,0,7.111,7.111V14.667a.889.889,0,0,1,.889-.889h3.556a.889.889,0,0,1,.889.889v4.444a.889.889,0,0,1-.889.889H12.667A10.667,10.667,0,0,1,2,9.333Z" transform="translate(-2 -2)" fill="none" stroke="#fd780f" stroke-width="1"/>
+  </g>
+</svg>

@@ -1,0 +1,7 @@
+<svg id="map" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+    <rect id="사각형_3097" data-name="사각형 3097" width="18" height="18" fill="none"/>
+    <path id="패스_5787" data-name="패스 5787" d="M19,90l5-2.5L30,90l5-2.5v14l-5,2-6-2-5,2Z" transform="translate(-18 -86.5)" fill="#121619" stroke="#121619" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+    <line id="선_32" data-name="선 32" y2="6" transform="translate(6 6.5)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="2"/>
+    <line id="선_33" data-name="선 33" y2="6" transform="translate(12 6.5)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="2"/>
+</svg>
+  

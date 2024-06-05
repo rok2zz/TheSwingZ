@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
+  <g id="icon_map_pin" transform="translate(0 0)">
+    <rect id="사각형_3087" data-name="사각형 3087" width="12" height="12" transform="translate(0 0)" fill="none"/>
+    <path id="빼기_11" data-name="빼기 11" d="M4.5,10.864h0L1.316,7.682A4.5,4.5,0,1,1,7.68,1.319a4.5,4.5,0,0,1,0,6.364L4.5,10.863ZM4.454,2.5a2,2,0,1,0,2,2A2,2,0,0,0,4.454,2.5Z" transform="translate(1.795 0.499)" fill="#fff"/>
+  </g>
+</svg>

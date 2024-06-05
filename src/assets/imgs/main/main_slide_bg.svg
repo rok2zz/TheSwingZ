@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="345" height="181" viewBox="0 0 345 181">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="cardbg" width="345" height="181" rx="3" transform="translate(3551 161)" fill="#fff"/>
+    </clipPath>
+  </defs>
+  <g id="마스크_그룹_11" data-name="마스크 그룹 11" transform="translate(-3551 -161)" clip-path="url(#clip-path)">
+    <path id="패스_5747" data-name="패스 5747" d="M0,0A32.418,32.418,0,0,1,32.418,32.418,32.418,32.418,0,0,1,0,64.837" transform="translate(3800.082 211.361) rotate(-90)" fill="#fbd40f"/>
+    <path id="패스_5748" data-name="패스 5748" d="M0,0A32.418,32.418,0,0,1,32.418,32.418,32.418,32.418,0,0,1,0,64.837" transform="translate(3800.082 243.779) rotate(-90)" fill="#fbd40f"/>
+    <path id="패스_5749" data-name="패스 5749" d="M0,0A32.418,32.418,0,0,1,32.418,32.418,32.418,32.418,0,0,1,0,64.837" transform="translate(3800.082 276.198) rotate(-90)" fill="#fbd40f"/>
+    <path id="패스_5747-2" data-name="패스 5747" d="M0,0A32.418,32.418,0,0,1,32.418,32.418,32.418,32.418,0,0,1,0,64.837" transform="translate(3864.918 291.221) rotate(90)" fill="#0b9d75"/>
+    <path id="패스_5748-2" data-name="패스 5748" d="M0,0A32.418,32.418,0,0,1,32.418,32.418,32.418,32.418,0,0,1,0,64.837" transform="translate(3800.082 356.058) rotate(-90)" fill="#0b9d75"/>
+  </g>
+</svg>

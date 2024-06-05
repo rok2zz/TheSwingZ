@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+    <g id="play" transform="translate(-54 -1386)">
+      <path id="다각형_1" data-name="다각형 1" d="M7,0l7,10H0Z" transform="translate(74 1393) rotate(90)" fill="#fff"/>
+      <g id="타원_7" data-name="타원 7" transform="translate(54 1386)" fill="none" stroke="#fff" stroke-width="1">
+        <circle cx="14" cy="14" r="14" stroke="none"/>
+        <circle cx="14" cy="14" r="13.5" fill="none"/>
+      </g>
+    </g>
+</svg>
+  
