@@ -97,7 +97,7 @@ const Permissions = (): JSX.Element => {
 
                 <Pressable style={({ pressed }) => [ styles.button, Platform.OS === 'ios' && pressed && { opacity: 0.5 }]}
                     onPress={ onPress } android_ripple={{ color: '#b4b4b4' }}>
-                    <Text style={ styles.buttonText }>동의하고 시작하기</Text>
+                    <Text style={ styles.buttonText }>{ Platform.OS === 'ios' ? '다음' : '동의하고 시작하기' }</Text>
                 </Pressable>
             </ScrollView>
         </SafeAreaView>

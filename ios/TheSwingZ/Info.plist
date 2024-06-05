@@ -45,8 +45,8 @@
 	<string>스윙영상(나의스윙)을 내 폰에 저장 기능 이용 시 사용합니다.​</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>스윙영상(나의스윙)을 내 폰에 저장 기능 이용 시 사용합니다.​</string>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>사용자의 데이터는 예약 안내 및 개인화된 광고 제공목적으로 사용됩니다.</string>
+	<!-- <key>NSUserTrackingUsageDescription</key>
+	<string>사용자의 데이터는 예약 안내 및 개인화된 광고 제공목적으로 사용됩니다.</string> -->
 	<key>UIAppFonts</key>
 	<array>
 		<string>fonts/Pretendard-Regular.ttf</string>
