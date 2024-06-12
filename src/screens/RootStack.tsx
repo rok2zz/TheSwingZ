@@ -59,7 +59,7 @@ const RootStack = (): JSX.Element => {
 
 	useEffect(() => {
 		async function getServerInfo(): Promise<void> {
-			const payload: Payload = await getApi('alpha', '1.0.1')
+			const payload: Payload = await getApi('live', '1.0.1')
 
 			if (payload.code !== 1000) {
 				Alert.alert(

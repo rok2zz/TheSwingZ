@@ -12,6 +12,8 @@ import { Payload } from "../../../types/apiTypes"
 import Check from "../../../assets/imgs/login/check_terms.svg"
 import GrayCheck from "../../../assets/imgs/login/check_terms_gray.svg"
 import Loading from "../../../components/Loading"
+import { ReservationTime } from "../../../slices/reservation"
+import { RevSet } from "../../../types/screenTypes"
 
 interface Props {
     route: RouteProp<RootStackParamList, 'MakeReservation'>
@@ -41,6 +43,8 @@ const MakeReservation = ({ route }: Props) => {
     const [twoGame, setTwoGame] = useState<boolean>(false)
     const [isAvailable, setIsAvailable] = useState<boolean[]>([true, true, true, true, true, true])
 
+    const revSet: Set<RevSet> = new Set([])
+
     useEffect(() => {
         if (!shopInfo || !revInfo) {
             Alert.alert('알림', '서버에 연결할 수 없습니다.',[
@@ -56,11 +60,15 @@ const MakeReservation = ({ route }: Props) => {
     }, [])
 
     useEffect(() => {
-        setRevTime(new Date(revInfo.date))
+        if (revInfo) {
+            setRevTime(new Date(revInfo.date))
+        }
     }, [revInfo])
 
     useEffect(() => {
-        getAvailableTime()
+        if (revTime && revTimeList && revTimeList.length > 0) {
+            getAvailableTime()
+        }
     }, [revTime])
     
     useEffect(() => {
@@ -130,9 +138,64 @@ const MakeReservation = ({ route }: Props) => {
                 }
             }
         }
-        
+
+        // add shop rev list
+        if (shopInfo) {
+            let setIndex = 0
+            for (let i = 0; i < revTimeList.length; i++) {
+                if (shopInfo.id === revTimeList[i].shopId) {
+                    const beginDate = new Date(revTimeList[i].beginAt)
+                    const endDate = new Date(revTimeList[i].endAt)
+                    const begin = beginDate.getFullYear() * 100000000 + (beginDate.getMonth() + 1) * 1000000 + beginDate.getDate() * 10000 + (beginDate.getHours() - revInfo.people - 1) * 100 + beginDate.getMinutes() + 10
+                    const end = endDate.getFullYear() * 100000000 + (endDate.getMonth() + 1) * 1000000 + endDate.getDate() * 10000 + endDate.getHours() * 100 + endDate.getMinutes() - 10
+                   
+                    let setValue: number[] = []
+
+                    setValue = setValue.concat(begin)
+                    let beginValue = begin
+
+                    while (beginValue < end) {
+                        if (beginValue % 100 === 60) {
+                            beginValue += 40
+                        } else {
+                            beginValue += 10
+                        }
+                        setValue = setValue.concat(beginValue)
+                    }
+
+                    revSet.add({ index: setIndex, value: setValue })
+                    setIndex++
+                }
+            }
+        }
+
+        // compare rev time
+        if (available.every(value => value === false)) return
+        for (let i = Number((revTime.getMinutes() / 10).toFixed(0)); i < 6; i++) {
+            let selectedValue = revTime.getFullYear() * 100000000 + (revTime.getMonth() + 1) * 1000000 + revTime.getDate() * 10000 + revTime.getHours() * 100 + i * 10
+
+            const getDuplicatedCount = (): number => {
+                let count = 0
+
+                revSet.forEach(set => {
+                    count += set.value.reduce((acc, num) => {
+                        return acc + (num === selectedValue ? 1 : 0)
+                    }, 0)
+                })
+
+                return count
+            }
+
+            if (getDuplicatedCount() >= shopInfo.totalRoom) {
+                available[i] = false
+            } 
+        }
+
         setIsAvailable(available)
     }
+
+
+
 
     const formatTime = (time: Date) => {
         const month = time.getMonth() + 1
@@ -247,11 +310,11 @@ const MakeReservation = ({ route }: Props) => {
                                 <View key={ timeIndex }>
                                     { !isAvailable[timeIndex] ? (
                                         <Pressable style={[ styles.timeBtn, !isAvailable[timeIndex] && { borderWidth: 1, borderColor: '#cccccc', backgroundColor: '#f2f2f2' }]} onPress={ changeTime } key={ timeIndex }>
-                                            <Text style={[ styles.btnText, !isAvailable[timeIndex] && { color: '#121619' } ]}>{ getHour() }:{ Number((revTime.getMinutes() / 10).toFixed(0)) + timeIndex }0 ~</Text>
+                                            <Text style={[ styles.btnText, !isAvailable[timeIndex] && { color: '#121619' } ]}>{ getHour() }:{ timeIndex }0 ~</Text>
                                         </Pressable>
                                     ) : (
                                         <Pressable style={[ styles.timeBtn, revTime.getMinutes() === (timeIndex) * 10 && { borderColor: '#fd780f', backgroundColor: '#fd780f' }]} onPress={ changeTime }>
-                                            <Text style={[ styles.btnText, revTime.getMinutes() === (timeIndex)* 10 && { color: '#ffffff' }]}>{ getHour() }:{ timeIndex }0 ~</Text>
+                                            <Text style={[ styles.btnText, revTime.getMinutes() === (timeIndex) * 10 && { color: '#ffffff' }]}>{ getHour() }:{ timeIndex }0 ~</Text>
                                         </Pressable>
                                     )}
                                      

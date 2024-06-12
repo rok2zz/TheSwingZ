@@ -29,3 +29,8 @@ export interface Store {
 	contact: string,
 	time: string
 }
+
+export interface RevSet {
+    index: number
+    value: number[]
+}

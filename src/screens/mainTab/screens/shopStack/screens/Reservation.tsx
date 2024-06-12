@@ -20,12 +20,8 @@ import Location from "../../../../../assets/imgs/store/location.svg"
 import Star from "../../../../../assets/imgs/store/star_empty_gray.svg"
 import FilledStar from "../../../../../assets/imgs/store/star_fill.svg"
 import { useAuthActions } from "../../../../../hooks/useAuthActions"
-import { useIsTabConnected } from "../../../../../hooks/useUsers"
-
-interface RevSet {
-    index: number
-    value: number[]
-}
+import { useIsTabConnected, useUserInfo } from "../../../../../hooks/useUsers"
+import { RevSet } from "../../../../../types/screenTypes"
 
 interface Props {
     route: RouteProp<ShopStackParamList, 'Reservation'>
@@ -50,6 +46,7 @@ const Reservation = ({ route }: Props): JSX.Element => {
     const { saveIsOpen, saveReservationSetting, setIsFavorite } = useReservationActions()
     const { getShop, setFavoriteShop } = useReservation()
     const { saveIsTabConnected } = useAuthActions() 
+    const userInfo = useUserInfo()
     const isConnected = useIsTabConnected()
 
     const isTabFocused = useIsFocused()
@@ -202,7 +199,7 @@ const Reservation = ({ route }: Props): JSX.Element => {
                 <View style={ styles.listContainer }>
                     { (searchedShop && searchedShop.length > 0) && searchedShop.map((item: ShopInfo, index: number) => {
                         if (isConnected) return
-                        if (item.id === 13) return
+                        if ((userInfo.uid !== 4 && userInfo.uid !== 2) && item.id === 13) return
                         const available: boolean[] = [true, true, true, true, true, true]
                         const revSet: Set<RevSet> = new Set([])
                         
@@ -271,19 +268,18 @@ const Reservation = ({ route }: Props): JSX.Element => {
                             }
                         }
 
-
                         const favoriteShops = shopList.filter(shop => shop.favorite !== null && shop.favorite.toLowerCase() === 'f')
                         const favoriteExist = favoriteShops.length > 0 ? true : false
 
                         const addRevTime = () => {
-                            if (searchedShop && searchedShop.length > 0 && revTimeList && revTimeList.length > 0) {
+                            if (searchedShop && searchedShop.length > 0) {
                                 let setIndex = 0
                                 for (let i = 0; i < revTimeList.length; i++) {
                                     if (item.id === revTimeList[i].shopId) {
                                         const beginDate = new Date(revTimeList[i].beginAt)
                                         const endDate = new Date(revTimeList[i].endAt)
-                                        const begin = beginDate.getFullYear() * 100000000 + (beginDate.getMonth() + 1) * 1000000 + beginDate.getDate() * 10000 + beginDate.getHours() * 100 + beginDate.getMinutes()
-                                        const end = endDate.getFullYear() * 100000000 + (endDate.getMonth() + 1) * 1000000 + endDate.getDate() * 10000 + endDate.getHours() * 100 + endDate.getMinutes()
+                                        const begin = beginDate.getFullYear() * 100000000 + (beginDate.getMonth() + 1) * 1000000 + beginDate.getDate() * 10000 + (beginDate.getHours() - reservationInfo.people - 1) * 100 + beginDate.getMinutes() + 10
+                                        const end = endDate.getFullYear() * 100000000 + (endDate.getMonth() + 1) * 1000000 + endDate.getDate() * 10000 + endDate.getHours() * 100 + endDate.getMinutes() - 10
                                        
                                         let setValue: number[] = []
 
@@ -300,7 +296,6 @@ const Reservation = ({ route }: Props): JSX.Element => {
                                         }
 
                                         revSet.add({ index: setIndex, value: setValue })
-
                                         setIndex++
                                     }
                                 }
@@ -309,22 +304,24 @@ const Reservation = ({ route }: Props): JSX.Element => {
 
                         const compareRevTime = () => {
                             if (available.every(value => value === false)) return
-                            for (let i = 0; i < 6; i++) {
-                                const selectedValue = reservationTime.getFullYear() * 100000000 + (reservationTime.getMonth() + 1) * 1000000 + reservationTime.getDate() * 10000 + reservationTime.getHours() * 100 + i * 10
-                                
+                            for (let i = Number((reservationTime.getMinutes() / 10).toFixed(0)); i < 6; i++) {
+                                let selectedValue = reservationTime.getFullYear() * 100000000 + (reservationTime.getMonth() + 1) * 1000000 + reservationTime.getDate() * 10000 + reservationTime.getHours() * 100 + i * 10
+
                                 const getDuplicatedCount = (): number => {
                                     let count = 0
+
                                     revSet.forEach(set => {
                                         count += set.value.reduce((acc, num) => {
                                             return acc + (num === selectedValue ? 1 : 0)
                                         }, 0)
                                     })
+                
                                     return count
                                 }
 
                                 if (getDuplicatedCount() >= item.totalRoom) {
                                     available[i] = false
-                                }
+                                } 
 
                                 if (available.every(value => value === false)) {
                                     reason = 'rev'
@@ -332,9 +329,12 @@ const Reservation = ({ route }: Props): JSX.Element => {
                             }
                         }
 
-                        getShopTime()
-                        addRevTime()
-                        compareRevTime()
+                        if(revTimeList && revTimeList.length > 0) {
+                            getShopTime()
+                            addRevTime()
+                            compareRevTime()
+                        }
+
 
                         return (
                             <View key={ index }> 
@@ -374,8 +374,8 @@ const Reservation = ({ route }: Props): JSX.Element => {
                                             </View>
 
                                             <ScrollView style={ styles.infoRow } horizontal showsHorizontalScrollIndicator={ false }>
-                                                { Array.from({ length: 6 - Number((reservationTime.getMinutes() / 10).toFixed(0)) }, (_, i) => i).map((timeIndex: number) => {
-                                                    
+                                                { Array.from({ length: 6 }, (_, i) => i).map((timeIndex: number) => {
+                                                    if (timeIndex < Number((reservationTime.getMinutes() / 10).toFixed(0))) return
                                                     const getHour = () => {
                                                         if (reservationTime.getHours() < 10) {
                                                             return '0' + reservationTime.getHours()
@@ -394,7 +394,7 @@ const Reservation = ({ route }: Props): JSX.Element => {
 
                                                     return (
                                                         <Pressable style={[ styles.timeBtn, !available[timeIndex] && { borderWidth: 1, borderColor: '#cccccc', backgroundColor: '#f2f2f2' }]} onPress={ makeReservation } key={ timeIndex }>
-                                                            <Text style={[ styles.btnText, !available[timeIndex] && { color: '#121619' } ]}>{ getHour() }:{ Number((reservationTime.getMinutes() / 10).toFixed(0)) + timeIndex }0 ~</Text>
+                                                            <Text style={[ styles.btnText, !available[timeIndex] && { color: '#121619' } ]}>{ getHour() }:{ timeIndex }0 ~</Text>
                                                         </Pressable>
                                                     )
                                                 })}
