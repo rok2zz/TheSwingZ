@@ -547,7 +547,7 @@ const Main = (): JSX.Element => {
                 <View style={ styles.contentsContainer }>
                     {/* swing video */}
                     <View style={ styles.rowContainer }>
-                        <Text style={ styles.title }>스윙영상</Text>
+                        <Text style={ styles.title }>마이 스윙폼</Text>
                         <Pressable style={ styles.rowContainer } onPress={ () => rootNavigation.navigate('SwingVideo') }>
                             <Text style={[ styles.regularText, { fontSize: 14, color: '#666666' }]}>더보기</Text>
                             <Arrow />
@@ -577,7 +577,7 @@ const Main = (): JSX.Element => {
                         <View style={ styles.emptyVideo }>
                             <EmptyVideo style={{ marginBottom: 15 }} width={ 48 } height={ 48 } />
                             <Text style={[ styles.blankCardText, { marginBottom: 3 }]}>플레이별 최대 5개의​</Text>
-                            <Text style={ styles.blankCardText }>나의 스윙 영상을 기록할 수 있습니다.​</Text>
+                            <Text style={ styles.blankCardText }>나의 스윙폼 영상을 기록할 수 있습니다.​</Text>
                         </View>                         
                     )}
                     

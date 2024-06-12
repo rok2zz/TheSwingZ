@@ -13,6 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface ReservationHook {
     getShop: (date: Date | null, people: number | null) => Promise<Payload>,
+    getShopInfo: (shopId: number) => Promise<Payload>,
     getReservationInfo: (date: Date, count: number, shopId: number) => Promise<Payload>,
     getMyReservation: (revId: number | null) => Promise<Payload>,
     registReservation: (shopId: number, revInfo: ReservationSetting, name: string, phone: string, gameMode: string, selectedHole: number, isLeft: boolean, linkedRoom: boolean, twoRoom: boolean, twoGame: boolean) => Promise<Payload>
@@ -139,6 +140,93 @@ export const useReservation = (): ReservationHook => {
 
             return { code: 1000 }
             
+        } catch (error: any) {
+            errorHandler(error)
+        }
+
+        return  { code: -1, msg: '알 수 없는 에러가 발생했습니다.' }
+    }
+
+    const getShopInfo = async (shopId: number): Promise<Payload> => {
+        const body: Body = {
+            cls: 'Shop',
+            method: 'getShopInfo',
+            params: [ 
+                shopId
+            ]
+        }
+
+        const jsonBody: string = JSON.stringify(body)
+    
+        try {
+                const res: ShopResponse = await axios.post(appURL, jsonBody, {
+                    headers: {
+                        "accessToken": accessToken
+                    }
+                })
+                if (res.data.code !== 1000) {
+                    if (res.data.code === -5000) {
+                        const res: ShopResponse = await axios.post(appURL, jsonBody, {
+                            headers: {
+                                "refreshToken": refreshToken
+                            }
+                        })
+                        
+                        if (res.data.code !== 1000) {
+                             // 자동 로그인 만료시
+                            if (res.data.code === -5002) {
+                                Alert.alert('알림', '로그인 세션이 만료되었습니다.')
+                                clearUserInfo()
+
+                                const payload: Payload = {
+                                    code: 1001,
+                                    msg: res.data.msg
+                                }
+
+                                return payload
+                            }
+                            const payload: Payload = {
+                                code: res.data.code,
+                                msg: res.data.msg
+                            }    
+            
+                            return payload
+                        }
+                        
+                        if (res.data.result && res.data.result.bill && res.data.result.notice && res.data.result.accessToken) {
+                            const token = {
+                                accessToken: res.data.result?.accessToken,
+                                refreshToken: refreshToken
+                            }
+                            await AsyncStorage.setItem('token', JSON.stringify(token))
+
+                            const payload: Payload = {
+                                code: res.data.code,
+                                bill: res.data.result.bill,
+                                notice: res.data.result.notice
+                            }
+
+                            return payload
+                        }
+                    }
+
+                    const payload: Payload = {
+                        code: res.data.code,
+                        msg: res.data.msg
+                    }   
+    
+                    return payload
+                }
+                
+                if (res.data.result && res.data.result.notice && res.data.result.bill) {
+                    const payload: Payload = {
+                        code: res.data.code,
+                        bill: res.data.result.bill,
+                        notice: res.data.result.notice
+                    }
+
+                    return payload
+                }
         } catch (error: any) {
             errorHandler(error)
         }
@@ -640,7 +728,7 @@ export const useReservation = (): ReservationHook => {
         return  { code: -1, msg: '알 수 없는 에러가 발생했습니다.' }
     }
 
-    return { getShop, getReservationInfo, getMyReservation, registReservation, deleteReservation, setFavoriteShop }
+    return { getShop, getShopInfo, getReservationInfo, getMyReservation, registReservation, deleteReservation, setFavoriteShop }
 }
 
 const errorHandler = (error: any): void => {

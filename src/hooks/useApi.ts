@@ -30,7 +30,7 @@ export const useApi = (): JsonsHook => {
         const time = new Date()
         try {
             const res: any = await axios.get(`https://version.the-swing.net/app/theswingz/${type}/${Platform.OS}/${version}.json?time=${time}`)
-            if (res.data.auth_server === '' || res.data.auth_server === '' || res.data.office_server === '') {
+            if (!res.data.auth_server || !res.data.office_server || !res.data.app_server || !res.data.game_server || res.data.auth_server === '' || res.data.game_server === '' || res.data.office_server === '' || res.data.app_server === '') {
                 Alert.alert('알림', '서버에 연결할 수 없습니다.')
                 
                 const payload: Payload = {
@@ -45,21 +45,28 @@ export const useApi = (): JsonsHook => {
                 appServer: res.data.app_server,
                 officeServer: res.data.office_server,
                 gameServer: res.data.game_server,
+                update: res.data.update,
                 inspection: res.data.inspection,
                 startTime: res.data.start,
                 endTime: res.data.end,
-
-                androidApi: '',
-                iosApi: ''
             })
 
-            return { code: 1000 }
+            const payload: Payload = {
+                code: 1000,
+                update: res.data.update
+            }
 
+            return payload
         } catch (error: any) {
             errorHandler(error)
         }
 
-        return { code: 1000 }
+        const payload: Payload = {
+            code: -1,
+            msg: '서버에 연결할 수 없습니다.'
+        }
+
+        return payload
     }   
 
     // get youtube video

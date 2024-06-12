@@ -33,31 +33,7 @@ export interface ShopInfo {
     openAt: string,
     closedAt: string,
     option: string,
-    pay: Pay,
     favorite: string
-}
-
-export interface Pay {
-    week: {
-        h18: {
-            before12: number,
-            after12: number
-        },
-        h9: {
-            before12: number,
-            after12: number
-        }
-    },
-    holiday: {
-        h18: {
-            before12: number,
-            after12: number
-        },
-        h9: {
-            before12: number,
-            after12: number
-        }
-    }
 }
 
 export interface Operation {

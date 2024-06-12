@@ -308,6 +308,7 @@ const Reservation = ({ route }: Props): JSX.Element => {
                         }
 
                         const compareRevTime = () => {
+                            if (available.every(value => value === false)) return
                             for (let i = 0; i < 6; i++) {
                                 const selectedValue = reservationTime.getFullYear() * 100000000 + (reservationTime.getMonth() + 1) * 1000000 + reservationTime.getDate() * 10000 + reservationTime.getHours() * 100 + i * 10
                                 
@@ -334,6 +335,7 @@ const Reservation = ({ route }: Props): JSX.Element => {
                         getShopTime()
                         addRevTime()
                         compareRevTime()
+
                         return (
                             <View key={ index }> 
                                 { tabType === 0 ? (

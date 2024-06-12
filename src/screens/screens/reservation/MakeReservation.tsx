@@ -130,6 +130,7 @@ const MakeReservation = ({ route }: Props) => {
                 }
             }
         }
+        
         setIsAvailable(available)
     }
 

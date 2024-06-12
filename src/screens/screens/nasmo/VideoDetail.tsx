@@ -172,7 +172,7 @@ const VideoDetail = ({ route }: Props): JSX.Element => {
         <SafeAreaView style={ styles.wrapper }>
             { isConnected && <View style={{ position: 'absolute', top: 0, left: 0, zIndex: 5 }}><Loading /></View> }
             <View style={ styles.header }>
-                <Text style={ styles.semiBoldText }>스윙영상 상세보기​</Text>
+                <Text style={ styles.semiBoldText }>마이 스윙폼 상세보기​</Text>
                 <Pressable onPress={ () => navigation.goBack() } >
                     <Close style={{ marginRight: 15 }}/>
                 </Pressable>

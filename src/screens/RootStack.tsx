@@ -37,7 +37,7 @@ import FAQ from "./screens/cs/FAQ";
 import Splash from "./screens/Splash";
 import Withdrawal from "./screens/mypage/Withdrawal";
 import ResultWithdrawal from "./screens/mypage/ResultWithdrawal";
-import { Alert, BackHandler } from "react-native";
+import { Alert, BackHandler, Linking, Platform } from "react-native";
 import SwingVideo from "./screens/nasmo/SwingVideo";
 import VideoDetail from "./screens/nasmo/VideoDetail";
 import Intro from "./screens/intro/Intro";
@@ -59,7 +59,7 @@ const RootStack = (): JSX.Element => {
 
 	useEffect(() => {
 		async function getServerInfo(): Promise<void> {
-			const payload: Payload = await getApi('alpha', '1.0.0')
+			const payload: Payload = await getApi('alpha', '1.0.1')
 
 			if (payload.code !== 1000) {
 				Alert.alert(
@@ -75,6 +75,47 @@ const RootStack = (): JSX.Element => {
 				)
 			}
 
+			if (payload.update === 'must') {
+				Alert.alert(
+					'알림',
+					'최신 버전으로 업데이트가 필요합니다.',
+					[
+						{
+							text: '업데이트', 
+							onPress: async (): Promise<void> => { 
+								if (Platform.OS === 'android') {
+									Linking.openURL('https://play.google.com/store/apps/details?id=com.theswingz')
+								} else if (Platform.OS === 'ios') {
+									Linking.openURL('https://apps.apple.com/app/%EB%8D%94-%EC%8A%A4%EC%9C%99-%EC%A0%9C%ED%8A%B8/id6473002250')
+								}
+							},
+						}
+					],
+				)
+			} else if (payload.update === 'can') {
+
+				Alert.alert(
+					'알림',
+					'새 버전이 출시되었습니다. 최신 버전으로 업데이트 할 수 있습니다.',
+					[
+						{
+							text: '취소',
+							onPress: () => { 
+								return },
+							style: 'cancel',
+						},{
+							text: '업데이트', 
+							onPress: async (): Promise<void> => { 
+								if (Platform.OS === 'android') {
+									Linking.openURL('https://play.google.com/store/apps/details?id=com.theswingz')
+								} else if (Platform.OS === 'ios') {
+									Linking.openURL('https://apps.apple.com/app/%EB%8D%94-%EC%8A%A4%EC%9C%99-%EC%A0%9C%ED%8A%B8/id6473002250')
+								}
+							},
+						}
+					],
+				)
+			}
 		}
 		setRefreshToken(refresh)
 		getServerInfo()
@@ -233,7 +274,7 @@ const RootStack = (): JSX.Element => {
 
 							{/* nasmo */}
 							<Stack.Screen name='SwingVideo' component={ SwingVideo } options={{ 
-								header: () => <Header type={ 0 } title="스윙영상" isFocused />
+								header: () => <Header type={ 0 } title="마이 스윙폼" isFocused />
 							 }} />	
 							<Stack.Screen name='VideoDetail' component={ VideoDetail } options={{ headerShown: false }} />	
 

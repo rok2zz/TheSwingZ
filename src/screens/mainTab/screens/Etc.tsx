@@ -47,7 +47,7 @@ const reservationList: ListProps[] = [
 
 const recordList: ListProps[] = [
     {
-        title: '스윙영상',
+        title: '마이 스윙폼 영상',
         screen: 'SwingVideo',
         stack: 'root'
     },

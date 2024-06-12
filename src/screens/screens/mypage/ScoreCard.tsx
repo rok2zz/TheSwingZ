@@ -3,10 +3,10 @@ import { RootStackNavigationProp, RootStackParamList } from "../../../types/stac
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import React, { useEffect, useState } from "react"
 import { UserInfo } from "../../../slices/auth"
-import { useUserInfo } from "../../../hooks/useUsers"
+import { useUserInfo, useUsers } from "../../../hooks/useUsers"
 import { useRecord, useRecords } from "../../../hooks/useRecords"
 import { Record } from "../../../slices/record"
-import { CcInfo, Payload, PositionInfo } from "../../../types/apiTypes"
+import { CcInfo, Payload, PositionInfo, UserProfileImgs } from "../../../types/apiTypes"
 import { useScoreCardVideo, useThumbnailList, useVideos } from "../../../hooks/useVideos"
 import { Thumbnail } from "../../../slices/video"
 
@@ -27,6 +27,7 @@ import Mulligan from "../../../assets/imgs/my/mulligan.svg"
 import Play from "../../../assets/imgs/swing/play.svg"
 import FastImage from "react-native-fast-image"
 import Loading from "../../../components/Loading"
+import { useVideoActions } from "../../../hooks/useVideoActions"
 
 interface Props {
     route: RouteProp<RootStackParamList, 'ScoreCard'>
@@ -41,11 +42,13 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
     const videoList = useScoreCardVideo()
 
     const { getScore } = useRecords()
+    const { getProfileImages } = useUsers()
     const { getScoreCardVideo } = useVideos()
 
     const [recordIndex, setRecordIndex] = useState<number>(0)
     const [recordArr, setRecordArr] = useState<Record>()
     const [myPositionArr, setMyPositionArr] = useState<PositionInfo[]>([])
+    const [profileImgs, setProfileImgs] = useState<UserProfileImgs[]>([])
     const [isConnected, setIsConnected] = useState<boolean>(false)
     const [isFolded, setIsFolded] = useState<boolean[]>([false])
 
@@ -72,6 +75,31 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
         }
 
     }, [roomId])
+
+    useEffect(() => {
+        getProfileImg()
+    }, [recordArr])
+
+    const getProfileImg = async () => {
+        if (isConnected) return
+        if (recordArr && recordArr.inArr.length > 0) {
+            let uidArr: number[] = []
+            for (let i = 0; i < recordArr.inArr.length; i++) {
+                uidArr = uidArr.concat(recordArr.inArr[i].uid)
+            }
+
+            const payload: Payload = await getProfileImages(uidArr) 
+
+            setIsConnected(false)
+            if (payload.code !== 1000) {
+                return
+            }
+
+            if (payload.userProfileImgs) {
+                setProfileImgs(payload.userProfileImgs)
+            }
+        }
+    }
 
     const getScoreCard = async () => {
         if (isConnected) return
@@ -224,16 +252,40 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                                 return type
                             }
 
+                            const getProfileImg = () => {
+                                if (profileImgs && profileImgs.length > 0) {
+                                    for (let j = 0; j < profileImgs.length; j++) {
+                                        if (item.uid === profileImgs[j].uid) {
+                                            return profileImgs[j].url
+                                        }
+                                    }
+                                }
+                                return ''
+                            }
+
                             return (
                                 <View style={ styles.scoreCardContainer } key={ index }>
                                     {/* my scorecard */}
                                     <View>
                                         <View style={[ styles.nicknameComtainer, index === 0 && { marginTop: 7 }]}>
                                             <Pressable style={[ styles.rowContainer, { flex: 1 }]}>
+                                                    <View style={ styles.imgContainer }>
+                                                        { getProfileImg() === '' ?
+                                                            <EmptyImg width={ 36 } height={ 36 } />
+                                                            :
+                                                            <FastImage 
+                                                                style={ styles.img } 
+                                                                source={{ 
+                                                                    uri: getProfileImg(),
+                                                                    priority: FastImage.priority.normal,
+                                                                    cache: FastImage.cacheControl.immutable 
+                                                                }} 
+                                                                resizeMode="cover"
+                                                            />
+                                                        }
+                                                    </View>
+                                                   
                                                 
-                                                <View style={ styles.emptyImg }>
-                                                    <EmptyImg width={ 36 } height={ 36 } />
-                                                </View>
                                                 <Text style={ styles.nicknameText }>{ recordArr.inArr[index].nick }</Text>
                                             </Pressable>
 
@@ -488,7 +540,7 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
 
                         { videoList && videoList.thumbnail.length > 0 &&
                             <>
-                                <Text style={ styles.boldText }>나의 스윙</Text>
+                                <Text style={ styles.boldText }>마이 스윙폼</Text>
                                 <ScrollView style={{ marginHorizontal: 15, marginBottom: 48 }}  horizontal showsHorizontalScrollIndicator={ false }>
                                     { videoList.thumbnail.map((item: Thumbnail, index: number) => {
                                         return (
@@ -676,7 +728,7 @@ const styles = StyleSheet.create({
             }
         })
     },
-    emptyImg: {
+    imgContainer: {
         width: 36,
         height: 36,
 
@@ -685,6 +737,12 @@ const styles = StyleSheet.create({
         borderRadius: 20,
 
         backgroundColor: '#f1f3f8'
+    },
+    img: {
+        width: '100%',
+        height: '100%',
+
+        borderRadius: 40
     },
     nicknameComtainer: {
         flexDirection: 'row',

@@ -5,12 +5,10 @@ export interface ServerInfo {
     appServer: string,
     gameServer: string,
     officeServer: string,
+    update: string,
     inspection: boolean,
     startTime: string,
     endTime: string,
-
-    androidApi: string,
-    iosApi: string
 }
 
 export interface YoutubeVideo {
@@ -32,12 +30,10 @@ const initialState: ApiState = {
         appServer: '',
         officeServer: '',
         gameServer: '',
+        update: '',
         inspection: false,
         startTime: '',
         endTime: '',
-
-        androidApi: '',
-        iosApi: '',
     },
     youtubeVideo: []
     

@@ -146,7 +146,7 @@ const FindShop = () => {
             <ScrollView showsVerticalScrollIndicator={ false }>
                 <View style={ styles.listContainer }>
                     { (searchedShop&& searchedShop.length > 0) && searchedShop.map((item: ShopInfo, index: number) => {
-                        if (item.id === 13) return
+                        // if (item.id === 13) return
                         const available: boolean[] = [true, true, true, true, true, true]
                         let reason = ''
 

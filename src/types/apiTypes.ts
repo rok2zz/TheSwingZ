@@ -19,7 +19,7 @@ export interface Token {
 export interface Body {
     cls: string,
     method: string,
-    params?: (string | boolean | number | UserSettingBody[] | Date | null)[]
+    params?: (string | boolean | number | number[] | UserSettingBody[] | Date | null)[]
 }
 
 export interface UserSettingBody {
@@ -32,6 +32,8 @@ export interface Payload {
     code: number,
     msg?: string,
 
+    update?: string,
+
     uid?: number | null,
     name?: string
     phone?: string,
@@ -42,7 +44,12 @@ export interface Payload {
     thumbnailList?: Thumbnail[]
     stat?: Stat,
 
-    revId?: number
+    revId?: number,
+
+    bill?: Bill[],
+    notice?: string,
+
+    userProfileImgs?: UserProfileImgs[]
 }
 
 export interface LoginResult {
@@ -79,9 +86,18 @@ export interface ResponseResult {
     payload?: string,
     url?: string,
 
+    users?: UserProfileImgs[]
+
     token?: string,
     accessToken?: string,
     refreshToken?: string,
+}
+
+export interface UserProfileImgs {
+    uid: number,
+    nick: string,
+    profileImg: string,
+    url: string
 }
 
 export interface Response {
@@ -126,9 +142,19 @@ export interface ShopResponse {
             revList?: ReservationTime[],
             myRevList?: ReservationInfo[]
             accessToken?: string
-            revId?: number
+            revId?: number,
+            bill?: Bill[],
+            notice?: string
         }
     }
+}
+
+export interface Bill {
+    before: string,
+    after: string,
+    weekYn: string,
+    hole: number,
+    turningTime: string
 }
 
 // settingInfo

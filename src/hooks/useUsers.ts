@@ -35,6 +35,8 @@ interface UsersHook {
     modifyUserInfo: (password: string, location: string) => Promise<Payload>,
     deleteAccount: (reason: string, password: string) => Promise<Payload>,
 
+    getProfileImages: (uidArr: number[]) => Promise<Payload>,
+
     getSettingValue: (uid: number) => Promise<Payload>,
     setSettingValue: (uid: number, setting: UserSetting) => Promise<Payload>,
 }
@@ -73,6 +75,7 @@ export const useUsers = (): UsersHook => {
 
     const authURL = serverInfo.authServer
     const gameURL = serverInfo.gameServer
+    const appURL = serverInfo.appServer
 
     // 로그인 메소드
     const idLogin = async (userID: string, userPW: string, auto: boolean): Promise<Payload> => {
@@ -883,7 +886,6 @@ export const useUsers = (): UsersHook => {
                     'accessToken': accessToken
                 }
             }) 
-            console.log(res.data.result)
             if (res.data.code !== 1000) {
                 if (res.data.code === -5000) {
                     const res: Response = await axios.post(authURL, jsonBody, {
@@ -1066,6 +1068,95 @@ export const useUsers = (): UsersHook => {
         return { code: -1, msg: '서버에 연결할 수 없습니다.' }
     }
 
+    // get profileImg
+    const getProfileImages = async (uidArr: number[]): Promise<Payload> => {
+        const body: Body = {
+            cls: 'Play',
+            method: 'getUserProfileImages',
+            params: [ 
+                uidArr
+            ]
+        }
+  
+        const jsonBody: string = JSON.stringify(body)
+    
+        try {
+            const res: Response = await axios.post(appURL, jsonBody, {
+                headers: {
+                    'accessToken': accessToken
+                }
+            }) 
+            if (res.data.code !== 1000) {
+                if (res.data.code === -5000) {
+                    const res: Response = await axios.post(authURL, jsonBody, {
+                        headers: {
+                            'accessToken': accessToken
+                        }
+                    })
+    
+                    if (res.data.code !== 1000) {    
+                         // 자동 로그인 만료시
+                        if (res.data.code === -5002) {
+                            Alert.alert('알림', '로그인 세션이 만료되었습니다.')
+                            clearUserInfo()
+    
+                            const payload: Payload = {
+                                code: 1001,
+                                msg: res.data.msg
+                            }
+    
+                            return payload
+                        }
+    
+                        const payload: Payload = {
+                            code: res.data.code ?? -1,
+                            msg: res.data.msg
+                        }
+        
+                        return payload
+                    }
+        
+                    if (res.data.result && res.data.result.users && res.data.result.accessToken) {
+                        saveAccessToken(res.data.result.accessToken)
+
+                        const token = {
+                            accessToken: res.data.result?.accessToken,
+                            refreshToken: refreshToken
+                        }
+                        await AsyncStorage.setItem('token', JSON.stringify(token))
+
+                        const payload: Payload = {
+                            code: res.data.code,
+                            userProfileImgs: res.data.result.users
+                        }
+
+                        return payload
+                    }
+                }
+
+                const payload: Payload = {
+                    code: res.data.code ?? -1,
+                    msg: res.data.msg
+                }
+
+                return payload
+            }
+
+            if (res.data.result && res.data.result.users) {
+                const payload: Payload = {
+                    code: res.data.code,
+                    userProfileImgs: res.data.result.users
+                }
+
+                return payload
+            }
+        } catch (error: any) {
+            errorHandler(error)
+        }
+
+        return  { code: -1, msg: '서버에 연결할 수 없습니다.' }
+    }
+
     // 회원가입시 설정 테이블 생성
     const createSettingValue = async (uid: number): Promise<Payload> => {
         const body: Body = {
@@ -1232,7 +1323,7 @@ export const useUsers = (): UsersHook => {
     }
 
     return { idLogin, socialLogin, autoLogin, createAccount, socialCreate, 
-        sendMessage, findID, checkPW, resetPW, screenLogin,
+        sendMessage, findID, checkPW, resetPW, screenLogin, getProfileImages,
         modifyProfile, modifyUserInfo, logout, deleteAccount, getSettingValue, setSettingValue,
         checkDuplicatedId, checkDuplicatedNickname }
 }

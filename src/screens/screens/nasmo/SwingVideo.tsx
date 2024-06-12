@@ -143,7 +143,7 @@ const SwingVideo = (): JSX.Element => {
                         </View>
 
                         <Text style={[ styles.regularText, { marginBottom: 3, color: '#666666'}]}>플레이별 최대 5개의</Text>
-                        <Text style={[ styles.regularText, { color: '#666666'}]}>나의 스윙 영상을 기록할 수 있습니다.​</Text>
+                        <Text style={[ styles.regularText, { color: '#666666'}]}>마이 스윙폼을 기록할 수 있습니다.​</Text>
 
                     </View>
                     <View style={ styles.subContainer }>
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 15,
         paddingVertical: 30,
-        
+
         backgroundColor: '#f3f3f3'
     },
     filterContainer: {
