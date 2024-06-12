@@ -297,14 +297,14 @@ export const courseList: CourseInfo[] = [
         greenDifficulty: 3,
     }, { 
         id: 54,
-        ccName: '가야(Out/In)',
+        ccName: '가야(신어/낙동)',
         cc: 'gaya',
         location: '경상남도',
         hole: 18,
         course1: 1,
         course2: 2,
-        courseName1: 'Out',
-        courseName2: 'In',
+        courseName1: '신어',
+        courseName2: '낙동',
         courseDifficulty: 4,
         greenDifficulty: 2.5,
     }, { 

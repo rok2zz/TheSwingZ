@@ -61,7 +61,7 @@ const FindShop = () => {
     useEffect(() => {
         const getShopInfo = async () => {
             saveIsTabConnected(true)
-            const payload: Payload = await getShop(new Date())
+            const payload: Payload = await getShop(null, null)
             saveIsTabConnected(false)
             if (payload.code !== 1000) {
                 Alert.alert('알림', '서버에 연결할 수 없습니다.')

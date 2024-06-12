@@ -12,7 +12,7 @@ import { useAuthActions } from "./useAuthActions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface ReservationHook {
-    getShop: (date: Date) => Promise<Payload>,
+    getShop: (date: Date | null, people: number | null) => Promise<Payload>,
     getReservationInfo: (date: Date, count: number, shopId: number) => Promise<Payload>,
     getMyReservation: (revId: number | null) => Promise<Payload>,
     registReservation: (shopId: number, revInfo: ReservationSetting, name: string, phone: string, gameMode: string, selectedHole: number, isLeft: boolean, linkedRoom: boolean, twoRoom: boolean, twoGame: boolean) => Promise<Payload>
@@ -60,12 +60,13 @@ export const useReservation = (): ReservationHook => {
     const appURL = serverInfo.appServer
     const officeURL = serverInfo.officeServer
 
-    const getShop = async (date: Date): Promise<Payload> => {
+    const getShop = async (date: Date | null, people: number | null): Promise<Payload> => {
         const body: Body = {
             cls: 'Shop',
             method: 'getShopList',
             params: [ 
-                formatDate(date)
+                date !== null ? formatDate(date) : null,
+                people
             ]
         }
 

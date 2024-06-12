@@ -133,12 +133,11 @@ const SwingVideo = (): JSX.Element => {
     }, [])
 
     return (
-        <SafeAreaView style={ styles.wrapper }>
+        <View style={ styles.wrapper }>
             { isConnected && <View style={{ position: 'absolute', top: 0, left: 0, zIndex: 5 }}><Loading /></View>  }
-            <Header type={ 0 } title="스윙영상" isFocused />
             { videoList.length === 0 ? (
                 <>
-                    <View style={[ styles.container, { alignItems: 'center', height: Dimensions.get('window').height - 220 } ]}>
+                    <View style={[ styles.container, { alignItems: 'center'}]}>
                         <View style={{ marginBottom: 15, marginTop: 30 }}>
                             <EmptyVideo style={{ transform: [{ translateX: 5 }]}} />
                         </View>
@@ -146,13 +145,12 @@ const SwingVideo = (): JSX.Element => {
                         <Text style={[ styles.regularText, { marginBottom: 3, color: '#666666'}]}>플레이별 최대 5개의</Text>
                         <Text style={[ styles.regularText, { color: '#666666'}]}>나의 스윙 영상을 기록할 수 있습니다.​</Text>
 
-                        </View>
+                    </View>
                     <View style={ styles.subContainer }>
                         <Exclamation style={{ marginRight: 6, marginTop: 3 }} />
                         <Text style={[ styles.regularText, { fontSize: 14, color: '#666666' }]}>스윙영상은 스크린골프시 자동으로 저장되며, 게임당 최대 10개 저장 후 촬영일로부터 유효기간 6개월입니다.</Text>
                     </View>
                 </>
-
                 ) : (
                 <ScrollView onScroll={ handleScroll } showsVerticalScrollIndicator={ false } scrollEventThrottle={ 16 }
                     refreshControl={ <RefreshControl refreshing={ refreshing } onRefresh={ onRefresh } /> }
@@ -301,7 +299,7 @@ const SwingVideo = (): JSX.Element => {
                     </Animated.View>
                 </View>
             }
-        </SafeAreaView>
+        </View>
     )
 } 
 
@@ -312,9 +310,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff'
     },
     container: {
-        paddingVertical: 30,
+        flex: 1,
         paddingHorizontal: 15,
-
+        paddingVertical: 30,
+        
         backgroundColor: '#f3f3f3'
     },
     filterContainer: {

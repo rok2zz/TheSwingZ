@@ -234,7 +234,7 @@ const Login = (): JSX.Element => {
 	// }
 
     return (
-        <View style={ styles.wrapper } >
+        <SafeAreaView style={ styles.wrapper } >
             { isConnected && <View style={{ position: 'absolute', top: 0, left: 0, zIndex: 5 }}><Loading /></View> }
 
             {/* 비밀번호 만료 알림 및 변경 권장 알림
@@ -311,7 +311,7 @@ const Login = (): JSX.Element => {
                     <Text style={ styles.register } onPress={ () => navigation.navigate('Terms', { type: 'normal' })}>회원가입</Text>
                 </View>
             </ScrollView>
-		</View>
+		</SafeAreaView>
     )
 }
 

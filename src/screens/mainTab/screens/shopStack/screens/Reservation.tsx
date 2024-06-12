@@ -22,6 +22,11 @@ import FilledStar from "../../../../../assets/imgs/store/star_fill.svg"
 import { useAuthActions } from "../../../../../hooks/useAuthActions"
 import { useIsTabConnected } from "../../../../../hooks/useUsers"
 
+interface RevSet {
+    index: number
+    value: number[]
+}
+
 interface Props {
     route: RouteProp<ShopStackParamList, 'Reservation'>
 }
@@ -54,7 +59,6 @@ const Reservation = ({ route }: Props): JSX.Element => {
 
     const [sortedShop, setSortedShop] = useState<ShopInfo[]>([])
     const [searchedShop, setSearchedShop] = useState<ShopInfo[]>()
-    const [favoriteExist, setFavoriteExist] = useState<boolean>(false)
 
     const [reservationTime, setReservationTime] = useState<Date>(getNextHour())
 	const searchRef = useRef<TextInput>(null)
@@ -67,32 +71,34 @@ const Reservation = ({ route }: Props): JSX.Element => {
     }, [isTabFocused])
 
     useEffect(() => {
-        const getShopInfo = async () => {
-            if (isConnected) return
-
-            saveIsTabConnected(true)
-            const payload: Payload = await getShop(new Date())
-            saveIsTabConnected(false)
-            if (payload.code !== 1000) {
-                Alert.alert('알림', '서버에 연결할 수 없습니다.')
-            }
-
-        }
-        if (shopList && shopList.length === 0) {
-            getShopInfo()
-        }
-        setSortedShop(shopList)
-    }, [shopList])
-    
-    useEffect(() => {
-        onPressSearch()
-    }, [sortedShop])
-
-    useEffect(() => {
+        getShopInfo()
         if (new Date(reservationInfo.date).getHours() !== new Date().getHours()) {
             setReservationTime(new Date(reservationInfo.date)) 
         }
     }, [reservationInfo])
+
+    useEffect(() => {
+        if (shopList && shopList.length > 0) {
+            setSortedShop(shopList)
+        }
+    }, [shopList])
+
+    useEffect(() => {
+        if (sortedShop) {
+            onPressSearch()
+        }
+    }, [sortedShop])
+
+    const getShopInfo = async () => {
+        if (isConnected) return
+
+        saveIsTabConnected(true)
+        const payload: Payload = await getShop(new Date(reservationInfo.date), reservationInfo.people + 1)
+        saveIsTabConnected(false)
+        if (payload.code !== 1000) {
+            Alert.alert('알림', '서버에 연결할 수 없습니다.')
+        }
+    }
 
     const handleTypeChange = (newType: number) => {
         setTabType(newType)
@@ -195,8 +201,11 @@ const Reservation = ({ route }: Props): JSX.Element => {
             <ScrollView  showsVerticalScrollIndicator={ false }>
                 <View style={ styles.listContainer }>
                     { (searchedShop && searchedShop.length > 0) && searchedShop.map((item: ShopInfo, index: number) => {
+                        if (isConnected) return
                         if (item.id === 13) return
                         const available: boolean[] = [true, true, true, true, true, true]
+                        const revSet: Set<RevSet> = new Set([])
+                        
                         let reason = ''
 
                         const getShopTime = () => {
@@ -262,72 +271,69 @@ const Reservation = ({ route }: Props): JSX.Element => {
                             }
                         }
 
-                        getShopTime()
 
                         const favoriteShops = shopList.filter(shop => shop.favorite !== null && shop.favorite.toLowerCase() === 'f')
                         const favoriteExist = favoriteShops.length > 0 ? true : false
 
-                        // const compareRevTime = () => {
-                        //     if (revTimeList && revTimeList.length > 0) {
-                        //         for (let i = 0; i < revTimeList.length; i++) {
-                        //             if (item.id === revTimeList[i].shopId) {
-                    
+                        const addRevTime = () => {
+                            if (searchedShop && searchedShop.length > 0 && revTimeList && revTimeList.length > 0) {
+                                let setIndex = 0
+                                for (let i = 0; i < revTimeList.length; i++) {
+                                    if (item.id === revTimeList[i].shopId) {
+                                        const beginDate = new Date(revTimeList[i].beginAt)
+                                        const endDate = new Date(revTimeList[i].endAt)
+                                        const begin = beginDate.getFullYear() * 100000000 + (beginDate.getMonth() + 1) * 1000000 + beginDate.getDate() * 10000 + beginDate.getHours() * 100 + beginDate.getMinutes()
+                                        const end = endDate.getFullYear() * 100000000 + (endDate.getMonth() + 1) * 1000000 + endDate.getDate() * 10000 + endDate.getHours() * 100 + endDate.getMinutes()
+                                       
+                                        let setValue: number[] = []
 
-                        //                 if (reservation.getHours() === endHour) {
-                        //                     if (reservation < new Date(revTimeList[i].endAt)) {
-                        //                         let min = 0
-                        //                         if (endMin > 0 && endMin < 10) {
-                        //                             min = 1
-                        //                         } else if (endMin >= 10 && endMin < 20 ) {
-                        //                             min = 2
-                        //                         } else if (endMin >= 20 && endMin < 30) {
-                        //                             min = 3
-                        //                         } else if (endMin >= 30 && endMin < 40) {
-                        //                             min = 4
-                        //                         } else if (endMin >= 40 && endMin < 50) {
-                        //                             min = 5
-                        //                         } else if (endMin >= 50 && endMin < 60) {
-                        //                             min = 6
-                        //                         } 
-                        //                         for (let j = 0; j < min; j++) {
-                        //                             minute[j]++
-                        //                         }
-                        //                     }
-                        //                 } else if (reservation.getHours() < endHour) {
+                                        setValue = setValue.concat(begin)
+                                        let beginValue = begin
 
-                        //                     if (reservation.getHours() > beginHour) {
-                                                
-                        //                         for (let j = 0; j < minute.length; i++) {
-                        //                             minute[j]++
-                        //                         }
-                        //                     } else if (reservation.getHours() === beginHour) {
-                        //                         let min = 0
-                        //                         if (beginMin === 0) {
-                        //                             min = 0
-                        //                         } if (beginMin > 0 && beginMin < 10) {
-                        //                             min = 1
-                        //                         } else if (beginMin >= 10 && beginMin < 20 ) {
-                        //                             min = 2
-                        //                         } else if (beginMin >= 20 && beginMin < 30) {
-                        //                             min = 3
-                        //                         } else if (beginMin >= 30 && beginMin < 40) {
-                        //                             min = 4
-                        //                         } else if (beginMin >= 40 && beginMin < 50) {
-                        //                             min = 5
-                        //                         } else if (beginMin >= 50 && beginMin < 60) {
-                        //                             min = 6
-                        //                         } 
-                        //                         for (let j = min; j < minute.length; j++) {
-                        //                             minute[j]++
-                        //                         }
-                        //                     }
-                        //                 }
-                        //             }
-                        //         }
-                        //     }
-                        // }
-                        // compareRevTime()
-                        
+                                        while (beginValue < end) {
+                                            if (beginValue % 100 === 60) {
+                                                beginValue += 40
+                                            } else {
+                                                beginValue += 10
+                                            }
+                                            setValue = setValue.concat(beginValue)
+                                        }
+
+                                        revSet.add({ index: setIndex, value: setValue })
+
+                                        setIndex++
+                                    }
+                                }
+                            }
+                        }
+
+                        const compareRevTime = () => {
+                            for (let i = 0; i < 6; i++) {
+                                const selectedValue = reservationTime.getFullYear() * 100000000 + (reservationTime.getMonth() + 1) * 1000000 + reservationTime.getDate() * 10000 + reservationTime.getHours() * 100 + i * 10
+                                
+                                const getDuplicatedCount = (): number => {
+                                    let count = 0
+                                    revSet.forEach(set => {
+                                        count += set.value.reduce((acc, num) => {
+                                            return acc + (num === selectedValue ? 1 : 0)
+                                        }, 0)
+                                    })
+                                    return count
+                                }
+
+                                if (getDuplicatedCount() >= item.totalRoom) {
+                                    available[i] = false
+                                }
+
+                                if (available.every(value => value === false)) {
+                                    reason = 'rev'
+                                }
+                            }
+                        }
+
+                        getShopTime()
+                        addRevTime()
+                        compareRevTime()
                         return (
                             <View key={ index }> 
                                 { tabType === 0 ? (
@@ -345,7 +351,7 @@ const Reservation = ({ route }: Props): JSX.Element => {
                                                 <View style={ styles.imgContainer }>
                                                     <Image style={ styles.img } source={ require('../../../../../assets/imgs/store/store_default.jpg' )} />
                                                     { available.every(value => value === false) && 
-                                                        <View style={[ styles.disableInfo, reason === 'time' && { backgroundColor: '#f0f0f0' }, reason === 'reservation' && { backgroundColor: '#fae9eb' }]}>
+                                                        <View style={[ styles.disableInfo, reason === 'time' && { backgroundColor: '#f0f0f0' }, reason === 'rev' && { backgroundColor: '#fae9eb' }]}>
                                                             { reason === 'time' ?
                                                                 <Text style={[ styles.semiboldText, { color: '#333333' }]}>영업준비중</Text>
                                                                     :
@@ -367,6 +373,7 @@ const Reservation = ({ route }: Props): JSX.Element => {
 
                                             <ScrollView style={ styles.infoRow } horizontal showsHorizontalScrollIndicator={ false }>
                                                 { Array.from({ length: 6 - Number((reservationTime.getMinutes() / 10).toFixed(0)) }, (_, i) => i).map((timeIndex: number) => {
+                                                    
                                                     const getHour = () => {
                                                         if (reservationTime.getHours() < 10) {
                                                             return '0' + reservationTime.getHours()
@@ -382,6 +389,7 @@ const Reservation = ({ route }: Props): JSX.Element => {
                                                     }
 
                                                     
+
                                                     return (
                                                         <Pressable style={[ styles.timeBtn, !available[timeIndex] && { borderWidth: 1, borderColor: '#cccccc', backgroundColor: '#f2f2f2' }]} onPress={ makeReservation } key={ timeIndex }>
                                                             <Text style={[ styles.btnText, !available[timeIndex] && { color: '#121619' } ]}>{ getHour() }:{ Number((reservationTime.getMinutes() / 10).toFixed(0)) + timeIndex }0 ~</Text>
@@ -410,7 +418,7 @@ const Reservation = ({ route }: Props): JSX.Element => {
                                                                 <View style={ styles.imgContainer }>
                                                                     <Image style={ styles.img } source={ require('../../../../../assets/imgs/store/store_default.jpg' )} />
                                                                     { available.every(value => value === false) && 
-                                                                        <View style={[ styles.disableInfo, reason === 'time' && { backgroundColor: '#f0f0f0' }, reason === 'reservation' && { backgroundColor: '#fae9eb' }]}>
+                                                                        <View style={[ styles.disableInfo, reason === 'time' && { backgroundColor: '#f0f0f0' }, reason === 'rev' && { backgroundColor: '#fae9eb' }]}>
                                                                             { reason === 'time' ?
                                                                                 <Text style={[ styles.semiboldText, { color: '#333333' }]}>영업준비중</Text>
                                                                                     :

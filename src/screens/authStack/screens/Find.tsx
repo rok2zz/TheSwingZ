@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native"
 import React, { useRef, useState, useEffect } from "react"
-import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native"
+import { Dimensions, Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useUsers } from "../../../hooks/useUsers"
 import { Payload } from "../../../types/apiTypes"
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     },
     container: {
         marginHorizontal: 15,
-        marginTop: 28
+        paddingVertical: 30
     },
     typeBtnContainer: {
         flexDirection: 'row',

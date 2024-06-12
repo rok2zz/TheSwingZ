@@ -33,6 +33,7 @@ const CourseDetail = ({ route }: Props): JSX.Element => {
     const [isLoaded, setIsLoaded] = useState<boolean>(false)
 
     const [minimapList, setMinimapList] = useState<CourseImage[]>([])
+    const [sortedMinimapList, setSortedMinimapList] = useState<CourseImage[]>([])
     const [type, setType] = useState<number>(0)
     const [hole, setHole] = useState<number>(1)
     const mapWidth = Dimensions.get('window').width
@@ -49,6 +50,23 @@ const CourseDetail = ({ route }: Props): JSX.Element => {
     useEffect(() => {
         setMinimapList(courseInfo)
     }, [courseInfo])
+
+    useEffect(() => {
+        let sortedMinimap: CourseImage[] = []
+
+        for (let i = 0; i < minimapList.length; i++) {
+            if (minimapList[i].courseNumber === course.course1) {
+                sortedMinimap = sortedMinimap.concat(minimapList[i])
+            }
+        }
+
+        for (let i = 0; i < minimapList.length; i++) {
+            if (minimapList[i].courseNumber === course.course2) {
+                sortedMinimap = sortedMinimap.concat(minimapList[i])
+            }
+        }
+        setSortedMinimapList(sortedMinimap)
+    }, [minimapList])
 
     const getMinimapSource = async () => {
         const payload: Payload = await getCourseImage(course.id, course.course1, course.course2)
@@ -86,11 +104,11 @@ const CourseDetail = ({ route }: Props): JSX.Element => {
     }
 
     const getPar = () => {
-        if (minimapList && minimapList.length > 0) {
+        if (sortedMinimapList && sortedMinimapList.length > 0) {
             if (type === 1) {
-                return minimapList[hole + 8].par ?? 0
+                return sortedMinimapList[hole + 8].par ?? 0
             }
-            return minimapList[hole - 1]. par ?? 0
+            return sortedMinimapList[hole - 1]. par ?? 0
         }
     }
 
@@ -189,16 +207,31 @@ const CourseDetail = ({ route }: Props): JSX.Element => {
                         <View style={ styles.holeInfoBlank }></View>
                         <Text style={ styles.holeInfoText }>PAR { getPar() }</Text>
                     </View>
-                    { minimapList && minimapList.length > 0 &&
-                        <FastImage 
-                            style={ styles.minimap }                   
-                            source={{ 
-                                uri: courseInfo[hole - 1].minimapResource ?? '',
-                                priority: FastImage.priority.normal,
-                                cache: FastImage.cacheControl.immutable 
-                            }} 
-                            resizeMode="cover"
-                        />
+                    { sortedMinimapList && sortedMinimapList.length > 0 &&
+                        <>
+                            { type === 0 ? (
+                                 <FastImage 
+                                    style={ styles.minimap }                   
+                                    source={{ 
+                                        uri: sortedMinimapList[hole - 1].minimapResource ?? '',
+                                        priority: FastImage.priority.normal,
+                                        cache: FastImage.cacheControl.immutable 
+                                    }} 
+                                    resizeMode="cover"
+                                />
+                                ) : (
+                                <FastImage 
+                                    style={ styles.minimap }                   
+                                    source={{ 
+                                        uri: sortedMinimapList[hole + 8].minimapResource ?? '',
+                                        priority: FastImage.priority.normal,
+                                        cache: FastImage.cacheControl.immutable 
+                                    }} 
+                                    resizeMode="cover"
+                                />
+                            )}
+                        </>
+                       
                     }
                     
                     <Pressable style={[ styles.arrow, { left: 15 }]} onPress={ onPressLeft }>
@@ -269,13 +302,13 @@ const CourseDetail = ({ route }: Props): JSX.Element => {
                         </View>
                         <View style={ styles.centerRow }>
                             { Array.from({ length: 9 }, (_, index: number) => {
-                                if (minimapList && minimapList.length > 0) {
+                                if (sortedMinimapList && sortedMinimapList.length > 0) {
                                     return (
                                         <View key={ index }>
                                             { type === 0 ? 
-                                                <Text style={ styles.holeText }>{ minimapList[index].par }</Text>
+                                                <Text style={ styles.holeText }>{ sortedMinimapList[index].par }</Text>
                                                 :
-                                                <Text style={ styles.holeText }>{ minimapList[index + 9].par }</Text>
+                                                <Text style={ styles.holeText }>{ sortedMinimapList[index + 9].par }</Text>
                                             }
                                         </View>     
                                     )  

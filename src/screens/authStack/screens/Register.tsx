@@ -27,8 +27,8 @@ const locationList: string[] = [
 
 const Register = ({ route }: Props): JSX.Element =>  {
     const navigation = useNavigation<AuthStackNavigationProp>()
-    const agreeMarketing = route.params.isMarketingChecked ?? true
-    const socialType = route.params.type ?? 'normal'
+    const agreeMarketing =  true
+    const socialType = 'normal'
 
     const { createAccount, socialCreate, checkDuplicatedId, checkDuplicatedNickname } = useUsers()
     const authInfo = useAuthInfo()
@@ -536,7 +536,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
 
-        marginTop: 60
+        marginTop: 60,
+        marginBottom: 40
     },
     button: {
         alignItems: 'center',

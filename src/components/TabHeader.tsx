@@ -66,7 +66,7 @@ const TabHeader = ({ title, type, isFocused, before }: Props ): JSX.Element => {
     }
 
     return (
-        <SafeAreaView style={{ backgroundColor: backgroundColor }}>
+        <SafeAreaView style={{ backgroundColor: backgroundColor }} edges={['top']}>
             { isFocused && <StatusBar backgroundColor={ backgroundColor } /> }
             <View style={ styles.container }>
                 <Pressable style={ styles.button } onPress={ onPress }>

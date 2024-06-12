@@ -49,7 +49,7 @@ const RootStack = (): JSX.Element => {
 	const isFirst = useIsFirst()
 	const [first, setFirst] = useState<boolean>(false)
     const { autoLogin } = useUsers()
-	const { saveRefreshToken, saveUserInfo, clearUserInfo, saveIsFirst } = useAuthActions()
+	const { saveRefreshToken, saveUserInfo, clearUserInfo } = useAuthActions()
 	const { getApi } = useApi()
 	const refresh = useRefreshToken()
 	const userInfo = useUserInfo()
@@ -59,7 +59,7 @@ const RootStack = (): JSX.Element => {
 
 	useEffect(() => {
 		async function getServerInfo(): Promise<void> {
-			const payload: Payload = await getApi('live', '1.0.0')
+			const payload: Payload = await getApi('alpha', '1.0.0')
 
 			if (payload.code !== 1000) {
 				Alert.alert(
@@ -232,7 +232,9 @@ const RootStack = (): JSX.Element => {
 							}} />	
 
 							{/* nasmo */}
-							<Stack.Screen name='SwingVideo' component={ SwingVideo } options={{ headerShown: false }} />	
+							<Stack.Screen name='SwingVideo' component={ SwingVideo } options={{ 
+								header: () => <Header type={ 0 } title="스윙영상" isFocused />
+							 }} />	
 							<Stack.Screen name='VideoDetail' component={ VideoDetail } options={{ headerShown: false }} />	
 
 							{/* FAQ */}
