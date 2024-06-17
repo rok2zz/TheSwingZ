@@ -139,7 +139,6 @@ const Main = (): JSX.Element => {
             }
             if (accessToken && !isMainLoaded) {
                 saveIsTabConnected(true)
-    
                 getRevInfo()
                 getVideoList()
                 setTimeout(()=> {
@@ -242,6 +241,7 @@ const Main = (): JSX.Element => {
 
     const getVideoList = async () => {
         const payload: Payload = await getMySwingVideoList(0, 5)
+
         if (payload.code !== 1000) {
             Alert.alert('알림', payload.msg ?? '서버에 연결할 수 없습니다.')
 

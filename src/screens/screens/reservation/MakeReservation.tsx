@@ -147,7 +147,7 @@ const MakeReservation = ({ route }: Props) => {
                     const beginDate = new Date(revTimeList[i].beginAt)
                     const endDate = new Date(revTimeList[i].endAt)
                     const begin = beginDate.getFullYear() * 100000000 + (beginDate.getMonth() + 1) * 1000000 + beginDate.getDate() * 10000 + (beginDate.getHours() - revInfo.people - 1) * 100 + beginDate.getMinutes() + 10
-                    const end = endDate.getFullYear() * 100000000 + (endDate.getMonth() + 1) * 1000000 + endDate.getDate() * 10000 + endDate.getHours() * 100 + endDate.getMinutes() - 10
+                    const end = endDate.getFullYear() * 100000000 + (endDate.getMonth() + 1) * 1000000 + endDate.getDate() * 10000 + endDate.getHours() * 100 + endDate.getMinutes()
                    
                     let setValue: number[] = []
 

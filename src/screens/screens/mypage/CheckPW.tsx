@@ -64,7 +64,7 @@ const CheckPW = (): JSX.Element => {
                 </View>
                 
                 <View style={ styles.inputContainer }>
-                    <TextInput style={[ styles.input, password !== '' && { fontSize: 30 }, isFocused ? { borderBottomColor: '#121619'} : { borderBottomColor: '#cccccc' }]} secureTextEntry
+                    <TextInput style={[ styles.input, isFocused ? { borderBottomColor: '#121619'} : { borderBottomColor: '#cccccc' }]} secureTextEntry
                         placeholder="비밀번호 입력" placeholderTextColor="#aaaaaa" ref={ passwordRef } returnKeyType="done" autoCapitalize='none' onFocus={ () => setIsFocused(true) } onBlur={ () => setIsFocused(false)}
                         onChangeText={(pw: string): void => setPassword(pw)} onSubmitEditing={ () => {} } />
                     <Eraser style={ styles.eraser } onPress={ clearPwTextInput } />

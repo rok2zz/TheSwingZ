@@ -24,6 +24,7 @@ import Star from "../../../../../assets/imgs/store/star_empty_gray.svg"
 import FilledStar from "../../../../../assets/imgs/store/star_fill.svg"
 import { useAuthActions } from "../../../../../hooks/useAuthActions"
 import { useIsTabConnected } from "../../../../../hooks/useUsers"
+import FastImage from "react-native-fast-image"
 
 
 const FindShop = () => {
@@ -52,8 +53,7 @@ const FindShop = () => {
 			})
 		} else if (Platform.OS === 'android') {
 			requestMultiple([PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION, PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION]).then((statuses) => {
-                console.log('loca1', statuses[PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION])
-                console.log('loca2', statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION])
+
 			})
 		}
     }, [])
@@ -146,13 +146,13 @@ const FindShop = () => {
             <ScrollView showsVerticalScrollIndicator={ false }>
                 <View style={ styles.listContainer }>
                     { (searchedShop&& searchedShop.length > 0) && searchedShop.map((item: ShopInfo, index: number) => {
-                        // if (item.id === 13) return
+                        if (item.id === 13) return
                         const available: boolean[] = [true, true, true, true, true, true]
                         let reason = ''
 
                         const getShopTime = () => {
                             const now = new Date()
-                            const openTime= item.openAt.split(':')
+                            const openTime= item.openedAt.split(':')
                             const open = new Date()
                             open.setDate(now.getDate())
                             open.setHours(parseInt(openTime[0], 10))
@@ -220,9 +220,7 @@ const FindShop = () => {
                         const favoriteExist = favoriteShops.length > 0 ? true : false
 
                         const onClickRev = () => {
-                            console.log('asdf:' ,available)
                             if (available.every(value => value === false)) {
-                                console.log(reason)
                                 if (reason === 'time') {
                                     Alert.alert('알림', '현재 해당 매장은 영업준비중입니다.')
                                     return
@@ -246,7 +244,19 @@ const FindShop = () => {
                                         <View style={[ styles.storeContainer, index === 0 && { borderTopWidth: 0 }]}>
                                             <View style={{ flexDirection: 'row' }}>
                                                 <View style={ styles.imgContainer }>
-                                                    <Image style={ styles.img } source={ require('../../../../../assets/imgs/store/store_default.jpg' )} />
+                                                    { !item.image ?
+                                                        <Image style={ styles.img } source={ require('../../../../../assets/imgs/store/store_default.jpg' )} />
+                                                        :
+                                                        <FastImage 
+                                                            style={ styles.img } 
+                                                            source={{ 
+                                                                uri: 'https://' + item.image,
+                                                                priority: FastImage.priority.normal,
+                                                                cache: FastImage.cacheControl.immutable 
+                                                            }} 
+                                                            resizeMode="cover"
+                                                        /> 
+                                                    }
                                                     { available.every(value => value === false) && 
                                                         <View style={[ styles.disableInfo, reason === 'time' && { backgroundColor: '#f0f0f0' }, reason === 'reservation' && { backgroundColor: '#fae9eb' }]}>
                                                             { reason === 'time' ?

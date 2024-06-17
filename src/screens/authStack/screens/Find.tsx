@@ -83,13 +83,11 @@ const Find = (): JSX.Element => {
             return 
         }
 
-       
         setIsConnected(true)
-        const payload: Payload = await sendMessage(phone, userID)
+        const payload: Payload = await sendMessage(phone, 0)
         setTimer(true)
         setMin(3)
         setSec(0)
-        console.log(payload)
         setIsConnected(false)
 
         if (payload.code !== 1000 ) {

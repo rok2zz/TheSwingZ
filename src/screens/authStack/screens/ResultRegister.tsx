@@ -48,7 +48,7 @@ const ResultRegister = ({ route }: Props): JSX.Element => {
                         <Text style={[ styles.regularText, { color: '#cccccc' }, socialType === 'normal' ? { marginBottom: 100 } : { marginBottom: 200 }]}>플레이 할 준비가 되었습니다.​</Text>
                     }
                    
-                    {/* { socialType === 'normal' &&
+                    { socialType === 'normal' &&
                         <>
                             <Text style={[ styles.regularText, { fontSize: 14 }]}>SNS 연동하기</Text>
                             <View style={ styles.social }>
@@ -66,7 +66,7 @@ const ResultRegister = ({ route }: Props): JSX.Element => {
                                 </Pressable>
                             </View>
                         </>
-                    } */}
+                    }
 
                     <Text style={[ styles.regularText, { fontSize: 14, marginBottom: 4, color: '#cccccc'}]}>스크린골프 후 내 기록 및 영상을 확인하실 수 있으며,</Text>
                     <Text style={[ styles.regularText, { fontSize: 14, color: '#cccccc'}]}>다양한 서비스를 이용하실 수 있습니다.​</Text>

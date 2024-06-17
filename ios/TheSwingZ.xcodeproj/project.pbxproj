@@ -24,6 +24,7 @@
 		BB9270815630484D83E2F623 /* Pretendard-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C72C6E0459294A6FB1D23822 /* Pretendard-Medium.ttf */; };
 		CD5531ACA7224CF582968F64 /* Pretendard-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 38845A9467EE48C9B0EB095B /* Pretendard-Regular.ttf */; };
 		E82B9F552B9835930001A10B /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = E82B9F542B9835930001A10B /* fonts */; };
+		E8452B552C1AB7DC00A105DD /* SwiftBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8452B542C1AB7DC00A105DD /* SwiftBridge.swift */; };
 		E89C3C702C0F0ECC00B7C4DB /* assets in Resources */ = {isa = PBXBuildFile; fileRef = E89C3C6F2C0F0ECC00B7C4DB /* assets */; };
 		E89C3C722C0F0ED500B7C4DB /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = E89C3C712C0F0ED500B7C4DB /* main.jsbundle */; };
 /* End PBXBuildFile section */
@@ -77,6 +78,8 @@
 		C92FB04E6EF846CDAC350263 /* Pretendard-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Bold.ttf"; path = "../src/assets/fonts/Pretendard-Bold.ttf"; sourceTree = "<group>"; };
 		E6669FE05A0FDB41BC898AD4 /* Pods-TheSwingZ.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheSwingZ.release.xcconfig"; path = "Target Support Files/Pods-TheSwingZ/Pods-TheSwingZ.release.xcconfig"; sourceTree = "<group>"; };
 		E82B9F542B9835930001A10B /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = fonts; path = TheSwingZ/fonts; sourceTree = "<group>"; };
+		E8452B532C1AB7DB00A105DD /* TheSwingZ-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TheSwingZ-Bridging-Header.h"; sourceTree = "<group>"; };
+		E8452B542C1AB7DC00A105DD /* SwiftBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftBridge.swift; sourceTree = "<group>"; };
 		E89C3C152C0EA44700B7C4DB /* hermes.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = hermes.xcframework; path = "Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework"; sourceTree = "<group>"; };
 		E89C3C172C0EB11600B7C4DB /* main.jsbundle */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		E89C3C6F2C0F0ECC00B7C4DB /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
@@ -131,6 +134,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				E8452B542C1AB7DC00A105DD /* SwiftBridge.swift */,
+				E8452B532C1AB7DB00A105DD /* TheSwingZ-Bridging-Header.h */,
 			);
 			name = TheSwingZ;
 			sourceTree = "<group>";
@@ -269,7 +274,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1510;
 					};
 				};
 			};
@@ -469,6 +474,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				E8452B552C1AB7DC00A105DD /* SwiftBridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -548,7 +554,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 628PRY6WC2;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -559,7 +565,7 @@
 					"@executable_path/Frameworks",
 					"\"${PODS_CONFIGURATION _BUILD_DIR}/RNFastImage\"",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -569,6 +575,7 @@
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.theswinggolf.theswingz;
 				PRODUCT_NAME = TheSwingZ;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "TheSwingZ-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -584,7 +591,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 628PRY6WC2;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = TheSwingZ/Info.plist;
@@ -594,7 +601,7 @@
 					"@executable_path/Frameworks",
 					"\"${PODS_CONFIGURATION _BUILD_DIR}/RNFastImage\"",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -604,6 +611,7 @@
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.theswinggolf.theswingz;
 				PRODUCT_NAME = TheSwingZ;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "TheSwingZ-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";

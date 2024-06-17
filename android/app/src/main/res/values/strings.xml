@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">더스윙제트</string>
+    <string name="kakao_app_key">ba013042f5a0f6ae1e923f20137aad80</string>
 </resources>

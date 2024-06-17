@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react"
 import { Focus, Message } from "../../../types/screenTypes"
 import { User } from "../../../slices/auth"
 import { Payload } from "../../../types/apiTypes"
-import { useAuthInfo, useUsers } from "../../../hooks/useUsers"
+import { useAuthInfo, useSocialId, useUsers } from "../../../hooks/useUsers"
 import validate from "validate.js"
 
 //svg
@@ -27,10 +27,10 @@ const locationList: string[] = [
 
 const Register = ({ route }: Props): JSX.Element =>  {
     const navigation = useNavigation<AuthStackNavigationProp>()
-    const agreeMarketing =  true
-    const socialType = 'normal'
+    const agreeMarketing = route.params.isMarketingChecked
+    const socialType = route.params.type
 
-    const { createAccount, socialCreate, checkDuplicatedId, checkDuplicatedNickname } = useUsers()
+    const { createAccount, socialCreate, checkDuplicatedId, checkDuplicatedNickname, sendMessage } = useUsers()
     const authInfo = useAuthInfo()
 
     const scrollViewRef = useRef<ScrollView>(null)
@@ -40,8 +40,10 @@ const Register = ({ route }: Props): JSX.Element =>  {
     const nameRef = useRef<TextInput>(null)
     const emailRef = useRef<TextInput>(null)
     const phoneRef = useRef<TextInput>(null)
+    const authNumRef = useRef<TextInput>(null)
     const nicknameRef = useRef<TextInput>(null)
 
+    const socialId = useSocialId()
     const [user, setUser] = useState<User>({
         userID: '',
         password: '',
@@ -55,17 +57,20 @@ const Register = ({ route }: Props): JSX.Element =>  {
         nickname: '',
         phone: '',
         authcode: '',
-        location: '',
+        location: '서울',
         alarm: agreeMarketing
     })
+    const [authCode, setAuthCode] = useState<string>('')
+    const [min, setMin] = useState<number>(0)
+    const [sec, setSec] = useState<number>(0)
+    const [timer, setTimer] = useState<boolean>(false)
+
     const [isFocused, setIsFocused] = useState<Focus>({ ref: idRef, isFocused: false })
     const [isConnected, setIsConnected] = useState<boolean>(false)    
     const [idDuplicated, setIdDuplicated] = useState<boolean>(true)
     const [nicknameDuplicated,setNicknameDuplicated] = useState<boolean>(true)
 
-    const [openDropdown, setOpenDropdown] = useState<boolean>(false)
-    const [location, setLocation] = useState<string>('서울')
-    
+    const [openDropdown, setOpenDropdown] = useState<boolean>(false)    
     const [message, setMessage] = useState<Message>({ type: '', msg: ''})
 
     useEffect(() => {
@@ -90,6 +95,29 @@ const Register = ({ route }: Props): JSX.Element =>  {
 
     }, [openDropdown])
 
+
+   // 인증 요청시 타이머 세팅
+    useEffect(() => {
+        if (min === 0 && sec === 0) {
+            setTimer(false)
+        } else if (sec === -1) {
+            setSec(59)
+            setMin(min - 1)
+        } else if (timer) {
+            const timeout: NodeJS.Timeout = setTimeout((): void => {
+                setSec(sec - 1)
+            }, 1000)
+            
+            return () => clearTimeout(timeout)
+        } 
+    }, [timer, sec])
+
+    // 타이머 실행시 메시지 업데이트
+    useEffect(() => {
+        if (timer) {
+            setMessage({ type: 'phone', msg: '휴대폰으로 전송된 인증번호를 입력해주세요.' })
+        }       
+    }, [timer])
 
     // 선택한 입력칸 포커스
     const handleFocus = (ref: React.RefObject<TextInput>) => {
@@ -250,6 +278,14 @@ const Register = ({ route }: Props): JSX.Element =>  {
                 setMessage({ type: 'email', msg: '올바른 이메일 형식이 아닙니다' })
                 return 
             }
+        } else { 
+            if (authCode === '')  {
+                setMessage({ type: 'auth', msg: '인증번호를 입력해주세요.' })
+                return 
+            } else if (authCode.search(/\s/) > 0 || authCode.length !== 6) {
+                setMessage({ type: 'auth', msg: '유효하지 않은 인증번호입니다.' })
+                return
+            } 
         }
         
         if (nicknameDuplicated) {
@@ -258,7 +294,6 @@ const Register = ({ route }: Props): JSX.Element =>  {
         }
 
         setMessage({ type: '', msg: ''})
-        
         Alert.alert(
             '알림',
             '가입하시겠습니까?',
@@ -290,12 +325,25 @@ const Register = ({ route }: Props): JSX.Element =>  {
                                 return
                             }
                         } else {
-                            const payload: Payload = await socialCreate('asdf', 'KAKAO', user.nickname, user.location) 
+                            const payload: Payload = await socialCreate(socialId, socialType, user.realName, user.email, user.phone, user.nickname, user.location, authCode) 
                             if (payload.code !== 1000) {
+                                if (payload.code === -3002 || payload.code === -3003){
+                                    setMessage({ type: 'nickname', msg: payload.msg ?? '서버에 연결할 수 없습니다.' })
+                                    setIsConnected(false)
+                                    return
+                                } else if (payload.code === -3012) {
+                                    setMessage({ type: 'auth', msg: payload.msg ?? '서버에 연결할 수 없습니다.' })
+                                    setIsConnected(false)
+
+                                    return
+                                } else if (payload.code === -3001) {
+                                    Alert.alert('알림', '이미 회원가입된 사용자입니다.')
+                                    setIsConnected(false)
+                                    return
+                                }
                                 setMessage({ type: 'nickname', msg: payload.msg ?? '서버에 연결할 수 없습니다.' })
                                 setIsConnected(false)
                                 return
-                              
                             }
                         }
 
@@ -332,6 +380,31 @@ const Register = ({ route }: Props): JSX.Element =>  {
                 }
             ],
         )
+    }
+
+    const onPressSendMessage = async () => {
+        if (isConnected) return
+        if (user.phone === '') {
+            setMessage({ type: 'phone', msg: '휴대전화번호를 입력해주세요.' })
+            return
+        } else if (user.phone.search(/\s/) > 0 || !/^(010)[0-9]{4}[0-9]{4}$/.test(user.phone)) {
+            setMessage({ type: 'phone', msg: '유효하지 않은 휴대전화번호입니다.' })
+            return 
+        }
+
+       
+        setIsConnected(true)
+        const payload: Payload = await sendMessage(user.phone, 1)
+        setTimer(true)
+        setMin(3)
+        setSec(0)
+        setIsConnected(false)
+
+        if (payload.code !== 1000 ) {
+            setMessage({ type: 'phone', msg: payload.msg ?? '서버와 연결할 수 없습니다.'})
+            setTimer(false)
+            return
+        }
     }
 
     return (
@@ -386,24 +459,69 @@ const Register = ({ route }: Props): JSX.Element =>  {
                     <View style={{ marginBottom: 27 }}>
                         <Text style={[ styles.boldText, { marginBottom: 15 }]}>회원가입 정보 입력​</Text>
 
-                        { user.realName !== '' &&  <Text style={[ styles.regularText, { marginLeft: 10, marginVertical: 24 } ]}>{ user.realName }</Text> }
-                        
-                        { socialType === 'normal' &&
+                        { (user.realName !== '' && socialType === 'normal') ? <Text style={[ styles.regularText, { marginLeft: 10, marginVertical: 24 } ]}>{ user.realName }</Text> 
+                            :
+                        (
                             <>
                                 <View style={ styles.rowContainer }>
-                                    <TextInput style={[ styles.input, isFocused.ref === emailRef && isFocused.isFocused ? { borderBottomColor: '#fd780f'} : { borderBottomColor: '#cccccc'} ]} 
-                                        placeholder="이메일 입력​" placeholderTextColor="#aaaaaa" ref={ emailRef } returnKeyType="next" autoCapitalize='none' 
-                                        onFocus={ () => handleFocus(emailRef) } onBlur={ () => handleBlur(emailRef)}
-                                        onChangeText={ createChangeTextHadler('email') } onSubmitEditing={ () => {
-                                            if (socialType === 'normal') {
-                                                nicknameRef.current && nicknameRef.current.focus()
-                                            }
-                                            phoneRef.current && phoneRef.current.focus() 
+                                    <TextInput style={[ styles.input, isFocused.ref === nameRef && isFocused.isFocused ? { borderBottomColor: '#fd780f'} : { borderBottomColor: '#cccccc'} ]} 
+                                        placeholder="이름 입력​" placeholderTextColor="#aaaaaa" ref={ nameRef } returnKeyType="next" autoCapitalize='none' 
+                                        onFocus={ () => handleFocus(nameRef) } onBlur={ () => handleBlur(nameRef)}
+                                        onChangeText={ createChangeTextHadler('realName') } onSubmitEditing={ () => {
+                                            emailRef.current && emailRef.current.focus() 
                                         }} />
                                 </View>
                                 { message.type === 'email' ? <Text style={ styles.message }>{ message.msg }</Text> : <View style={{ marginBottom: 24 }}></View> }
                             </>
-                        }
+                        )}
+                        
+                        <View style={ styles.rowContainer }>
+                            <TextInput style={[ styles.input, isFocused.ref === emailRef && isFocused.isFocused ? { borderBottomColor: '#fd780f'} : { borderBottomColor: '#cccccc'} ]} 
+                                placeholder="이메일 입력​" placeholderTextColor="#aaaaaa" ref={ emailRef } returnKeyType="next" autoCapitalize='none' 
+                                onFocus={ () => handleFocus(emailRef) } onBlur={ () => handleBlur(emailRef)}
+                                onChangeText={ createChangeTextHadler('email') } onSubmitEditing={ () => {
+                                    phoneRef.current && phoneRef.current.focus() 
+                                }} />
+                        </View>
+                        { message.type === 'email' ? <Text style={ styles.message }>{ message.msg }</Text> : <View style={{ marginBottom: 24 }}></View> }
+
+                        <View style={ styles.rowContainer }>
+                            <TextInput style={[ styles.input, (isFocused.ref === phoneRef && isFocused.isFocused) ? { borderBottomColor: '#cccccc'} : { borderBottomColor: '#cccccc'}]}                             
+                                ref={ phoneRef } placeholder=" - 를 제외한 휴대전화번호 입력"  placeholderTextColor="#aaaaaa" returnKeyType="next" autoCapitalize='none'
+                                onChangeText={ createChangeTextHadler('phone') } keyboardType="decimal-pad"
+                                onFocus={ () => handleFocus(phoneRef) } onBlur={ () => handleBlur(phoneRef)}
+                                onSubmitEditing={ () => authNumRef.current && authNumRef.current.focus() }
+                            />             
+
+                            { timer ?
+                                ( 
+                                    <Pressable style={({ pressed }) => [ styles.authBtn, { borderWidth: 1, borderColo: '#121619'}, Platform.OS === 'ios' && pressed && { opacity: 0.5 }]}
+                                        onPress={ onPressSendMessage } android_ripple={{ color: '#b4b4b4' }}>
+                                        <Text style={ styles.authBtnText } >재 요청</Text>
+                                    </Pressable>
+                                ) : (
+                                    <Pressable style={({ pressed }) => [ styles.authBtn, { backgroundColor: '#121619' }, Platform.OS === 'ios' && pressed && { opacity: 0.5 }]}
+                                        onPress={ onPressSendMessage } android_ripple={{ color: '#b4b4b4' }}>
+                                        <Text style={[ styles.authBtnText, { color: '#ffffff'} ]}>인증요청</Text>
+                                    </Pressable>
+                                )
+                            }
+                        </View>
+
+                        { message.type === 'phone' ? <Text style={ styles.message }>{ message.msg }</Text> : <View style={{ marginBottom: 24 }}></View> }
+
+                        <View style={ styles.rowContainer }>
+                            <TextInput style={[ styles.input, (isFocused.ref === authNumRef && isFocused.isFocused) ? { borderBottomColor: '#cccccc'} : { borderBottomColor: '#cccccc'}]} 
+                                ref={ authNumRef } placeholder=" 인증번호 입력" placeholderTextColor="#aaaaaa" returnKeyType="done" autoCapitalize='none' 
+                                onChangeText={(code: string): void => setAuthCode(code)} keyboardType="decimal-pad"
+                                onFocus={ () => handleFocus(authNumRef) } onBlur={ () => handleBlur(authNumRef)}
+                                onSubmitEditing={ Keyboard.dismiss } 
+                            />
+
+                            { timer ? <Text style={ styles.timer }>{ min } : { sec }</Text> : <></> }
+                        </View>
+
+                        { message.type === 'auth' ? <Text style={ styles.message }>{ message.msg }</Text> : <View style={{ marginBottom: 24 }}></View> }
 
                         <View style={ styles.rowContainer }>
                             <TextInput style={[ styles.input, isFocused.ref === nicknameRef && isFocused.isFocused ? { borderBottomColor: '#fd780f'} : { borderBottomColor: '#cccccc'} ]} 
@@ -420,7 +538,7 @@ const Register = ({ route }: Props): JSX.Element =>  {
                     <Text style={[ styles.regularText, { color: '#949494' }]}>스크린골프 주로 치는 지역​</Text>
                     <View style={ styles.dropdown }>
                         <Pressable style={[ styles.rowContainer, { borderBottomWidth: 1, borderBottomColor: '#cccccc' }]} onPress={ () => setOpenDropdown(prev => !prev)}>
-                            <Text style={[ styles.regularText, { flex: 1, paddingVertical: 13, paddingHorizontal: 10 }]}>{ location }</Text>
+                            <Text style={[ styles.regularText, { flex: 1, paddingVertical: 13, paddingHorizontal: 10 }]}>{ user.location }</Text>
                             { openDropdown ? <UpArrow /> : <DownArrow /> }
                         </Pressable>
 
@@ -429,8 +547,7 @@ const Register = ({ route }: Props): JSX.Element =>  {
                                 <ScrollView style={{ height: 225 }}>
                                     { locationList.map((item: string, index: number) => {
                                         const selectLocation = () => {
-                                            setLocation(item),
-                                            setUser({ ...user, location: location })
+                                            setUser({ ...user, location: item })
                                             setOpenDropdown(false)
                                         }
 
@@ -580,7 +697,32 @@ const styles = StyleSheet.create({
                 elevation: 5,
             }
         })
-    }
+    },
+    authBtn: {
+        position: 'absolute',
+        right: 8,
+
+        borderRadius: 3
+    },
+    authBtnText: {
+        padding: 6,
+
+        includeFontPadding: false,
+        fontSize: 15,
+        fontFamily: 'Pretendard-Regular',
+
+        color: '#121619'
+    },
+    timer: {
+        includeFontPadding: false,
+        fontSize: 13,
+        fontFamily: 'Pretendard-Regular',
+
+        position: 'absolute',
+        right: 10,
+
+        color: '#949494'
+    },
 })
 
 export default Register

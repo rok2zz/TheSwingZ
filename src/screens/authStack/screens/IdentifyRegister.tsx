@@ -19,10 +19,9 @@ const IdentifyRegister = ({ route }: Props): JSX.Element => {
 
         if(data?.resultMsg == '성공'){
 			const getGender = () => {
-				if (data.userGender === 1 || data.userGender === 3) {
+				if (data.userGender === '1' || data.userGender === '3') {
 					return 'M'
 				} 
-
 				return 'F'
 			}
 

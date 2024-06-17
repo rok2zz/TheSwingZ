@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { Keyboard, KeyboardAvoidingView, Pressable, StyleSheet, Text, View, Image, Modal, Platform, BackHandler, ToastAndroid, Dimensions, PixelRatio, ScrollView, StatusBar } from "react-native"
+import { Keyboard, Pressable, StyleSheet, Text, View, Image, Modal, Platform, BackHandler, ToastAndroid, Dimensions, PixelRatio, ScrollView, StatusBar } from "react-native"
 import { TextInput } from "react-native"
 import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import { AuthStackNavigationProp } from "../../../types/stackTypes"
@@ -7,11 +7,13 @@ import { useUsers } from "../../../hooks/useUsers"
 import { Focus } from "../../../types/screenTypes"
 import { GoogleResponse, Payload } from "../../../types/apiTypes"
 import ChangePasswordModal from "../../../components/authStackComponents/ChangePasswordModal"
-// import { KakaoOAuthToken, login, getProfile as getKakaoProfile } from '@react-native-seoul/kakao-login';
-// import { GoogleSignin } from "@react-native-google-signin/google-signin"
-// import NaverLogin, { GetProfileResponse, NaverLoginResponse } from "@react-native-seoul/naver-login"
-import AsyncStorage from "@react-native-async-storage/async-storage"
+import { KakaoOAuthToken, login, getProfile as getKakaoProfile, logout } from '@react-native-seoul/kakao-login';
+import { GoogleSignin } from "@react-native-google-signin/google-signin"
+import NaverLogin, { GetProfileResponse, NaverLoginResponse } from "@react-native-seoul/naver-login"
 import { SafeAreaView } from "react-native-safe-area-context"
+import appleAuth from '@invertase/react-native-apple-authentication';
+import { useAuthActions } from "../../../hooks/useAuthActions"
+import { useRefreshToken } from "../../../hooks/useToken"
 
 // svg
 import Logo from "../../../assets/imgs/common/logo_w.svg"
@@ -24,28 +26,17 @@ import Google from "../../../assets/imgs/login/google.svg"
 import Apple from "../../../assets/imgs/login/apple.svg"
 import Loading from "../../../components/Loading"
 
+
 interface ModalType {
     type: number | null,
     visible: boolean
 }
 
-
-
-// naver login Key
-const consumerKey = `LYJ0nH70alZEFkYr0ayH`
-const consumerSecret = `dGguawGCaL`
-const appName = `com.theswingz`
-const serviceUrlScheme = `navertest`
-
-// APP_NAME=com.theswingz
-// GOOGLE_CLIENT_ID=968780794584-k5t0h4dps661cf56eaqqf1lrtio1ion4.apps.googleusercontent.com
-// NAVER_CLIENT_ID=LYJ0nH70alZEFkYr0ayH
-// NAVER_SECRET=dGguawGCaL
-// NAVER_IOS_SCHEME=navertest
-
 const Login = (): JSX.Element => {
     const navigation = useNavigation<AuthStackNavigationProp>()
     const { idLogin, socialLogin } = useUsers()
+    const { saveSocialId } = useAuthActions()
+    const refreshToken = useRefreshToken()
 
     const backPressedTimeRef = useRef(0)
 	const idRef = useRef<TextInput>(null)
@@ -62,6 +53,11 @@ const Login = (): JSX.Element => {
         type: 1001,
         visible: false
     })
+
+    const [success, setSuccessResponse] = useState<NaverLoginResponse['successResponse']>()
+    const [failure, setFailureResponse] = useState<NaverLoginResponse['failureResponse']>()
+    const [getProfileRes, setGetProfileRes] = useState<GetProfileResponse>()
+
 
     // 뒤로가기 두번시 종료
     useFocusEffect(
@@ -85,6 +81,27 @@ const Login = (): JSX.Element => {
 			return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress)
 		}, [])
 	)
+
+    useEffect(() => {
+        if (!refreshToken) {
+            logoutSocial()
+        }
+    }, [])
+
+    const logoutSocial = async () => {
+        try {
+                await NaverLogin.deleteToken()
+                
+                setSuccessResponse(undefined)
+                setFailureResponse(undefined)
+                setGetProfileRes(undefined)
+
+                await logout()
+                await GoogleSignin.signOut()
+          } catch (e) {
+                console.error(e)
+          }
+    }
 
     // autoLogin check
     const checkAutoLogin = () => {
@@ -121,7 +138,7 @@ const Login = (): JSX.Element => {
     }
     
     // 로그인 메소드 실행
-	const onPressLogin = async (): Promise<void> => {
+	const onPressLogin = async () => {
         Keyboard.dismiss()
         if (isConnected) return // 중복 호출 방지
 
@@ -158,80 +175,126 @@ const Login = (): JSX.Element => {
 	}
 
     // 카카오 로그인
-    // const signInWithKakao = async (): Promise<void> => {
-    //     if (isConnected) return // 중복 호출 방지
+    const signInWithKakao = async () => {
+        if (isConnected) return // 중복 호출 방지
+		try {
+            
+            setIsConnected(true)
+			const res: KakaoOAuthToken = await login()
+            console.log(res)
+            try {
+                const profile = await getKakaoProfile()
 
-	// 	try {
-	// 		const res: KakaoOAuthToken = await login()
-    //         try {
-    //             const profile = await getKakaoProfile()
-    //             setIsConnected(true)
-    //             const payload: Payload = await socialLogin(profile.id.toString(), 'KAKAO')
-    //         } catch (error) {
-    //             console.error('login error', error)
-    //         }
+                saveSocialId((profile.id).toString())
+                const payload: Payload = await socialLogin(profile.id.toString(), 'KAKAO')
+                setIsConnected(false)
+                    
+                if (payload.code !== 1000) {
+                    if (payload.code === -3015) {
+                        navigation.navigate('Terms', { type: 'KAKAO' })
+                    }
+                }
+            } catch (error) {
+                setIsConnected(false)
+                console.error('login error', error)
+            }
 
-	// 	} catch (error) {
-	// 		console.error('login err', error)
-	// 	}
-    //     setIsConnected(false)
-	// }
+		} catch (error) {
+            setIsConnected(false)
+			console.error('login err', error)
+		}
+        setIsConnected(false)
+	}
 
     // 네이버 로그인
-    // const signInWithNaver = async (): Promise<void> => {
-    //     if (isConnected) return // 중복 호출 방지
+    const signInWithNaver = async () => {
+        if (isConnected) return // 중복 호출 방지
 
-    //     const { successResponse } = await NaverLogin.login({
-    //         appName,
-    //         consumerKey,
-    //         consumerSecret,
-    //         serviceUrlScheme
-    //     })
+        const { failureResponse, successResponse } = await NaverLogin.login()
+        setSuccessResponse(successResponse)
+        setFailureResponse(failureResponse)
 
-    //     if (successResponse) {
-    //         try {
-    //             const profileResult: GetProfileResponse = await NaverLogin.getProfile(successResponse.accessToken)
-    //             setIsConnected(true)
-    //             const payload: Payload = await socialLogin(profileResult.response.id, 'NAVER')
-    //         } catch (error) {
-    //             console.error('login error', error)
-    //         }
-    //         setIsConnected(false)
-    //     }
-    // }
+        console.log(successResponse)
+
+        if (successResponse) {
+            try {
+                const profileResult: GetProfileResponse = await NaverLogin.getProfile(successResponse.accessToken)
+                saveSocialId(profileResult.response.id)
+
+                setIsConnected(true)
+                const payload: Payload = await socialLogin(profileResult.response.id, 'NAVER')
+                if (payload.code !== 1000) {
+                    if (payload.code === -3015) {
+                        navigation.navigate('Terms', { type: 'NAVER' })
+                    }
+                }
+            } catch (error) {
+                console.error('login error', error)
+            }
+            setIsConnected(false)
+        }
+    }
 
     // 구글 로그인
-    // const signInWithGoogle = async () => {
-	// 	GoogleSignin.configure({
-	// 		scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
-	// 		webClientId: `968780794584-k5t0h4dps661cf56eaqqf1lrtio1ion4.apps.googleusercontent.com`, // client ID of type WEB for your server (needed to verify user ID and offline access)
-	// 		offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-	// 		hostedDomain: '', // specifies a hosted domain restriction
-	// 		forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
-	// 		accountName: '', // [Android] specifies an account name on the device that should be used
-	// 		iosClientId: '<FROM DEVELOPER CONSOLE>', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
-	// 		googleServicePlistPath: '', // [iOS] if you renamed your GoogleService-Info file, new name here, e.g. GoogleService-Info-Staging
-	// 		openIdRealm: '', // [iOS] The OpenID2 realm of the home web server. This allows Google to include the user's OpenID Identifier in the OpenID Connect ID token.
-	// 		profileImageSize: 120, // [iOS] The desired height (and width) of the profile image. Defaults to 120px
-	// 	})
+    const signInWithGoogle = async () => {
+        if (isConnected) return
+        GoogleSignin.configure({
+            scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
+            webClientId: `417264241402-pkirhqlegssrerjshqgpd8mg6d0e2haf.apps.googleusercontent.com`, // client ID of type WEB for your server (needed to verify user ID and offline access)
+            offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+            forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+            iosClientId: '417264241402-flbh9kuiel6cjacvhksln6huisqbiptd.apps.googleusercontent.com', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+        })
 
-	// 	try {
-	// 		await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true })
-	// 		const googleUserInfo: GoogleResponse = await GoogleSignin.signIn()
+        setIsConnected(true)
 
-    //         if (googleUserInfo) {
-    //             try {
-    //                 setIsConnected(true)
-    //                 const payload: Payload = await socialLogin(googleUserInfo.user.id, 'GOOGLE')
-    //             } catch (err) {
-    //                 console.error('login error', err)
-    //             }
-    //         }
-	// 	} catch (error: any) {
-	// 		console.log(error)
-	// 	}
-    //     setIsConnected(false)
-	// }
+        try {
+
+            await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true })
+            const userInfo = await GoogleSignin.signIn()
+            console.log(userInfo)
+            if (userInfo) {
+                try {
+                    saveSocialId(userInfo.user.id)
+                    const payload: Payload = await socialLogin(userInfo.user.id, 'GOOGLE')
+                    setIsConnected(false)
+                    
+                    if (payload.code !== 1000) {
+                        if (payload.code === -3015) {
+                            navigation.navigate('Terms', { type: 'GOOGLE' })
+                        }
+                    }
+                } catch (err) {
+                    setIsConnected(false)
+                    console.error('login error', err)
+                }
+            }
+          } catch (error) {
+            console.log(error)
+            setIsConnected(false)
+
+          }
+	}
+    
+    // apple login
+    const signInWithApple = async () => {
+        const appleAuthRequestResponse = await appleAuth.performRequest({
+            requestedOperation: appleAuth.Operation.LOGIN,
+            // Note: it appears putting FULL_NAME first is important, see issue #293
+            requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
+        })
+        console.log(appleAuthRequestResponse)
+          // get current authentication state for user
+          // /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
+          const credentialState = await appleAuth.getCredentialStateForUser(
+            appleAuthRequestResponse.user,
+        )
+        
+        // use credentialState response to ensure the user is authenticated
+        if (credentialState === appleAuth.State.AUTHORIZED) {
+        // user is authenticated
+        }
+    }
 
     return (
         <SafeAreaView style={ styles.wrapper } >
@@ -291,16 +354,16 @@ const Login = (): JSX.Element => {
                 
                 {/* sns 로그인 */}
                 <View style={[ styles.social, Platform.OS === 'ios' && { marginBottom: 50 } ]}>
-                    {/* <Pressable onPress={ ()=> {} }>
+                    {/* <Pressable onPress={ signInWithKakao }>
                         <Kakao />
                     </Pressable>
-                    <Pressable onPress={ ()=>{} }>
+                    <Pressable onPress={ signInWithNaver }>
                         <Naver />
                     </Pressable>
-                    <Pressable onPress={ ()=>{} }>
+                    <Pressable onPress={ signInWithGoogle }>
                         <Google />
                     </Pressable>
-                    <Pressable onPress={ () => {} }>
+                    <Pressable onPress={ signInWithApple }>
                         <Apple />
                     </Pressable> */}
                 </View>

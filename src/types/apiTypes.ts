@@ -47,6 +47,8 @@ export interface Payload {
     revId?: number,
 
     bill?: Bill[],
+    operationTime?: OperationTime[],
+    shopImages?: ShopImages[],
     notice?: string,
 
     userProfileImgs?: UserProfileImgs[]
@@ -143,10 +145,18 @@ export interface ShopResponse {
             myRevList?: ReservationInfo[]
             accessToken?: string
             revId?: number,
+
             bill?: Bill[],
+            time?: OperationTime[],
+            images?: ShopImages[],
             notice?: string
         }
     }
+}
+
+export interface ShopImages {
+    order: number,
+    path: string
 }
 
 export interface Bill {
@@ -155,6 +165,14 @@ export interface Bill {
     weekYn: string,
     hole: number,
     turningTime: string
+}
+
+export interface OperationTime {
+    weekly: number,
+    closedYn: string,
+    restYn: string,
+    openedAt: string,
+    closedAt: string
 }
 
 // settingInfo

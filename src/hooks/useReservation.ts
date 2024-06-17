@@ -62,12 +62,14 @@ export const useReservation = (): ReservationHook => {
     const officeURL = serverInfo.officeServer
 
     const getShop = async (date: Date | null, people: number | null): Promise<Payload> => {
+        const now = new Date()
         const body: Body = {
             cls: 'Shop',
             method: 'getShopList',
             params: [ 
                 date !== null ? formatDate(date) : null,
-                people
+                people,
+                date !== null ? date.getDay() : now.getDay(),
             ]
         }
 
@@ -79,7 +81,7 @@ export const useReservation = (): ReservationHook => {
                     "accessToken": accessToken
                 }
             })
-
+            console.log(res.data.result)
             if (res.data.code !== 1000) {
                 if (res.data.code === -5000) {
                     const res: ShopResponse = await axios.post(appURL, jsonBody, {
@@ -144,7 +146,7 @@ export const useReservation = (): ReservationHook => {
             errorHandler(error)
         }
 
-        return  { code: -1, msg: '알 수 없는 에러가 발생했습니다.' }
+        return  { code: -1, msg: '서버에 연결할 수 없습니다.' }
     }
 
     const getShopInfo = async (shopId: number): Promise<Payload> => {
@@ -193,15 +195,27 @@ export const useReservation = (): ReservationHook => {
                             return payload
                         }
                         
-                        if (res.data.result && res.data.result.bill && res.data.result.notice && res.data.result.accessToken) {
+                        if (res.data.result && res.data.result.bill && res.data.result.time && res.data.result.notice && res.data.result.accessToken) {
                             const token = {
                                 accessToken: res.data.result?.accessToken,
                                 refreshToken: refreshToken
                             }
                             await AsyncStorage.setItem('token', JSON.stringify(token))
 
+                            if (res.data.result.images) {
+                                const payload: Payload = {
+                                    code: res.data.code,
+                                    operationTime: res.data.result.time,
+                                    bill: res.data.result.bill,
+                                    shopImages: res.data.result.images,
+                                    notice: res.data.result.notice
+                                }
+    
+                                return payload
+                            }
                             const payload: Payload = {
                                 code: res.data.code,
+                                operationTime: res.data.result.time,
                                 bill: res.data.result.bill,
                                 notice: res.data.result.notice
                             }
@@ -218,9 +232,21 @@ export const useReservation = (): ReservationHook => {
                     return payload
                 }
                 
-                if (res.data.result && res.data.result.notice && res.data.result.bill) {
+                if (res.data.result && res.data.result.time && res.data.result.notice && res.data.result.bill) {
+                    if (res.data.result.images) {
+                        const payload: Payload = {
+                            code: res.data.code,
+                            operationTime: res.data.result.time,
+                            bill: res.data.result.bill,
+                            shopImages: res.data.result.images,
+                            notice: res.data.result.notice
+                        }
+
+                        return payload
+                    }
                     const payload: Payload = {
                         code: res.data.code,
+                        operationTime: res.data.result.time,
                         bill: res.data.result.bill,
                         notice: res.data.result.notice
                     }
@@ -231,7 +257,7 @@ export const useReservation = (): ReservationHook => {
             errorHandler(error)
         }
 
-        return  { code: -1, msg: '알 수 없는 에러가 발생했습니다.' }
+        return  { code: -1, msg: '서버에 연결할 수 없습니다.' }
     }
 
     const getReservationInfo = async (date: Date, count: number, shopId?: number): Promise<Payload> => {
@@ -315,7 +341,7 @@ export const useReservation = (): ReservationHook => {
             errorHandler(error)
         }
 
-        return  { code: -1, msg: '알 수 없는 에러가 발생했습니다.' }
+        return  { code: -1, msg: '서버에 연결할 수 없습니다.' }
     }
 
     const getMyReservation = async (revId: number | null): Promise<Payload> => {
@@ -392,7 +418,7 @@ export const useReservation = (): ReservationHook => {
             errorHandler(error)
         }
 
-        return  { code: -1, msg: '알 수 없는 에러가 발생했습니다.' }
+        return  { code: -1, msg: '서버에 연결할 수 없습니다.' }
 
     } 
 
@@ -498,7 +524,7 @@ export const useReservation = (): ReservationHook => {
             errorHandler(error)
         }
 
-        return  { code: -1, msg: '알 수 없는 에러가 발생했습니다.' }
+        return  { code: -1, msg: '서버에 연결할 수 없습니다.' }
     }
 
     const modifyReservation = async (shopId: number, revInfo: ReservationSetting, gameMode: string, selectedHole: number, isLeft: boolean, linkedRoom: boolean, twoRoom: boolean, twoGame: boolean) => {

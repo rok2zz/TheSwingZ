@@ -32,13 +32,12 @@ const Terms = ({ route }: Props): JSX.Element =>  {
     useEffect(() => {
         setIsTermsChecked(isAllChecked)
         setIsPrivacyChecked(isAllChecked)
-        setIsFinanceChecked(isAllChecked)
         setIsAgeChecked(isAllChecked)
         setIsMarketingChecked(isAllChecked)
     }, [isAllChecked])
 
     const onPress = () => {
-        if (isTermsChecked && isPrivacyChecked && isFinanceChecked && isAgeChecked) {
+        if (isTermsChecked && isPrivacyChecked && isAgeChecked) {
             if (socialType === 'normal') {
                 navigation.navigate('IdentifyRegister', { isMarketingChecked: isMarketingChecked })
                 // navigation.navigate('Register', { type: 'normal', isMarketingChecked: isMarketingChecked })
@@ -66,17 +65,17 @@ const Terms = ({ route }: Props): JSX.Element =>  {
                     <Text style={ styles.semiBoldText }>약관동의</Text>
 
                     <View style={ styles.rowContainer }>
-                        <Kakao style={[ styles.socialIcon, socialType === 'kakao' && { opacity: 1 }]} width={ 52 } height={ 52 } />
-                        <Naver style={[ styles.socialIcon, socialType === 'naver' && { opacity: 1 }]} width={ 52 } height={ 52 } />
-                        <Google style={[ styles.socialIcon, socialType === 'google' && { opacity: 1 }]}  width={ 52 } height={ 52 } />
-                        <Apple  style={[ styles.socialIcon, socialType === 'apple' && { opacity: 1 }]} width={ 52 } height={ 52 } />
+                        <Kakao style={[ styles.socialIcon, socialType === 'KAKAO' && { opacity: 1 }]} width={ 52 } height={ 52 } />
+                        <Naver style={[ styles.socialIcon, socialType === 'NAVER' && { opacity: 1 }]} width={ 52 } height={ 52 } />
+                        <Google style={[ styles.socialIcon, socialType === 'GOOGLE' && { opacity: 1 }]}  width={ 52 } height={ 52 } />
+                        <Apple  style={[ styles.socialIcon, socialType === 'APPLE' && { opacity: 1 }]} width={ 52 } height={ 52 } />
 
                         { socialType !== 'normal' &&
                             <View style={[ styles.check, 
-                                socialType === 'kakao' && { left: 34 },
-                                socialType === 'naver' && { left: 104 },
-                                socialType === 'google' && { left: 174 },
-                                socialType === 'apple' && { left: 244 },
+                                socialType === 'KAKAO' && { left: 34 },
+                                socialType === 'NAVER' && { left: 104 },
+                                socialType === 'GOOGLE' && { left: 174 },
+                                socialType === 'APPLE' && { left: 244 },
                             ]}>
                                 <Check />
                             </View>

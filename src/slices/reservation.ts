@@ -30,10 +30,11 @@ export interface ShopInfo {
     shopNotice: string,
     contact: string,
     totalRoom: number,
-    openAt: string,
+    openedAt: string,
     closedAt: string,
     option: string,
-    favorite: string
+    favorite: string,
+    image: string
 }
 
 export interface Operation {

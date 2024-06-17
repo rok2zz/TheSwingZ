@@ -19,11 +19,11 @@ interface UsersHook {
     logout: (refreshToken: string) => Promise<Payload>,
 
     createAccount: (user: User) => Promise<Payload>,
-    socialCreate: (socialID: string, type: string, nickname: string, location: string) => Promise<Payload>,
+    socialCreate: (socialID: string, category: string, realName: string, email: string, phone: string, nickname: string, location: string, code: string) => Promise<Payload>,
     checkDuplicatedId: (userID: string) => Promise<Payload>,
     checkDuplicatedNickname: (nickname: string) => Promise<Payload>,
 
-    sendMessage: (phone: string, userID: string) => Promise<Payload>,
+    sendMessage: (phone: string, type: number) => Promise<Payload>,
 
     findID: (phone: string) => Promise<Payload>,
     checkPW: (password: string) => Promise<Payload>,
@@ -51,6 +51,10 @@ export const useUserInfo = (): UserInfo => {
 
 export const useUserSetting = (): UserSetting => {
     return useSelector((state: RootState) => state.auth.userSetting)
+}
+
+export const useSocialId = (): string => {
+    return useSelector((state: RootState) => state.auth.socialId)
 }
 
 export const useIsFirst = (): boolean => {
@@ -139,7 +143,6 @@ export const useUsers = (): UsersHook => {
                     saveUserInfo(loginData.userInfo)
                         
                     if (auto) {
-                        await AsyncStorage.setItem('userInfo', JSON.stringify(loginData.userInfo))
                         await AsyncStorage.setItem('token', JSON.stringify(loginData.token))
                     }
 
@@ -163,9 +166,10 @@ export const useUsers = (): UsersHook => {
             cls: 'Account',
             method: 'socialLogin',
             params: [ 
-                'app',
+                0,
                 socialID,
-                category
+                category,
+                'login'
             ]
         }
   
@@ -173,6 +177,7 @@ export const useUsers = (): UsersHook => {
     
         try {
             const res: LoginResponse = await axios.post(authURL, jsonBody)
+            console.log(res.data)
             // 오류 발생시
             if (res.data.code !== 1000) {
                 const payload: Payload = {
@@ -184,7 +189,7 @@ export const useUsers = (): UsersHook => {
             }
 
             // 성공
-            if (res.data.result && 'type' in res.data.result && 'uid' in res.data.result) {
+            if (res.data.result) {
                 const loginData: LoginData = {
                     userInfo: {
                         uid: res.data.result.uid,
@@ -213,21 +218,6 @@ export const useUsers = (): UsersHook => {
                     }
                 }
 
-                if (res.data.result.profileImg) {
-                    const img = res.data.result.profileImg
-                
-                }
-
-                // 휴면상태 code 1001
-                if (loginData.userInfo.status === 'S') { 
-                    const payload: Payload = {
-                        code: 1001,
-                        uid: loginData.userInfo.uid
-                    }
-
-                    return payload
-                } 
-
                 // 성공시 복호화 후 AsyncStorage, redux에 저장
                 if (loginData.token) {
                     const settingPayload: Payload = await getSettingValue(loginData.userInfo.uid)
@@ -243,7 +233,6 @@ export const useUsers = (): UsersHook => {
                     saveAccessToken(loginData.token.accessToken ?? null)
                     saveUserInfo(loginData.userInfo)
                         
-                    await AsyncStorage.setItem('userInfo', JSON.stringify(loginData.userInfo))
                     await AsyncStorage.setItem('token', JSON.stringify(loginData.token))
 
                     const payload: Payload = {
@@ -353,7 +342,6 @@ export const useUsers = (): UsersHook => {
                     saveAccessToken(loginData.token.accessToken ?? null)
                     saveUserInfo(loginData.userInfo)
                         
-                    await AsyncStorage.setItem('userInfo', JSON.stringify(loginData.userInfo))
                     await AsyncStorage.setItem('token', JSON.stringify(loginData.token))
 
                     const payload: Payload = {
@@ -381,6 +369,7 @@ export const useUsers = (): UsersHook => {
                 user.password,
                 user.nickname,
                 user.realName ?? null,
+                user.email ?? null,
                 user.phone ?? null,
                 user.birth ?? null,
                 user.gender ?? null,
@@ -392,6 +381,7 @@ export const useUsers = (): UsersHook => {
 
         try {
             const res: Response = await axios.post(authURL, jsonBody)
+
             if (res.data.code !== 1000) {
                 const payload: Payload = {
                     code: res.data.code,
@@ -400,7 +390,6 @@ export const useUsers = (): UsersHook => {
 
                 return payload
             }
-
             if (res.data.result && res.data.result.uid) {
                 const settingPayload: Payload = await createSettingValue(res.data.result.uid)
 
@@ -421,24 +410,28 @@ export const useUsers = (): UsersHook => {
     }
 
     // 소셜 계정 생성
-    const socialCreate = async (socialID: string, type: string, nickname: string, location: string): Promise<Payload> => {
+    const socialCreate = async (socialID: string, category: string, realName: string, email: string, phone: string, nickname: string, location: string, code: string): Promise<Payload> => {
         const body: Body = {
             cls: "Account",
-            method: "socialCreate",
+            method: "socialLogin",
     
             params: [
+                0,
                 socialID ?? '',
-                type ?? '',
+                category ?? '',
+                'create',
+                realName,
+                email,
+                phone,
                 nickname ?? '',
-                location ?? ''
+                location ?? '',
+                code ?? ''
             ]
         }
-
+        
         const jsonBody = JSON.stringify(body)
-       
         try {
-            const res: Response = await axios.post(authURL, jsonBody)
-
+            const res: LoginResponse = await axios.post(authURL, jsonBody)
             if (res.data.code !== 1000) {
                 const payload: Payload = {
                     code: res.data.code,
@@ -447,7 +440,7 @@ export const useUsers = (): UsersHook => {
 
                 return payload
             }
-        
+            
             return { code: 1000 }
         } catch (error: any) {
             errorHandler(error)
@@ -516,19 +509,19 @@ export const useUsers = (): UsersHook => {
     }
 
     // 휴대폰 인증요청 메소드
-    const sendMessage = async (phone: string, userID: string): Promise<Payload> => {
+    const sendMessage = async (phone: string, type: number): Promise<Payload> => {
         const body: Body = {
             cls: 'Account',
             method: 'sendMessage',
             params: [ 
                 phone, 
-                userID 
+                type 
             ]
         }
-
         const jsonBody: string = JSON.stringify(body)
         try {
             const res: Response = await axios.post(authURL, jsonBody)
+            console.log(res.data)
             if (res.data.code !== 1000) {
                 const payload: Payload = {
                     code: res.data.code,

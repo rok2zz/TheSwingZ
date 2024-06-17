@@ -5,13 +5,15 @@ import { RootStackNavigationProp, RootStackParamList } from "../../../types/stac
 import { useReservation, useShopList } from "../../../hooks/useReservation"
 import { ShopInfo } from "../../../slices/reservation"
 import { useReservationActions } from "../../../hooks/useReservationActions"
-import { Bill, Payload } from "../../../types/apiTypes"
+import { Bill, Payload, ShopImages } from "../../../types/apiTypes"
 
 // svg
 import Location from "../../../assets/imgs/store/location.svg"
 import EmptyStar from "../../../assets/imgs/store/star_empty.svg"
 import Star from "../../../assets/imgs/store/star_fill.svg"
 import Loading from "../../../assets/imgs/common/loading.svg"
+import FastImage from "react-native-fast-image"
+import Swiper from "react-native-swiper"
 
 interface Props {
     route: RouteProp<RootStackParamList, 'ShopDetail'>
@@ -35,18 +37,20 @@ const ShopDetail = ({ route }: Props) => {
         shopNotice: '',
         contact: '',
         totalRoom: 0,
-        openAt: '',
+        openedAt: '',
         closedAt: '',
-        option: ''
+        option: '',
+        image: ''
     })
     const [bill, setBill] = useState<Bill[]>([])
+    const [shopImages, setShopImages] = useState<ShopImages[]>([])
+    const [imageIndex, setImageIndex] = useState<number>(0)
     const [isConnected, setIsConnected] = useState<boolean>(false)
 
     useEffect(() => {
         if (shopId) {
             for (let i = 0; i < shopList.length; i++) {
                 if (shopList[i].id === shopId) {
-                    console.log(shopList[i])
                     setShopInfo(shopList[i])
                 }
             }
@@ -59,19 +63,22 @@ const ShopDetail = ({ route }: Props) => {
         if (isConnected) return
         const payload: Payload = await getShopInfo(shopId)
         setIsConnected(false)
+        console.log(payload)
         if (payload.code !== 1000) {
             return
         }
-
         if (payload.bill) {
             setBill(payload.bill)
+        }
+        if (payload.shopImages) {
+            setShopImages(payload.shopImages)
         }
     }
 
     const getOperataionTime = () => {
         let openHour = 'AM'
         let closeHour = 'PM'
-        let open = shopInfo.openAt ?? ''
+        let open = shopInfo.openedAt ?? ''
         let close = shopInfo.closedAt ?? ''
 
         if (open != '') {
@@ -136,7 +143,34 @@ const ShopDetail = ({ route }: Props) => {
             { isConnected && <View style={{ position: 'absolute', top: 0, left: 0, zIndex: 5 }}><Loading /></View> }
             <ScrollView style={ styles.wrapper } showsVerticalScrollIndicator={ false }>
                 <View style={ styles.imgContainer }>
-                    <Image style={ styles.thumbnail } source={ require('../../../assets/imgs/store/store_default.jpg' )} resizeMode="cover"/>
+                    { shopImages && shopImages.length > 0 ? 
+                        <Swiper
+                            showsPagination={ false }
+                            loop={ false }
+                            onIndexChanged={(index) => setImageIndex(index)}
+                        >
+                            { shopImages.map((item: ShopImages, index: number) => {
+                                return (
+                                    <View key={ index }>
+                                        <FastImage 
+                                            style={ styles.thumbnail } 
+                                            source={{ 
+                                                uri: 'https://' + item.path,
+                                                priority: FastImage.priority.normal,
+                                                cache: FastImage.cacheControl.immutable 
+                                            }} 
+                                            resizeMode="cover"
+                                        /> 
+                                    </View>
+                                )
+                            })}
+                        </Swiper>
+                        :
+                        <Image style={ styles.thumbnail } source={ require('../../../assets/imgs/store/store_default.jpg' )} resizeMode="cover"/>   
+                    }
+                    <View style={ styles.pagination }>
+                        <Text style={ styles.pagingText }>{ imageIndex + 1 }/{ shopImages.length === 0 ? 1 : shopImages.length }</Text>
+                    </View>
                 </View>
 
                 <View style={ styles.container }>
@@ -436,6 +470,27 @@ const styles = StyleSheet.create({
     },
     mapContainer: {
         marginVertical: 30
+    },
+    pagination: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        
+        position: 'absolute',
+        right: 15,
+        bottom: 15,
+
+        borderRadius: 30,
+        backgroundColor: 'rgba(18, 22, 25, 0.7)'
+    },
+    pagingText: {
+        paddingHorizontal: 12,
+        paddingVertical: 4,
+
+        includeFontPadding: false,
+        fontSize: 14,
+        fontFamily: 'Pretendard-Regular',
+
+        color: '#dddddd'
     }
 })
 

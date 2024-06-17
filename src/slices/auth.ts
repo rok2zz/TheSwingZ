@@ -70,6 +70,7 @@ interface AuthState {
     authInfo: AuthInfo,
     userInfo: UserInfo,
     userSetting: UserSetting,
+    socialId: string,
     isFirst: boolean,
     isTabConnected: boolean,
     isMainLoaded: boolean
@@ -115,6 +116,7 @@ const initialState: AuthState = {
 
         marketing: true
     },
+    socialId: '',
     isFirst: true,
     isTabConnected: true,
     isMainLoaded: false
@@ -139,6 +141,9 @@ const authSlice = createSlice ({
         saveUserSetting(state, action: PayloadAction<UserSetting>) {
             state.userSetting = action.payload
         },
+        saveSocialId(state, action: PayloadAction<string>) {
+            state.socialId = action.payload
+        },
         saveIsFirst(state, action: PayloadAction<boolean>) {
             state.isFirst = action.payload
         },
@@ -162,4 +167,4 @@ const authSlice = createSlice ({
 })
 
 export default authSlice.reducer
-export const { saveRefreshToken, saveAccessToken, clearUserInfo, saveUserInfo, saveAuthInfo, saveUserSetting, saveIsFirst, modifyMyProfile, saveIsTabConnected, saveIsMainLoaded } = authSlice.actions
+export const { saveRefreshToken, saveAccessToken, clearUserInfo, saveUserInfo, saveAuthInfo, saveUserSetting, saveSocialId, saveIsFirst, modifyMyProfile, saveIsTabConnected, saveIsMainLoaded } = authSlice.actions

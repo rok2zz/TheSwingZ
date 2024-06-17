@@ -22,6 +22,7 @@ import FilledStar from "../../../../../assets/imgs/store/star_fill.svg"
 import { useAuthActions } from "../../../../../hooks/useAuthActions"
 import { useIsTabConnected, useUserInfo } from "../../../../../hooks/useUsers"
 import { RevSet } from "../../../../../types/screenTypes"
+import FastImage from "react-native-fast-image"
 
 interface Props {
     route: RouteProp<ShopStackParamList, 'Reservation'>
@@ -65,6 +66,9 @@ const Reservation = ({ route }: Props): JSX.Element => {
             setReservationTime(getNextHour())
             saveReservationSetting({ date: getNextHour().toString(), people: 0 })
         }
+        const now = new Date()
+        const dd =  now.getDay()
+        console.log(dd)
     }, [isTabFocused])
 
     useEffect(() => {
@@ -206,7 +210,7 @@ const Reservation = ({ route }: Props): JSX.Element => {
                         let reason = ''
 
                         const getShopTime = () => {
-                            const openTime= item.openAt.split(':')
+                            const openTime= item.openedAt.split(':')
                             const open = new Date()
                             open.setDate(reservationTime.getDate())
                             open.setHours(parseInt(openTime[0], 10))
@@ -279,7 +283,7 @@ const Reservation = ({ route }: Props): JSX.Element => {
                                         const beginDate = new Date(revTimeList[i].beginAt)
                                         const endDate = new Date(revTimeList[i].endAt)
                                         const begin = beginDate.getFullYear() * 100000000 + (beginDate.getMonth() + 1) * 1000000 + beginDate.getDate() * 10000 + (beginDate.getHours() - reservationInfo.people - 1) * 100 + beginDate.getMinutes() + 10
-                                        const end = endDate.getFullYear() * 100000000 + (endDate.getMonth() + 1) * 1000000 + endDate.getDate() * 10000 + endDate.getHours() * 100 + endDate.getMinutes() - 10
+                                        const end = endDate.getFullYear() * 100000000 + (endDate.getMonth() + 1) * 1000000 + endDate.getDate() * 10000 + endDate.getHours() * 100 + endDate.getMinutes()
                                        
                                         let setValue: number[] = []
 
@@ -351,7 +355,19 @@ const Reservation = ({ route }: Props): JSX.Element => {
                                         <View style={[ styles.storeContainer, index === 0 && { borderTopWidth: 0 }]}>
                                             <View style={{ flexDirection: 'row' }}>
                                                 <View style={ styles.imgContainer }>
-                                                    <Image style={ styles.img } source={ require('../../../../../assets/imgs/store/store_default.jpg' )} />
+                                                    { !item.image ?
+                                                        <Image style={ styles.img } source={ require('../../../../../assets/imgs/store/store_default.jpg' )} />
+                                                        :
+                                                        <FastImage 
+                                                            style={ styles.img } 
+                                                            source={{ 
+                                                                uri: 'https://' + item.image,
+                                                                priority: FastImage.priority.normal,
+                                                                cache: FastImage.cacheControl.immutable 
+                                                            }} 
+                                                            resizeMode="cover"
+                                                        /> 
+                                                    }  
                                                     { available.every(value => value === false) && 
                                                         <View style={[ styles.disableInfo, reason === 'time' && { backgroundColor: '#f0f0f0' }, reason === 'rev' && { backgroundColor: '#fae9eb' }]}>
                                                             { reason === 'time' ?
@@ -418,16 +434,28 @@ const Reservation = ({ route }: Props): JSX.Element => {
                                                         <View style={[ styles.storeContainer, index === 0 && { borderTopWidth: 0 }]}>
                                                             <View style={{ flexDirection: 'row' }}>
                                                                 <View style={ styles.imgContainer }>
+                                                                { !item.image ?
                                                                     <Image style={ styles.img } source={ require('../../../../../assets/imgs/store/store_default.jpg' )} />
-                                                                    { available.every(value => value === false) && 
-                                                                        <View style={[ styles.disableInfo, reason === 'time' && { backgroundColor: '#f0f0f0' }, reason === 'rev' && { backgroundColor: '#fae9eb' }]}>
-                                                                            { reason === 'time' ?
-                                                                                <Text style={[ styles.semiboldText, { color: '#333333' }]}>영업준비중</Text>
-                                                                                    :
-                                                                                <Text style={[ styles.semiboldText, { color: '#d61111' }]}>​예약불가능</Text>
-                                                                            }
-                                                                        </View>
-                                                                    }
+                                                                    :
+                                                                    <FastImage 
+                                                                        style={ styles.img } 
+                                                                        source={{ 
+                                                                            uri: 'https://' + item.image,
+                                                                            priority: FastImage.priority.normal,
+                                                                            cache: FastImage.cacheControl.immutable 
+                                                                        }} 
+                                                                        resizeMode="cover"
+                                                                    /> 
+                                                                }                                                                    
+                                                                { available.every(value => value === false) && 
+                                                                    <View style={[ styles.disableInfo, reason === 'time' && { backgroundColor: '#f0f0f0' }, reason === 'rev' && { backgroundColor: '#fae9eb' }]}>
+                                                                        { reason === 'time' ?
+                                                                            <Text style={[ styles.semiboldText, { color: '#333333' }]}>영업준비중</Text>
+                                                                                :
+                                                                            <Text style={[ styles.semiboldText, { color: '#d61111' }]}>​예약불가능</Text>
+                                                                        }
+                                                                    </View>
+                                                                }
                                                                 </View>
 
                                                                 <View>

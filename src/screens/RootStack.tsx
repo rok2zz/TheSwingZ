@@ -41,6 +41,8 @@ import { Alert, BackHandler, Linking, Platform } from "react-native";
 import SwingVideo from "./screens/nasmo/SwingVideo";
 import VideoDetail from "./screens/nasmo/VideoDetail";
 import Intro from "./screens/intro/Intro";
+import NaverLogin from "@react-native-seoul/naver-login";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
@@ -57,9 +59,15 @@ const RootStack = (): JSX.Element => {
 	const [refreshToken, setRefreshToken] = useState<string | null>()
 	const [openSplash, setOpenSplash] = useState<boolean>(true)
 
+	// naver login Key
+	const consumerKey = `djATVwGtndKljOjNfTqv`
+	const consumerSecret = `HhXUQEo4xt`
+	const appName = Platform.OS === 'android' ? `com.theswingz` : `com.theswinggolf.theswingz`
+	const serviceUrlSchemeIOS = `com.theswinggolf.theswingz`
+
 	useEffect(() => {
 		async function getServerInfo(): Promise<void> {
-			const payload: Payload = await getApi('live', '1.0.1')
+			const payload: Payload = await getApi('live', '1.0.2')
 
 			if (payload.code !== 1000) {
 				Alert.alert(
@@ -74,6 +82,16 @@ const RootStack = (): JSX.Element => {
 					}]
 				)
 			}
+
+			NaverLogin.initialize({
+				appName,
+				consumerKey,
+				consumerSecret,
+				serviceUrlSchemeIOS,
+				disableNaverAppAuthIOS: false,
+		   })
+
+
 
 			if (payload.update === 'must') {
 				Alert.alert(
@@ -137,7 +155,6 @@ const RootStack = (): JSX.Element => {
 
 			const token: Token = JSON.parse(rawToken)
 			if (!token.refreshToken) {
-				SplashScreen.hide()
 				return
 			}
 
@@ -145,7 +162,6 @@ const RootStack = (): JSX.Element => {
 
 			if (payload.code !== 1000) {
 				clearUserInfo()
-				SplashScreen.hide()
 				return
 			}
 			if (payload.code === 1000) {
