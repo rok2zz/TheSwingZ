@@ -23,6 +23,7 @@ import { useAuthActions } from "../../../../../hooks/useAuthActions"
 import { useIsTabConnected, useUserInfo } from "../../../../../hooks/useUsers"
 import { RevSet } from "../../../../../types/screenTypes"
 import FastImage from "react-native-fast-image"
+import ChangeReservation from "../../../../../components/tabBar/ChangeReservation"
 
 interface Props {
     route: RouteProp<ShopStackParamList, 'Reservation'>
@@ -66,9 +67,6 @@ const Reservation = ({ route }: Props): JSX.Element => {
             setReservationTime(getNextHour())
             saveReservationSetting({ date: getNextHour().toString(), people: 0 })
         }
-        const now = new Date()
-        const dd =  now.getDay()
-        console.log(dd)
     }, [isTabFocused])
 
     useEffect(() => {
@@ -333,8 +331,11 @@ const Reservation = ({ route }: Props): JSX.Element => {
                             }
                         }
 
-                        if(revTimeList && revTimeList.length > 0) {
+                        if (item.closedYn !== 'N' && item.restYn !== 'N') {
                             getShopTime()
+                        }
+
+                        if(revTimeList && revTimeList.length > 0) {
                             addRevTime()
                             compareRevTime()
                         }

@@ -5,7 +5,7 @@ import { useRecentAvgRecord, useRecentAvgStat, useRecord, useRecords, useStat } 
 import { Stat } from "../../../slices/record"
 import { UserInfo } from "../../../slices/auth"
 import { Record } from "../../../slices/record"
-import { useIsTabConnected, useUserInfo } from "../../../hooks/useUsers"
+import { useIsTabConnected, useUserInfo, useUsers } from "../../../hooks/useUsers"
 import { Count, Payload } from "../../../types/apiTypes"
 import { MainTabParamList, RootStackNavigationProp } from "../../../types/stackTypes"
 import { useRecordActions } from "../../../hooks/useRecordActions"
@@ -37,6 +37,7 @@ const MyZ = ({ route }: Props): JSX.Element => {
     const recentAvgRecord: Record = useRecentAvgRecord()
     const recentAvgStat: Stat = useRecentAvgStat()
     const { removeScoreCardVideo } = useVideoActions()
+    const { getProfileImages } = useUsers()
     const { getScore, getStat, getRecentAvgShots, getRecentAvgTeeDistance, getRecentAvgPutts, getRecentAvgFair, getRecentAvgGreen, getRecentAvgParSave } = useRecords()
     const isTabFocused = useIsFocused()
     const { saveIsTabConnected } = useAuthActions() 
@@ -44,6 +45,7 @@ const MyZ = ({ route }: Props): JSX.Element => {
         
     const [isScrolled, setIsScrolled] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isConnected, setIsConnected] = useState<boolean>(false)
     const [startIndex, setStartIndex] = useState<number>(0)
     const [imageUri, setImageUri] = useState<string>('')
 
@@ -76,8 +78,19 @@ const MyZ = ({ route }: Props): JSX.Element => {
     }, [isTabFocused])
 
     const getProfileImg = async () => {
+        if (isConnected) return
         if (myProfile.profileImg)  {
-            setImageUri(myProfile.profileImg ?? '')
+            setIsConnected(true)
+            const payload: Payload = await getProfileImages([myProfile.uid])
+            if (payload.code !== 1000) {
+            setIsConnected(false)
+                return
+            }
+
+            if (payload.userProfileImgs) {
+                setImageUri(payload.userProfileImgs[0].url ?? '')
+            }
+            setIsConnected(false)
         }
     }
 
@@ -733,7 +746,6 @@ const styles = StyleSheet.create({
         paddingTop: 30,
         paddingHorizontal: 15,
         paddingBottom: 300,
-        marginBottom: -100,
 
         backgroundColor: '#f3f3f3'
     },

@@ -34,7 +34,9 @@ export interface ShopInfo {
     closedAt: string,
     option: string,
     favorite: string,
-    image: string
+    image: string,
+    closedYn: string,
+    restYn: string
 }
 
 export interface Operation {

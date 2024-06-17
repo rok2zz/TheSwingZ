@@ -81,7 +81,6 @@ export const useReservation = (): ReservationHook => {
                     "accessToken": accessToken
                 }
             })
-            console.log(res.data.result)
             if (res.data.code !== 1000) {
                 if (res.data.code === -5000) {
                     const res: ShopResponse = await axios.post(appURL, jsonBody, {

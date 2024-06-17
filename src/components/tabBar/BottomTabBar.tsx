@@ -26,8 +26,24 @@ const BottomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps): JS
     const isTabConnected = useIsTabConnected()
 
     const [isConnected, setIsConnected] = useState<boolean>(false)
+    const [height, setHeight] = useState<number>(0)
 
-     useEffect(() => {
+    useEffect(() => {
+        if (isOpen) {
+            Animated.timing(position, {
+                toValue: isOpen ? 1 : 0,
+                duration: 500,
+                useNativeDriver: true
+            }).start()
+
+            setTimeout(() => {
+                setHeight(500)
+            }, 600)
+
+            return
+        }
+        setHeight(0)
+
         Animated.timing(position, {
             toValue: isOpen ? 1 : 0,
             duration: 500,
@@ -39,8 +55,9 @@ const BottomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps): JS
         setIsConnected(isTabConnected)
     }, [isTabConnected])
 
+
     return (
-        <View style={ styles.wrapper }>
+        <View style={[ styles.wrapper, height !== 0 && { height: height }]}>
             { state.routes.map((route: any , index: number) => {
                 let isFocused = state.index === index
         
@@ -171,23 +188,8 @@ const BottomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps): JS
 const styles = StyleSheet.create({
     wrapper: {        
         flexDirection: 'row',
-        alignContent: 'flex-end',
-        
-        position: 'absolute',
-        bottom: 0,
 
         backgroundColor: 'rgba(0, 0, 0, 0)',
-
-        // ...Platform.select({
-        //     ios: {
-        //         shadowColor: '#000000',
-        //         shadowOffset: {
-        //             width: 0,
-        //             height: 1
-        //         },
-        //         shadowOpacity: 0.5,
-        //     }
-        // })
     },
     container: {
         borderTopLeftRadius: 20,
@@ -276,9 +278,11 @@ const styles = StyleSheet.create({
         zIndex: 1
     },
     reservation: {
+
         position: 'absolute',
+        left: 0,
         bottom: 0,
-        zIndex: 1
+        zIndex: 1,
     }, 
     connect: {
         width: Dimensions.get('window').width, 

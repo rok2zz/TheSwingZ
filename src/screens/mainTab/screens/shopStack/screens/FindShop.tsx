@@ -149,8 +149,8 @@ const FindShop = () => {
                         if (item.id === 13) return
                         const available: boolean[] = [true, true, true, true, true, true]
                         let reason = ''
-
                         const getShopTime = () => {
+                            
                             const now = new Date()
                             const openTime= item.openedAt.split(':')
                             const open = new Date()
@@ -214,7 +214,9 @@ const FindShop = () => {
                             }
                         }
 
-                        getShopTime()
+                        if (item.closedYn !== 'N' && item.restYn !== 'N') {
+                            getShopTime()
+                        }
 
                         const favoriteShops = shopList.filter(shop => shop.favorite !== null && shop.favorite.toLowerCase() === 'f')
                         const favoriteExist = favoriteShops.length > 0 ? true : false

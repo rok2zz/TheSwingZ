@@ -4,25 +4,25 @@
 // #import <GoogleSignIn/GoogleSignIn.h>
 #import <React/RCTBundleURLProvider.h>
 #import "RNSplashScreen.h"
-// #import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h>
+#import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h>
 
 
 @implementation AppDelegate
 
-// - (BOOL)application:(UIApplication *)app
-//      openURL:(NSURL *)url
-//      options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+- (BOOL)application:(UIApplication *)app
+     openURL:(NSURL *)url
+     options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
 
-//       // naver
-//       if ([url.scheme isEqualToString:@"{{ CUSTOM URL SCHEME }}"]) {
-//         return [[NaverThirdPartyLoginConnection getSharedInstance] application:app openURL:url options:options];
-//       }
-//       // kakao
-//       if([RNKakaoLogins isKakaoTalkLoginUrl:url]) {
-//           return [RNKakaoLogins handleOpenUrl: url];
-//       }
-//  return NO;
-// }
+      // naver
+      if ([url.scheme isEqualToString:@"{{ CUSTOM URL SCHEME }}"]) {
+        return [[NaverThirdPartyLoginConnection getSharedInstance] application:app openURL:url options:options];
+      }
+      // kakao
+      // if([RNKakaoLogins isKakaoTalkLoginUrl:url]) {
+      //     return [RNKakaoLogins handleOpenUrl: url];
+      // }
+ return NO;
+}
 
 // google
 // - (BOOL)application:(UIApplication *)application openURL:(nonnull NSURL *)url options:(nonnull NSDictionary<NSString *,id> *)options {

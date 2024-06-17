@@ -66,7 +66,7 @@ const RootStack = (): JSX.Element => {
 
 	useEffect(() => {
 		async function getServerInfo(): Promise<void> {
-			const payload: Payload = await getApi('alpha', '1.0.2')
+			const payload: Payload = await getApi('live', '1.0.2')
 			if (payload.code !== 1000) {
 				Alert.alert(
 					'알림',
@@ -88,8 +88,6 @@ const RootStack = (): JSX.Element => {
 				serviceUrlSchemeIOS,
 				disableNaverAppAuthIOS: false,
 		   })
-
-
 
 			if (payload.update === 'must') {
 				Alert.alert(
