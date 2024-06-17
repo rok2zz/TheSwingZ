@@ -42,7 +42,6 @@ import SwingVideo from "./screens/nasmo/SwingVideo";
 import VideoDetail from "./screens/nasmo/VideoDetail";
 import Intro from "./screens/intro/Intro";
 import NaverLogin from "@react-native-seoul/naver-login";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
@@ -67,8 +66,7 @@ const RootStack = (): JSX.Element => {
 
 	useEffect(() => {
 		async function getServerInfo(): Promise<void> {
-			const payload: Payload = await getApi('live', '1.0.2')
-
+			const payload: Payload = await getApi('alpha', '1.0.2')
 			if (payload.code !== 1000) {
 				Alert.alert(
 					'알림',

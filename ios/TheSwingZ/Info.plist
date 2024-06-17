@@ -20,32 +20,10 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>CFBundleURLTypes</key>
 	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>kakaoba013042f5a0f6ae1e923f20137aad80</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>kakaoba013042f5a0f6ae1e923f20137aad80://oauth</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>kakaoba013042f5a0f6ae1e923f20137aad80://kakaolink</string>
-			</array>
-		</dict>
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
@@ -56,25 +34,9 @@
 				<string>com.theswinggolf.theswingz</string>
 			</array>
 		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>417264241402-flbh9kuiel6cjacvhksln6huisqbiptd.apps.googleusercontent.com</string>
-			</array>
-		</dict>
 	</array>
-	<key>CFBundleVersion</key>
-	<string>1</string>
-	<key>KAKAO_APP_KEY</key>
-	<string>ba013042f5a0f6ae1e923f20137aad80</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>kakaoba013042f5a0f6ae1e923f20137aad80</string>
-		<string>kakaokompassauth</string>
-		<string>storykompassauth</string>
-		<string>kakaolink</string>
 		<string>naversearchapp</string>
 		<string>naversearchthirdlogin</string>
 	</array>

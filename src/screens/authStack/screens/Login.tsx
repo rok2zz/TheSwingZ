@@ -7,11 +7,11 @@ import { useUsers } from "../../../hooks/useUsers"
 import { Focus } from "../../../types/screenTypes"
 import { GoogleResponse, Payload } from "../../../types/apiTypes"
 import ChangePasswordModal from "../../../components/authStackComponents/ChangePasswordModal"
-import { KakaoOAuthToken, login, getProfile as getKakaoProfile, logout } from '@react-native-seoul/kakao-login';
-import { GoogleSignin } from "@react-native-google-signin/google-signin"
+// import { KakaoOAuthToken, login, getProfile as getKakaoProfile, logout } from '@react-native-seoul/kakao-login';
+// import { GoogleSignin } from "@react-native-google-signin/google-signin"
 import NaverLogin, { GetProfileResponse, NaverLoginResponse } from "@react-native-seoul/naver-login"
 import { SafeAreaView } from "react-native-safe-area-context"
-import appleAuth from '@invertase/react-native-apple-authentication';
+// import appleAuth from '@invertase/react-native-apple-authentication';
 import { useAuthActions } from "../../../hooks/useAuthActions"
 import { useRefreshToken } from "../../../hooks/useToken"
 
@@ -82,26 +82,26 @@ const Login = (): JSX.Element => {
 		}, [])
 	)
 
-    useEffect(() => {
-        if (!refreshToken) {
-            logoutSocial()
-        }
-    }, [])
+    // useEffect(() => {
+    //     if (!refreshToken) {
+    //         logoutSocial()
+    //     }
+    // }, [])
 
-    const logoutSocial = async () => {
-        try {
-                await NaverLogin.deleteToken()
+    // const logoutSocial = async () => {
+    //     try {
+    //             await NaverLogin.deleteToken()
                 
-                setSuccessResponse(undefined)
-                setFailureResponse(undefined)
-                setGetProfileRes(undefined)
+    //             setSuccessResponse(undefined)
+    //             setFailureResponse(undefined)
+    //             setGetProfileRes(undefined)
 
-                await logout()
-                await GoogleSignin.signOut()
-          } catch (e) {
-                console.error(e)
-          }
-    }
+    //             await logout()
+    //             await GoogleSignin.signOut()
+    //       } catch (e) {
+    //             console.error(e)
+    //       }
+    // }
 
     // autoLogin check
     const checkAutoLogin = () => {
@@ -175,36 +175,36 @@ const Login = (): JSX.Element => {
 	}
 
     // 카카오 로그인
-    const signInWithKakao = async () => {
-        if (isConnected) return // 중복 호출 방지
-		try {
+    // const signInWithKakao = async () => {
+    //     if (isConnected) return // 중복 호출 방지
+	// 	try {
             
-            setIsConnected(true)
-			const res: KakaoOAuthToken = await login()
-            console.log(res)
-            try {
-                const profile = await getKakaoProfile()
+    //         setIsConnected(true)
+	// 		const res: KakaoOAuthToken = await login()
+    //         console.log(res)
+    //         try {
+    //             const profile = await getKakaoProfile()
 
-                saveSocialId((profile.id).toString())
-                const payload: Payload = await socialLogin(profile.id.toString(), 'KAKAO')
-                setIsConnected(false)
+    //             saveSocialId((profile.id).toString())
+    //             const payload: Payload = await socialLogin(profile.id.toString(), 'KAKAO')
+    //             setIsConnected(false)
                     
-                if (payload.code !== 1000) {
-                    if (payload.code === -3015) {
-                        navigation.navigate('Terms', { type: 'KAKAO' })
-                    }
-                }
-            } catch (error) {
-                setIsConnected(false)
-                console.error('login error', error)
-            }
+    //             if (payload.code !== 1000) {
+    //                 if (payload.code === -3015) {
+    //                     navigation.navigate('Terms', { type: 'KAKAO' })
+    //                 }
+    //             }
+    //         } catch (error) {
+    //             setIsConnected(false)
+    //             console.error('login error', error)
+    //         }
 
-		} catch (error) {
-            setIsConnected(false)
-			console.error('login err', error)
-		}
-        setIsConnected(false)
-	}
+	// 	} catch (error) {
+    //         setIsConnected(false)
+	// 		console.error('login err', error)
+	// 	}
+    //     setIsConnected(false)
+	// }
 
     // 네이버 로그인
     const signInWithNaver = async () => {
@@ -236,65 +236,65 @@ const Login = (): JSX.Element => {
     }
 
     // 구글 로그인
-    const signInWithGoogle = async () => {
-        if (isConnected) return
-        GoogleSignin.configure({
-            scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
-            webClientId: `417264241402-pkirhqlegssrerjshqgpd8mg6d0e2haf.apps.googleusercontent.com`, // client ID of type WEB for your server (needed to verify user ID and offline access)
-            offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-            forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
-            iosClientId: '417264241402-flbh9kuiel6cjacvhksln6huisqbiptd.apps.googleusercontent.com', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
-        })
+    // const signInWithGoogle = async () => {
+    //     if (isConnected) return
+    //     GoogleSignin.configure({
+    //         scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
+    //         webClientId: `417264241402-pkirhqlegssrerjshqgpd8mg6d0e2haf.apps.googleusercontent.com`, // client ID of type WEB for your server (needed to verify user ID and offline access)
+    //         offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+    //         forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+    //         iosClientId: '417264241402-flbh9kuiel6cjacvhksln6huisqbiptd.apps.googleusercontent.com', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+    //     })
 
-        setIsConnected(true)
+    //     setIsConnected(true)
 
-        try {
+    //     try {
 
-            await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true })
-            const userInfo = await GoogleSignin.signIn()
-            console.log(userInfo)
-            if (userInfo) {
-                try {
-                    saveSocialId(userInfo.user.id)
-                    const payload: Payload = await socialLogin(userInfo.user.id, 'GOOGLE')
-                    setIsConnected(false)
+    //         await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true })
+    //         const userInfo = await GoogleSignin.signIn()
+    //         console.log(userInfo)
+    //         if (userInfo) {
+    //             try {
+    //                 saveSocialId(userInfo.user.id)
+    //                 const payload: Payload = await socialLogin(userInfo.user.id, 'GOOGLE')
+    //                 setIsConnected(false)
                     
-                    if (payload.code !== 1000) {
-                        if (payload.code === -3015) {
-                            navigation.navigate('Terms', { type: 'GOOGLE' })
-                        }
-                    }
-                } catch (err) {
-                    setIsConnected(false)
-                    console.error('login error', err)
-                }
-            }
-          } catch (error) {
-            console.log(error)
-            setIsConnected(false)
+    //                 if (payload.code !== 1000) {
+    //                     if (payload.code === -3015) {
+    //                         navigation.navigate('Terms', { type: 'GOOGLE' })
+    //                     }
+    //                 }
+    //             } catch (err) {
+    //                 setIsConnected(false)
+    //                 console.error('login error', err)
+    //             }
+    //         }
+    //       } catch (error) {
+    //         console.log(error)
+    //         setIsConnected(false)
 
-          }
-	}
+    //       }
+	// }
     
     // apple login
-    const signInWithApple = async () => {
-        const appleAuthRequestResponse = await appleAuth.performRequest({
-            requestedOperation: appleAuth.Operation.LOGIN,
-            // Note: it appears putting FULL_NAME first is important, see issue #293
-            requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
-        })
-        console.log(appleAuthRequestResponse)
-          // get current authentication state for user
-          // /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
-          const credentialState = await appleAuth.getCredentialStateForUser(
-            appleAuthRequestResponse.user,
-        )
+    // const signInWithApple = async () => {
+    //     const appleAuthRequestResponse = await appleAuth.performRequest({
+    //         requestedOperation: appleAuth.Operation.LOGIN,
+    //         // Note: it appears putting FULL_NAME first is important, see issue #293
+    //         requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
+    //     })
+    //     console.log(appleAuthRequestResponse)
+    //       // get current authentication state for user
+    //       // /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
+    //       const credentialState = await appleAuth.getCredentialStateForUser(
+    //         appleAuthRequestResponse.user,
+    //     )
         
-        // use credentialState response to ensure the user is authenticated
-        if (credentialState === appleAuth.State.AUTHORIZED) {
-        // user is authenticated
-        }
-    }
+    //     // use credentialState response to ensure the user is authenticated
+    //     if (credentialState === appleAuth.State.AUTHORIZED) {
+    //     // user is authenticated
+    //     }
+    // }
 
     return (
         <SafeAreaView style={ styles.wrapper } >
