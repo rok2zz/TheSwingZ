@@ -81,7 +81,6 @@ const RadarChart = ({ record, stat }: Props): JSX.Element => {
 
     const getParSaveValue = (): number | undefined => {
         if (stat.dtStat.length === 0) return
-
         return getRecentAvgParSave(record) + 10
     }
 

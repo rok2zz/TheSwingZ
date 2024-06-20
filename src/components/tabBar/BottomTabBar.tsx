@@ -49,6 +49,9 @@ const BottomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps): JS
             duration: 500,
             useNativeDriver: true
         }).start()
+
+        setTimeout(() => {
+        }, 600)
     }, [isOpen])
 
     useEffect(() => {
@@ -57,7 +60,7 @@ const BottomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps): JS
 
 
     return (
-        <View style={[ styles.wrapper, height !== 0 && { height: height }]}>
+        <View style={[ styles.wrapper]}>
             { state.routes.map((route: any , index: number) => {
                 let isFocused = state.index === index
         
@@ -189,6 +192,9 @@ const styles = StyleSheet.create({
     wrapper: {        
         flexDirection: 'row',
 
+        position: 'absolute',
+        bottom: 0,
+
         backgroundColor: 'rgba(0, 0, 0, 0)',
     },
     container: {
@@ -278,7 +284,6 @@ const styles = StyleSheet.create({
         zIndex: 1
     },
     reservation: {
-
         position: 'absolute',
         left: 0,
         bottom: 0,

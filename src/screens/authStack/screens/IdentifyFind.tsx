@@ -26,9 +26,12 @@ const IdentifyFind = (): JSX.Element => {
             return
         }
 
-        if (payload.userID) {
-            navigation.navigate('ResultFind', { userID: payload.userID })
-            return
+        if (payload.category) {
+            if (payload.userID) {
+                navigation.navigate('ResultFind', { userID: payload.userID, category: payload.category })
+                return
+            }
+            navigation.navigate('ResultFind', { category: payload.category })
         }
     }
 

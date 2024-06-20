@@ -307,7 +307,7 @@ const MyZ = ({ route }: Props): JSX.Element => {
                 { type === 0 && 
                     <View style={ styles.recordContainer }>
                         { record.ccArr && record.ccArr.length === 0 ?  (
-                            <View style={[ styles.recordCard, { alignItems: 'center' }]}>
+                            <View style={[ styles.recordCard, { alignItems: 'center', marginBottom: 100 }]}>
                                 <Flag style={{ marginBottom: 10 }} width={ 48 } height={ 48 } />
                                 <Text style={[ styles.blankCardText, { marginBottom: 3 }]}>최근 경기 기록​</Text>
                                 <Text style={ styles.blankCardText }>플레이 기록이 아직 없습니다.​</Text>
@@ -745,7 +745,8 @@ const styles = StyleSheet.create({
     recordContainer: {
         paddingTop: 30,
         paddingHorizontal: 15,
-        paddingBottom: 300,
+        paddingBottom: 500,
+        marginBottom: -200,
 
         backgroundColor: '#f3f3f3'
     },

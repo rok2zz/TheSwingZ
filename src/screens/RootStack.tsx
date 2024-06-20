@@ -42,8 +42,11 @@ import SwingVideo from "./screens/nasmo/SwingVideo";
 import VideoDetail from "./screens/nasmo/VideoDetail";
 import Intro from "./screens/intro/Intro";
 import NaverLogin from "@react-native-seoul/naver-login";
+import { initializeKakaoSDK } from "@react-native-kakao/core";
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
+
+export const version = '1.1.0'
 
 const RootStack = (): JSX.Element => {
 	const serverInfo: ServerInfo = useServerInfo()
@@ -58,6 +61,9 @@ const RootStack = (): JSX.Element => {
 	const [refreshToken, setRefreshToken] = useState<string | null>()
 	const [openSplash, setOpenSplash] = useState<boolean>(true)
 
+	// kakao native key
+	const kakaoKey = 'ba013042f5a0f6ae1e923f20137aad80'
+
 	// naver login Key
 	const consumerKey = `djATVwGtndKljOjNfTqv`
 	const consumerSecret = `HhXUQEo4xt`
@@ -66,7 +72,7 @@ const RootStack = (): JSX.Element => {
 
 	useEffect(() => {
 		async function getServerInfo(): Promise<void> {
-			const payload: Payload = await getApi('live', '1.0.2')
+			const payload: Payload = await getApi('live', version)
 			if (payload.code !== 1000) {
 				Alert.alert(
 					'알림',
@@ -81,13 +87,7 @@ const RootStack = (): JSX.Element => {
 				)
 			}
 
-			NaverLogin.initialize({
-				appName,
-				consumerKey,
-				consumerSecret,
-				serviceUrlSchemeIOS,
-				disableNaverAppAuthIOS: false,
-		   })
+			socialInitialize()
 
 			if (payload.update === 'must') {
 				Alert.alert(
@@ -107,7 +107,6 @@ const RootStack = (): JSX.Element => {
 					],
 				)
 			} else if (payload.update === 'can') {
-
 				Alert.alert(
 					'알림',
 					'새 버전이 출시되었습니다. 최신 버전으로 업데이트 할 수 있습니다.',
@@ -139,8 +138,6 @@ const RootStack = (): JSX.Element => {
 
 		checkIsFirst()
 	}, [])
-
-
 
 	// auto login
 	useEffect(() => {
@@ -198,6 +195,16 @@ const RootStack = (): JSX.Element => {
 		checkIsFirst()
 	}, [isFirst])
 
+	const socialInitialize = () => {
+		initializeKakaoSDK(kakaoKey)
+		NaverLogin.initialize({
+			appName,
+			consumerKey,
+			consumerSecret,
+			serviceUrlSchemeIOS,
+			disableNaverAppAuthIOS: false,
+	   })
+	}
 
 	const checkIsFirst = async (): Promise<void> => {
 		const isFirstVisit = await AsyncStorage.getItem('isFirst') === 'false' ? false : true

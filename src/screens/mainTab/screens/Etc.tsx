@@ -8,6 +8,7 @@ import RightArrow from "../../../assets/imgs/my/arrow_right_gray.svg"
 import { useIsFocused, useNavigation } from "@react-navigation/native"
 import { MainTabNavigationProp, ShopStackNavigationProp } from "../../../types/stackTypes"
 import { useShopList } from "../../../hooks/useReservation"
+import { version } from "../../RootStack"
 
 const myPageList: ListProps[] = [
     {
@@ -173,7 +174,7 @@ const Etc = (): JSX.Element => {
                 <Text style={[ styles.title, { marginTop: 34 }]}>고객센터</Text>
                 <MenuList listItem={ serviceList } />
 
-                <Text style={ styles.versionText }>버전정보  1.0.2</Text>
+                <Text style={ styles.versionText }>버전정보 { version }</Text>
             </ScrollView>
         </SafeAreaView>
     )

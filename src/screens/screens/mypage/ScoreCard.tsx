@@ -9,6 +9,12 @@ import { Record } from "../../../slices/record"
 import { CcInfo, Payload, PositionInfo, UserProfileImgs } from "../../../types/apiTypes"
 import { useScoreCardVideo, useThumbnailList, useVideos } from "../../../hooks/useVideos"
 import { Thumbnail } from "../../../slices/video"
+import { CourseImage } from "../../../slices/course"
+import { useCourse, useCourseImage } from "../../../hooks/useCourse"
+import { useVideoActions } from "../../../hooks/useVideoActions"
+import { courseList } from "../course/courseInfo"
+import Loading from "../../../components/Loading"
+import FastImage from "react-native-fast-image"
 
 // svg
 import Location from "../../../assets/imgs/my/location_white.svg"
@@ -21,13 +27,9 @@ import Buddy from "../../../assets/imgs/my/buddy.svg"
 import Bogey from "../../../assets/imgs/my/bogey.svg"
 import DoubleBogey from "../../../assets/imgs/my/double_bogey.svg"
 import Mulligan from "../../../assets/imgs/my/mulligan.svg"
-
-
-// svg
 import Play from "../../../assets/imgs/swing/play.svg"
-import FastImage from "react-native-fast-image"
-import Loading from "../../../components/Loading"
-import { useVideoActions } from "../../../hooks/useVideoActions"
+import LeftArrow from "../../../assets/imgs/course/arrow_left.svg"
+import RightArrow from "../../../assets/imgs/course/arrow_right.svg"
 
 interface Props {
     route: RouteProp<RootStackParamList, 'ScoreCard'>
@@ -44,6 +46,8 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
     const { getScore } = useRecords()
     const { getProfileImages } = useUsers()
     const { getScoreCardVideo } = useVideos()
+    const { getCourseImage } = useCourse()
+    const courseInfo = useCourseImage()
 
     const [recordIndex, setRecordIndex] = useState<number>(0)
     const [recordArr, setRecordArr] = useState<Record>()
@@ -55,6 +59,11 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
     const [year, setYear] = useState<string>('')
     const [month, setmonth] = useState<string>('')
     const [date, setdate] = useState<string>('')
+
+    const [minimapList, setMinimapList] = useState<CourseImage[]>([])
+    const [sortedMinimapList, setSortedMinimapList] = useState<CourseImage[]>([])
+    const [type, setType] = useState<number>(0)
+    const [hole, setHole] = useState<number>(1)
 
     const mapSizeX = Dimensions.get('window').width - 30
     const mapSizeY = (Dimensions.get('window').width - 30) * 441 / 281
@@ -78,7 +87,47 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
 
     useEffect(() => {
         getProfileImg()
+
+        if (recordArr && recordArr.ccArr.length > 0) {
+            getMinimapSource()
+        } 
+        console.log(recordArr?.inArr)
     }, [recordArr])
+
+    useEffect(() => {
+        setHole(1)
+    }, [type])
+
+    useEffect(() => {
+        setMinimapList(courseInfo)
+    }, [courseInfo])
+
+    useEffect(() => {
+        let sortedMinimap: CourseImage[] = []
+        if (minimapList && minimapList.length > 0) {
+            for (let i = 0; i < minimapList.length; i++) {
+                if (minimapList[i].courseNumber === recordArr?.ccArr[0].firstCourse) {
+                    sortedMinimap = sortedMinimap.concat(minimapList[i])
+                }
+            }
+    
+            for (let i = 0; i < minimapList.length; i++) {
+                if (minimapList[i].courseNumber === recordArr?.ccArr[0].secondCourse) {
+                    sortedMinimap = sortedMinimap.concat(minimapList[i])
+                }
+            }
+            setSortedMinimapList(sortedMinimap)
+        }
+    }, [minimapList])
+
+    const getMinimapSource = async () => {
+        const payload: Payload = await getCourseImage(recordArr?.ccArr[0].ccId ?? 0, recordArr?.ccArr[0].firstCourse ?? 1, recordArr?.ccArr[0].secondCourse ?? 2)
+
+        if (payload.code !== 1000) {
+            return
+        }
+
+    }
 
     const getProfileImg = async () => {
         if (isConnected) return
@@ -121,10 +170,11 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                 return a.holeNumber - b.holeNumber 
             })
 
-            setMyPositionArr(posArr)
             for (let i = 0; i < payload.record.ccArr.length; i++) {
                 setIsFolded(prevState => [...prevState, true])    
             }
+            setMyPositionArr(posArr)
+
         }
     }
 
@@ -152,6 +202,50 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
 
         return (myRecord.ccArr[recordIndex].ccName + '-' + coruseName) ?? ''
     }
+
+    const getCourseName = (courseNumber: number) => {
+        if (courseNumber === 1) {
+            for (let i = 0; i < courseList.length; i++) {
+                if (courseList[i].id === recordArr?.ccArr[0].ccId) {
+                    return courseList[i].courseName1
+                }
+            }
+        } else if (courseNumber === 2) {
+            for (let i = 0; i < courseList.length; i++) {
+                if (courseList[i].id === recordArr?.ccArr[0].ccId) {
+                    return courseList[i].courseName2
+                }
+            }
+        }
+
+        return ''
+    }
+
+    const onPressLeft = () => {
+        if (hole === 1) {
+            setHole(9)
+            return
+        }
+        setHole(hole - 1)
+    }
+
+    const onPressRight = () => {
+        if (hole === 9) {
+            setHole(1)
+            return
+        }
+        setHole(hole + 1)
+    }
+
+    const getPar = () => {
+        if (sortedMinimapList && sortedMinimapList.length > 0) {
+            if (type === 1) {
+                return sortedMinimapList[hole + 8].par ?? 0
+            }
+            return sortedMinimapList[hole - 1]. par ?? 0
+        }
+    }
+
 
     return (
         <>
@@ -181,7 +275,7 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                             <View style={[ styles.rowContainer, { paddingBottom: 66 }]}>
                                 <View style={[ styles.rowContainer, { flex: 1}]}>
                                     <Location style={ styles.location } />
-                                    <Text style={ styles.infoText }>{ myRecord.inArr[0].shopName }</Text>
+                                    <Text style={ styles.infoText }>{ recordArr.inArr[0].shopName }</Text>
                                 </View>
                                 <Share />
                             </View>
@@ -191,6 +285,15 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                             const parArr: [string, number][] = Object.entries(recordArr.parcount[index]).filter(([key]) => key.includes('hole'))
                             const shotArr: [string, number][] = Object.entries(recordArr.shotcount[index]).filter(([key]) => key.includes('hole'))
                             const puttArr: [string, number][] = Object.entries(recordArr.puttcount[index]).filter(([key]) => key.startsWith('hole'))
+
+                            const getParSum = (hole: number) => {
+                                let sum = 0
+                                for (let i = hole + 1; i <= hole + 9; i++) {
+                                    sum += (recordArr.parcount[index] as any)[`hole${i}`]
+                                }
+
+                                return sum
+                            }
 
                             const getFirstShotCount = () => {
                                 let shotCount: number = 0
@@ -284,8 +387,6 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                                                             />
                                                         }
                                                     </View>
-                                                   
-                                                
                                                 <Text style={ styles.nicknameText }>{ recordArr.inArr[index].nick }</Text>
                                             </Pressable>
 
@@ -339,7 +440,7 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                                                             })}
                                                         </View>
                                                         <View style={[ styles.typeBox, { width: 40 }]}>
-                                                            <Text style={ styles.scoreText }>36</Text>
+                                                            <Text style={ styles.scoreText }>{ getParSum(0) }</Text>
                                                         </View>                               
                                                     </View>
 
@@ -440,7 +541,7 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                                                                 })}
                                                             </View>
                                                             <View style={[ styles.typeBox, { width: 40 }]}>
-                                                                <Text style={ styles.scoreText }>36</Text>
+                                                                <Text style={ styles.scoreText }>{ getParSum(9) }</Text>
                                                             </View>                               
                                                         </View>
 
@@ -540,7 +641,7 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
 
                         { videoList && videoList.thumbnail.length > 0 &&
                             <>
-                                <Text style={ styles.boldText }>마이 스윙폼</Text>
+                                <Text style={[ styles.boldText, { marginLeft: 15 }]}>마이 스윙폼</Text>
                                 <ScrollView style={{ marginHorizontal: 15, marginBottom: 48 }}  horizontal showsHorizontalScrollIndicator={ false }>
                                     { videoList.thumbnail.map((item: Thumbnail, index: number) => {
                                         return (
@@ -567,65 +668,111 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                             </>
                         }
                         
-                        {/* { myPositionArr && myPositionArr.length > 0 &&
-                            <View>
+                        { myPositionArr && myPositionArr.length > 0 && sortedMinimapList && sortedMinimapList.length > 0 &&
+                            <View style={ styles.mapContainer }>
                                 <Text style={[ styles.boldText]}>홀 공략 기록​</Text>
-                                <View style={{ width: mapSizeX, height: mapSizeY, marginHorizontal: 15, backgroundColor: 'red' }}>
-                                    <Image style={{ width: '100%', height: mapSizeY }} 
-                                        source={ require('../../../assets/imgs/course/muan_east_a_1.png')} 
-                                        // source={{ 
-                                        //     uri: imageUri,
-                                        //     priority: FastImage.priority.normal,
-                                        //     cache: FastImage.cacheControl.immutable 
-                                        // }} 
-                                        resizeMode="contain"
-                                    />
-                                    { myPositionArr.map((item: PositionInfo, index: number) => {
-                                        const getX = () => {
-                                            const newPointX = item.stMiniX - 1024
-                                            // console.log(newPointX + 'asdf')
-                                            if (newPointX < 0) {
-
-                                            }
-                                            return (newPointX ) * mapSizeX / 2048
-                                        }
-
-                                        const getY = () => {
-                                            const newPointY = item.stMiniY - 880
-                                            // console.log(item.stMiniY )
-                                            // console.log( (newPointY ) * mapSizeY / 4096)
-
-                                            return (newPointY ) * mapSizeY / 4096
-                                        }
-
-                                        if (item.holeNumber === 1) {
-                                            return (
-                                                <View style={{ position: 'absolute', top: 0, left: 0 }} key={ index }>
-                                                    <View style={[ styles.circle, { left: (item.stMiniX - 280) * mapSizeX / 1488 - 4, top: (item.stMiniY - 880) * mapSizeY / 2337 - 4 } ]}></View>
-                                                    <View style={[ styles.circle, { left: (item.edMiniX - 280) * mapSizeX / 1488 - 4 , top: (item.edMiniY - 880) * mapSizeY / 2337 - 4 }, { backgroundColor: 'blue'} ]}></View>
-                                                </View>
-                                            )
-                                        }
-                                    })}
+                                <View style={[ styles.rowContainer, { marginBottom: 15 }]}>
+                                    <Pressable style={[ styles.minimapType, type === 0 && { borderWidth: 0, backgroundColor: '#fd780f'}]} onPress={ () => setType(0)} >
+                                        <Text style={[ styles.regularText, { fontSize: 16, marginBottom: 0, color: '#666666' }, type === 0 && { fontFamily: 'Pretendard-Bold', color: '#ffffff' }]}>{ getCourseName(1) }</Text>
+                                    </Pressable>
+                                    { recordArr.shotcount[0].hole10 !== null &&
+                                        <Pressable style={[ styles.minimapType, type === 1 && { borderWidth: 0, backgroundColor: '#fd780f'}] } onPress={ () => setType(1)} >
+                                            <Text style={[ styles.regularText, { fontSize: 16, marginBottom: 0, color: '#666666' }, type === 1 && { fontFamily: 'Pretendard-Bold', color: '#ffffff' }]}>{ getCourseName(2) }</Text>
+                                        </Pressable>
+                                    }
                                     
                                 </View>
-                                <View style={{ marginHorizontal: 15, marginTop: 30 }}>
-                                    <Image style={{ width: mapSizeX, height: mapSizeY }} 
-                                        source={ require('../../../assets/imgs/course/testmuan.png')} 
-                                        // source={{ 
-                                        //     uri: imageUri,
-                                        //     priority: FastImage.priority.normal,
-                                        //     cache: FastImage.cacheControl.immutable 
-                                        // }} 
-                                        resizeMode="contain"
-                                    />
+                                <View style={[ styles.minimapInfo, { width: mapSizeX, height: mapSizeY }]}>
+                                    <View style={ styles.mapInfo }>
+                                        <Text style={ styles.holeInfoText }>{ hole } Hole</Text>
+                                        <View style={ styles.holeInfoBlank }></View>
+                                        <Text style={ styles.holeInfoText }>PAR { getPar() }</Text>
+                                    </View>
+                                    { type === 0 ? (
+                                        <FastImage 
+                                            style={ styles.thumbnailImg }                   
+                                            source={{ 
+                                                uri: sortedMinimapList[hole - 1].minimapResource,
+                                                priority: FastImage.priority.normal,
+                                                cache: FastImage.cacheControl.immutable 
+                                            }} 
+                                            resizeMode="cover"
+                                        />
+                                        ) : (
+                                        <FastImage 
+                                            style={ styles.thumbnailImg }                   
+                                            source={{ 
+                                                uri: sortedMinimapList[hole + 8].minimapResource ?? '',
+                                                priority: FastImage.priority.normal,
+                                                cache: FastImage.cacheControl.immutable 
+                                            }} 
+                                            resizeMode="cover"
+                                        />
+                                    )}
+                                    <Pressable style={[ styles.arrow, { left: 15 }]} onPress={ onPressLeft }>
+                                        <LeftArrow />
+                                    </Pressable>
+                                    <Pressable style={[ styles.arrow, { right: 15 }]} onPress={ onPressRight }>
+                                        <RightArrow />
+                                    </Pressable>
                                     { myPositionArr.map((item: PositionInfo, index: number) => {
+                                        const startX = (item.stMiniX - 280) * mapSizeX / 1488 - 4
+                                        const startY = (item.stMiniY - 880) * mapSizeY / 2337 - 4
+                                        const endX = (item.edMiniX - 280) * mapSizeX / 1488 - 4
+                                        const endY = (item.edMiniY - 880) * mapSizeY / 2337 - 4
 
-                                        if (item.holeNumber === 1) {
+                                        const dx = endX - startX
+                                        const dy = endY - startY
+                                        const length = Math.sqrt(dx * dx + dy * dy)
+                                        const angle = Math.atan2(dy, dx) * (180 / Math.PI)
+                                         
+                                        const isHazard = (item.landPlace === 'OB' || item.landPlace === 'Hazard' || item.landPlace === 'Road') ? true : false
+                                        if (type === 0 && item.holeNumber === hole) {
                                             return (
                                                 <View style={{ position: 'absolute', top: 0, left: 0 }} key={ index }>
-                                                    <View style={[ styles.circle, { left: item.stMiniX * mapSizeX / 2048, top: item.stMiniY* mapSizeY / 4096} ]}></View>
-                                                    <View style={[ styles.circle, { left: item.edMiniX  * mapSizeX / 2048 , top: item.edMiniY * mapSizeY / 4096 }, { backgroundColor: 'blue'} ]}></View>
+                                                    <View>
+                                                        <View style ={[{
+                                                            position: 'absolute',
+                                                            top: startY + 3,
+                                                            left: startX + 3,
+                                                            width: length,
+                                                            height: 2,
+                                                            transform: [{ rotate: `${angle}deg`}],
+                                                            transformOrigin: '0 0',
+                                                            backgroundColor: '#e20500'
+                                                            }, isHazard && { backgroundColor: 'blue'}]}
+                                                        />
+                                                    </View>
+                                                    <View style={[ styles.circle, { left: startX, top: startY }, isHazard && { backgroundColor: 'blue'}]}>
+                                                        <View style={ styles.miniCircle }></View>
+                                                    </View>
+                                                    <View style={[ styles.circle, { left: endX, top: endY }, isHazard && { backgroundColor: 'blue'}]}>
+                                                        <View style={ styles.miniCircle }></View>
+                                                    </View>
+                                                </View>
+                                            )
+                                        } else if (type === 1 && item.holeNumber === hole + 8) {
+                                            return (
+                                                <View style={{ position: 'absolute', top: 0, left: 0 }} key={ index }>
+                                                    <View>
+                                                        <View style ={[{
+                                                            position: 'absolute',
+                                                            top: startY + 3,
+                                                            left: startX + 3,
+                                                            width: length,
+                                                            height: 2,
+                                                            transform: [{ rotate: `${angle}deg`}],
+                                                            transformOrigin: '0 0',
+                                                            backgroundColor: '#e20500'
+                                                            }, isHazard && { backgroundColor: 'blue'}]}
+                                                        />
+                                                    </View>
+                                                    <View style={[ styles.circle, { left: startX, top: startY }, isHazard && { backgroundColor: 'blue'}]}>
+                                                        <View style={ styles.miniCircle }></View>
+                                                    </View>
+                                                    <View style={[ styles.circle, { left: endX, top: endY }, isHazard && { backgroundColor: 'blue'}]}>
+                                                        <View style={ styles.miniCircle }></View>
+                                                    </View>
                                                 </View>
                                             )
                                         }
@@ -633,7 +780,7 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                                     
                                 </View>
                             </View>
-                        } */}
+                        }
                     </>
                 }
             </ScrollView>
@@ -687,7 +834,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontFamily: 'Pretendard-Bold',
 
-        marginLeft: 15,
         marginBottom: 18,
 
         color: '#121619'
@@ -921,13 +1067,71 @@ const styles = StyleSheet.create({
         bottom: 15,
     },
     circle: {
+        alignItems: 'center',
+        justifyContent: 'center',
+
         width: 8,
         height: 8,
 
         position: 'absolute',
 
         borderRadius: 30,
-        backgroundColor: 'red'
+        backgroundColor: '#e20500'
+    },
+    miniCircle: {
+        width: 4,
+        height: 4,
+
+        borderRadius: 30,
+        backgroundColor: '#ffffff'
+    },
+    mapContainer: {
+        paddingBottom: 50,
+        marginHorizontal: 15
+    },
+    minimapInfo: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    minimapType: {
+        alignItems: 'center',
+
+        paddingVertical: 9,
+        paddingHorizontal: 18,
+        marginRight: 6, 
+
+        borderRadius: 18,
+        borderWidth: 1,
+        borderColor: '#949494'
+    },
+    arrow: {
+        position: 'absolute',
+
+        zIndex: 1
+    },
+    holeInfoText: {
+        includeFontPadding: false,
+        fontSize: 18,
+        fontFamily: 'Pretendard-Bold',
+
+        color: '#ffffff'
+    },
+    holeInfoBlank: {
+        width: 1,
+        height: 21,
+
+        marginHorizontal: 9,
+
+        backgroundColor: '#ffffff'
+    },
+    mapInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+
+        position: 'absolute',
+        top: 26,
+
+        zIndex: 1
     }
 })
 

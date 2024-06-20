@@ -119,9 +119,14 @@ const Find = (): JSX.Element => {
             return
         }
 
-        if (payload.userID) {
-            navigation.push('ResultFind', { userID: payload.userID })
+        if (payload.category) {
+            if (payload.userID) {
+                navigation.navigate('ResultFind', { userID: payload.userID, category: payload.category })
+                return
+            }
+            navigation.navigate('ResultFind', { category: payload.category })
         }
+
 
         return
         

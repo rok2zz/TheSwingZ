@@ -61,7 +61,7 @@ const ModifyProfile = (): JSX.Element => {
     const navigation = useNavigation<RootStackNavigationProp>()
     const myProfile = useUserInfo()
     const refreshToken = useRefreshToken()
-    const { modifyProfile, logout } = useUsers()
+    const { modifyProfile, getProfileImages, logout } = useUsers()
 
     const nicknameRef = useRef<TextInput>(null)
 
@@ -79,8 +79,19 @@ const ModifyProfile = (): JSX.Element => {
     }, [myProfile])
 
     const getProfileImg = async () => {
+        if (isConnected) return
         if (myProfile.profileImg)  {
-            setImageUri(myProfile.profileImg)
+            setIsConnected(true)
+            const payload: Payload = await getProfileImages([myProfile.uid])
+            if (payload.code !== 1000) {
+            setIsConnected(false)
+                return
+            }
+
+            if (payload.userProfileImgs) {
+                setImageUri(payload.userProfileImgs[0].url ?? '')
+            }
+            setIsConnected(false)
         }
     }
 

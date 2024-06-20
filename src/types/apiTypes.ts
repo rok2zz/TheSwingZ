@@ -39,7 +39,8 @@ export interface Payload {
     phone?: string,
     userID?: string,
     nick?: string,
-    
+    category?: string,
+
     record?: Record,
     thumbnailList?: Thumbnail[]
     stat?: Stat,
@@ -84,6 +85,10 @@ export interface ResponseResult {
     phone?: string,
     name?: string,
     nick?: string 
+    user?: {
+        name?: string | null,
+        category?: string
+    }
 
     payload?: string,
     url?: string,
@@ -265,11 +270,13 @@ export interface Count {
 
 export interface CcInfo {
     category: string,
-    ccid: number,
+    ccId: number,
     uid: number,
     roomId: number,
     ccName: string,
-    courseName: string
+    courseName: string,
+    firstCourse: number,
+    secondCourse: number
 }
 
 export interface RoomInfo {

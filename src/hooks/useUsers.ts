@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Alert } from "react-native";
+import { Alert, Platform } from "react-native";
 import { LoginData, Response, Body, Payload, SettingResponse, UserSettingBody, LoginResponse } from "../types/apiTypes";
 import { useAuthActions } from "./useAuthActions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -11,10 +11,11 @@ import { ServerInfo } from "../slices/api";
 import { useServerInfo } from "./useApi";
 import ImageResizer from "react-native-image-resizer";
 import { useAccessToken, useRefreshToken } from "./useToken";
+import NaverLogin from "@react-native-seoul/naver-login";
 
 interface UsersHook {
     idLogin: (userID: string, userPW: string, auto: boolean) => Promise<Payload>,
-    socialLogin: (socialID: string, category: string) => Promise<Payload>,
+    socialLogin: (socialID: string, category: string, auto: boolean) => Promise<Payload>,
     autoLogin: (refreshToken: string) => Promise<Payload>,
     logout: (refreshToken: string) => Promise<Payload>,
 
@@ -74,6 +75,7 @@ export const useUsers = (): UsersHook => {
     const serverInfo: ServerInfo = useServerInfo()
     const { saveRefreshToken, saveAccessToken, clearUserInfo, saveUserInfo, saveUserSetting, modifyMyProfile, saveIsFirst } = useAuthActions()
     const { clearRecord } = useRecordActions()
+    const userInfo = useUserInfo()
     const accessToken = useAccessToken()
     const refreshToken = useRefreshToken()
 
@@ -153,7 +155,6 @@ export const useUsers = (): UsersHook => {
             }
 
         } catch (error: any) {
-            console.log(error)
             errorHandler(error)
         }
 
@@ -161,20 +162,21 @@ export const useUsers = (): UsersHook => {
     }   
 
     // 소셜 로그인
-    const socialLogin = async (socialID: string, category: string): Promise<Payload> => {
+    const socialLogin = async (socialID: string, category: string, auto: boolean): Promise<Payload> => {
+        const OS = Platform.OS
         const body: Body = {
             cls: 'Account',
             method: 'socialLogin',
             params: [ 
+                OS,
                 0,
                 socialID,
                 category,
                 'login'
             ]
         }
-  
         const jsonBody: string = JSON.stringify(body)
-    
+        console.log(jsonBody)
         try {
             const res: LoginResponse = await axios.post(authURL, jsonBody)
             console.log(res.data)
@@ -220,20 +222,13 @@ export const useUsers = (): UsersHook => {
 
                 // 성공시 복호화 후 AsyncStorage, redux에 저장
                 if (loginData.token) {
-                    const settingPayload: Payload = await getSettingValue(loginData.userInfo.uid)
-
-                    if (settingPayload.code !== 1000) {
-                        return {
-                            code: settingPayload.code,
-                            msg: settingPayload.msg
-                        }
-                    }
-
                     saveRefreshToken(loginData.token.refreshToken ?? null)
                     saveAccessToken(loginData.token.accessToken ?? null)
                     saveUserInfo(loginData.userInfo)
                         
-                    await AsyncStorage.setItem('token', JSON.stringify(loginData.token))
+                    if (auto) {
+                        await AsyncStorage.setItem('token', JSON.stringify(loginData.token))
+                    }
 
                     const payload: Payload = {
                         code: res.data.code,
@@ -416,6 +411,7 @@ export const useUsers = (): UsersHook => {
             method: "socialLogin",
     
             params: [
+                Platform.OS,
                 0,
                 socialID ?? '',
                 category ?? '',
@@ -432,6 +428,8 @@ export const useUsers = (): UsersHook => {
         const jsonBody = JSON.stringify(body)
         try {
             const res: LoginResponse = await axios.post(authURL, jsonBody)
+            console.log(res.data)
+
             if (res.data.code !== 1000) {
                 const payload: Payload = {
                     code: res.data.code,
@@ -521,7 +519,6 @@ export const useUsers = (): UsersHook => {
         const jsonBody: string = JSON.stringify(body)
         try {
             const res: Response = await axios.post(authURL, jsonBody)
-            console.log(res.data)
             if (res.data.code !== 1000) {
                 const payload: Payload = {
                     code: res.data.code,
@@ -550,7 +547,6 @@ export const useUsers = (): UsersHook => {
 
         try {
             const res: Response = await axios.post(authURL, jsonBody)
-            console.log(res.data)
             if (res.data.code !== 1000) {
                 const payload: Payload = {
                     code: res.data.code,
@@ -560,15 +556,14 @@ export const useUsers = (): UsersHook => {
                 return payload
             }
 
-            if (res.data.result && res.data.result.name) {
-                if (res.data.result.name) {
-                    const payload: Payload = {
-                        code: res.data.code,
-                        userID: res.data.result?.name
-                    }
-
-                    return payload
+            if (res.data.result && res.data.result.user) {
+                const payload: Payload = {
+                    code: res.data.code,
+                    userID: res.data.result.user.name ?? '',
+                    category: res.data.result.user.category
                 }
+
+                return payload
             }
         } catch (error: any) {
             errorHandler(error)
@@ -963,7 +958,7 @@ export const useUsers = (): UsersHook => {
                     "refreshToken": refreshToken
                 }
             })
-            console.log(res.data)
+
             saveIsFirst(false)
             clearUserInfo()
             clearRecord()
@@ -1079,9 +1074,10 @@ export const useUsers = (): UsersHook => {
                     'accessToken': accessToken
                 }
             }) 
+
             if (res.data.code !== 1000) {
                 if (res.data.code === -5000) {
-                    const res: Response = await axios.post(authURL, jsonBody, {
+                    const res: Response = await axios.post(appURL, jsonBody, {
                         headers: {
                             'accessToken': accessToken
                         }

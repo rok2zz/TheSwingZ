@@ -123,7 +123,8 @@ export type AuthStackParamList = {
 	IdentifyFind: undefined,
 	Find: undefined,
 	ResultFind: {
-		userID: string
+		userID?: string,
+		category: string
 	},
 	ResetPW: {
 		userID: string

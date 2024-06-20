@@ -1,26 +1,26 @@
 #import "AppDelegate.h"
 
-// #import <RNKakaoLogins.h>
 // #import <GoogleSignIn/GoogleSignIn.h>
 #import <React/RCTBundleURLProvider.h>
 #import "RNSplashScreen.h"
 #import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h>
-
+#import <React/RCTLinkingManager.h>
+#import <RNCKakaoUser/RNCKakaoUserUtil.h>
 
 @implementation AppDelegate
 
-- (BOOL)application:(UIApplication *)app
+- (BOOL)application:(UIApplication *)application
      openURL:(NSURL *)url
      options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
 
       // naver
       if ([url.scheme isEqualToString:@"{{ CUSTOM URL SCHEME }}"]) {
-        return [[NaverThirdPartyLoginConnection getSharedInstance] application:app openURL:url options:options];
+        return [[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options];
       }
       // kakao
-      // if([RNKakaoLogins isKakaoTalkLoginUrl:url]) {
-      //     return [RNKakaoLogins handleOpenUrl: url];
-      // }
+      if([RNCKakaoUserUtil isKakaoTalkLoginUrl:url]) {
+        return [RNCKakaoUserUtil handleOpenUrl:url];
+      }
  return NO;
 }
 

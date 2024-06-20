@@ -429,13 +429,14 @@ export const useRecords = (): RecordsHook => {
 						attempt++
 					} 
 				}
-
-				sum += success / attempt * 100
+				
+				if (attempt > 0) {
+					sum += success / attempt * 100	
+				}
 			}
 
 			parSave = sum / 5
 		}
-
 		return Number(parSave.toFixed(1)) ?? 0
 	}
 
