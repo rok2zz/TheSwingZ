@@ -216,49 +216,55 @@ const Reservation = ({ route }: Props): JSX.Element => {
     
                             const closeTime= item.closedAt.split(':')
                             const close = new Date()
+                            
                             const closeHour = parseInt(closeTime[0], 10)
                             const closeMin = parseInt(closeTime[1], 10)
                             close.setDate(reservationTime.getDate())
                             close.setHours(closeHour)
                             close.setMinutes(closeMin)
-    
+                            close.setSeconds(0)
+                            close.setMilliseconds(0)
+                           
                             const revClose = new Date(reservationTime.getTime())
                             revClose.setHours(revClose.getHours() + reservationInfo.people + 1)
-    
+                            revClose.setSeconds(0)
+                            revClose.setMilliseconds(0)
+                          
                             if (close < open) { 
                                 close.setDate(close.getDate() + 1)                                    
                             }
-    
+            
                             if (open > reservationTime) {
                                 for (let i = 0; i < 6; i++) {
                                     available[i] = false
-                                }
+                                }       
                             } else if (close < revClose) {
+                               
                                 for (let i = 0; i < 6; i++) {
                                     available[i] = false
                                 }
                             } else if (closeHour === revClose.getHours()) {
-                                if (closeMin >= 0 && closeMin < 10) {
+                                if (closeMin > 0 && closeMin < 10) {
                                     for (let i = 0; i < 6; i++) {
                                         available[i] = false
                                     }
-                                } else if (closeMin >= 10 && closeMin < 20) {
+                                } else if (closeMin >= 0 && closeMin < 20) {
                                     for (let i = 1; i < 6; i++) {
                                         available[i] = false
                                     }
-                                } else if (closeMin >= 20 && closeMin < 30) {
+                                } else if (closeMin >= 0 && closeMin < 30) {
                                     for (let i = 2; i < 6; i++) {
                                         available[i] = false
                                     }
-                                } else if (closeMin >= 30 && closeMin < 40) {
+                                } else if (closeMin >= 0 && closeMin < 40) {
                                     for (let i = 3; i < 6; i++) {
                                         available[i] = false
                                     }
-                                } else if (closeMin >= 40 && closeMin < 50) {
+                                } else if (closeMin >= 0 && closeMin < 50) {
                                     for (let i = 4; i < 6; i++) {
                                         available[i] = false
                                     }
-                                } else if (closeMin >= 50 && closeMin <=60) {
+                                } else if (closeMin >= 0 && closeMin <= 60) {
                                     for (let i = 5; i < 6; i++) {
                                         available[i] = false
                                     }
@@ -331,7 +337,7 @@ const Reservation = ({ route }: Props): JSX.Element => {
                             }
                         }
 
-                        if (item.closedYn !== 'N' && item.restYn !== 'N') {
+                        if (item.closedYn !== 'N' && item.restYn !== 'Y') {
                             getShopTime()
                         }
 

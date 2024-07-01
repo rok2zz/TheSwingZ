@@ -10,6 +10,8 @@ import { Count, Payload } from "../../../types/apiTypes"
 import { MainTabParamList, RootStackNavigationProp } from "../../../types/stackTypes"
 import { useRecordActions } from "../../../hooks/useRecordActions"
 import { useVideoActions } from "../../../hooks/useVideoActions"
+import { useAuthActions } from "../../../hooks/useAuthActions"
+import FastImage from "react-native-fast-image"
 
 import RadarChart from "../../../components/RadarChart"
 import Chart from "../../../components/Chart"
@@ -20,8 +22,6 @@ import TopTabBar from "../../../components/tabBar/TopTabBar"
 import EmptyImg from "../../../assets/imgs/my/empty_img.svg"
 import EditImg from "../../../assets/imgs/my/edit_img.svg"
 import Flag from "../../../assets/imgs/main/flag.svg"
-import FastImage from "react-native-fast-image"
-import { useAuthActions } from "../../../hooks/useAuthActions"
 
 interface Props {
     route: RouteProp<MainTabParamList, 'MyZ'>
@@ -99,6 +99,8 @@ const MyZ = ({ route }: Props): JSX.Element => {
     }
 
     const getMoreRecord = () => {
+        if (isConnected) return
+
         const getMyRecord = async (): Promise<void> => {
             const payload: Payload = await getScore('A', myProfile.uid, null, 5, startIndex)
             if (payload.code !== 1000) return
@@ -118,19 +120,16 @@ const MyZ = ({ route }: Props): JSX.Element => {
             }
         }
 
-        if (!isLoading) {
-            setIsLoading(true)
+        saveIsTabConnected(true)
+        if (record.ccArr && record.ccArr.length === startIndex && startIndex < parseInt(record.totCount ?? '0')) {
+            getMyRecord()
+            getMyStat()
+        }
 
-            if (record.ccArr && record.ccArr.length === startIndex && startIndex < parseInt(record.totCount ?? '0')) {
-                getMyRecord()
-                getMyStat()
-            }
-
-            setTimeout(() => {
-                setIsLoading(false)
-            }, 1000)
-        }   
-    }
+        setTimeout(() => {
+            saveIsTabConnected(false)
+        }, 2000)
+    }   
     
     // 스크롤이 끝에 도달했을 때 추가 내용을 로드
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -141,7 +140,10 @@ const MyZ = ({ route }: Props): JSX.Element => {
         const paddingToBottom = 20
         if (layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom) {
             getMoreRecord()
+        } else if (contentOffset.y < 0 && !isScrolled) { // refresh
+            onRefresh()
         }
+
         setTimeout(() => {
             setIsScrolled(false)
         }, 1500)
@@ -166,17 +168,13 @@ const MyZ = ({ route }: Props): JSX.Element => {
     }
 
     const onRefresh = useCallback(() => {
-        if (refreshing) return
-
         saveIsTabConnected(true)
-        setRefreshing(true)
         getMyRecentRecord()
         getMyRecentStat()
         getMyRecord()
         getMyStat()
 
         setTimeout(() => {
-            setRefreshing(false)
             saveIsTabConnected(false)
         }, 2000)
     }, [])
@@ -220,9 +218,7 @@ const MyZ = ({ route }: Props): JSX.Element => {
     return (
         <>
             <TabHeader title='마이Z' type={ 1 } isFocused={ isTabFocused } before={ beforeScreen } />
-            <ScrollView style={ styles.wrapper } showsVerticalScrollIndicator={ false } onScroll={ handleScroll } scrollEventThrottle={ 16 }
-                 refreshControl={ <RefreshControl refreshing={ refreshing } onRefresh={ onRefresh } /> }
-            >
+            <ScrollView style={ styles.wrapper } showsVerticalScrollIndicator={ false } onScroll={ handleScroll } scrollEventThrottle={ 180 }>
                 <View style={ styles.profileContainer }>
                     {/* userinfo */}
                     <View style={ styles.profile }>
@@ -341,7 +337,6 @@ const MyZ = ({ route }: Props): JSX.Element => {
                                         }
                                         return ''
                                     }
-                                    
 
                                     return (
                                         <Pressable style={ styles.recordCard } key={ index } onPress={ goScoreCard }>
@@ -359,7 +354,6 @@ const MyZ = ({ route }: Props): JSX.Element => {
                                         </Pressable>
                                     )
                                 })}
-                                { isLoading && <ActivityIndicator style={{ marginVertical: 40 }} size="large" color="#0000ff" />}
                             </>
                         )}
                     </View>

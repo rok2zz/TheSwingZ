@@ -1,11 +1,28 @@
-import { Text, View } from "react-native"
+import { StyleSheet, Text, View } from "react-native"
+import { useState } from "react"
 
 const FAQ = () => {
+    const [isConnected, setIsConnected] = useState<boolean>()
+
+    const getFAQ = async () => {
+
+    } 
+
     return (
-        <View style={{ alignItems: 'center', marginTop: 50 }}>
-            <Text>준비중입니다.</Text>
+        <View style={ styles.wrapper }>
+
+
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    wrapper: {
+        flex: 1,
+
+        backgroundColor: '#ffffff'
+    },
+
+})
 
 export default FAQ

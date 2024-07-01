@@ -43,6 +43,7 @@ import Play from "../../../assets/imgs/swing/play.svg"
 import Home from "../../../assets/imgs/common/icon_home_on.svg"
 import { useVideoActions } from "../../../hooks/useVideoActions"
 import { useReservationActions } from "../../../hooks/useReservationActions"
+import { useCourse } from "../../../hooks/useCourse"
 
 const Main = (): JSX.Element => {
     const navigation = useNavigation<MainTabNavigationProp>()
@@ -51,6 +52,7 @@ const Main = (): JSX.Element => {
     const { getScore, getStat, getRecentAvgShots, getRecentAvgTeeDistance, getRecentAvgPutts } = useRecords()
     const { getMySwingVideoList } = useVideos()
     const { getMyReservation } = useReservation()
+    const { getCourseInfo } = useCourse()
     const { saveIsTabConnected, saveIsMainLoaded } = useAuthActions() 
     const { clearRecord } = useRecordActions()
     const { clearVideo } = useVideoActions()
@@ -141,6 +143,7 @@ const Main = (): JSX.Element => {
                 saveIsTabConnected(true)
                 getRevInfo()
                 getVideoList()
+                getCourseList()
                 setTimeout(()=> {
                     saveIsTabConnected(false)
                 }, 1500)
@@ -196,6 +199,7 @@ const Main = (): JSX.Element => {
         setRevList(sortedList)
     }, [myRevList])
 
+    // get recent 5 game's record in 18hole game
     const getMyRecentRecord = async (): Promise<void> => {
         const payload: Payload = await getScore('S', userInfo.uid, null, 5, 0)
 
@@ -205,6 +209,7 @@ const Main = (): JSX.Element => {
         }
     }
 
+    // get record 
     const getMyRecord = async (): Promise<void> => {
         const payload: Payload = await getScore('A', userInfo.uid, null, 5, 0)
         if (payload.code !== 1000) return
@@ -214,6 +219,7 @@ const Main = (): JSX.Element => {
         }
     }
 
+    // get recent 5 game's stat in 18hole game
     const getMyRecentStat = async (): Promise<void> => {
         const payload: Payload = await getStat('S', userInfo.uid, null, 5, 0)
         if (payload.code !== 1000) return
@@ -223,6 +229,7 @@ const Main = (): JSX.Element => {
         }
     }
 
+    // get stat
     const getMyStat = async (): Promise<void> => {
         const payload: Payload = await getStat('A', userInfo.uid, null, 5, 0)
 
@@ -232,6 +239,7 @@ const Main = (): JSX.Element => {
         }
     }
 
+    // get resetvation
     const getRevInfo = async () => {
         const payload: Payload = await getMyReservation(null)
         if (payload.code !== 1000) {
@@ -241,7 +249,6 @@ const Main = (): JSX.Element => {
 
     const getVideoList = async () => {
         const payload: Payload = await getMySwingVideoList(0, 5)
-
         if (payload.code !== 1000) {
             Alert.alert('알림', payload.msg ?? '서버에 연결할 수 없습니다.')
 
@@ -249,6 +256,14 @@ const Main = (): JSX.Element => {
         }
     }
 
+    const getCourseList = async () => {
+        const payload: Payload = await getCourseInfo()
+        if (payload.code !== 1000) {
+            Alert.alert('알림', payload.msg ?? '서버에 연결할 수 없습니다.')
+
+            return
+        }
+    }
 
     const onRefresh = useCallback(() => {
         if (refreshing) return
@@ -459,12 +474,15 @@ const Main = (): JSX.Element => {
                                                 const date = allRecord?.parcount[index]?.date.slice(6, 8) 
 
                                                 const getCcName = () => {
-                                                    if (record.ccArr) {
-                                                       const a = record.ccArr[index].courseName.split('(')[1]
-                                                       const coruseName = a.split(')')[0]
-                                                       if ((record.ccArr[index].ccName + '-' + coruseName).length > 14) {
-                                                           return (record.ccArr[index].ccName + '-' + coruseName).substring(0, 14) + '..'
-                                                       }
+                                                    if (record.ccArr && record.ccArr[index].courseName) {
+                                                        if (!record.ccArr[index].courseName.includes('(')) {
+                                                             return record.ccArr[index].courseName
+                                                        }
+                                                        const a = record.ccArr[index].courseName.split('(')[1]
+                                                        const coruseName = a.split(')')[0]
+                                                        if ((record.ccArr[index].ccName + '-' + coruseName).length > 14) {
+                                                            return (record.ccArr[index].ccName + '-' + coruseName).substring(0, 14) + '..'
+                                                        }
 
                                                        return (record.ccArr[index].ccName + '-' + coruseName) ?? ''
                                                     }

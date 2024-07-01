@@ -14,6 +14,7 @@ const IdentifyRegister = ({ route }: Props): JSX.Element => {
 	const { saveAuthInfo } = useAuthActions()
 	const isMarketingChecked = route.params?.isMarketingChecked ?? true
 
+    // receive message from webview
     const handleMessage = (event: any) => {
         const data = JSON.parse(event?.nativeEvent?.data);
 

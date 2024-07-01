@@ -33,7 +33,7 @@ const Find = (): JSX.Element => {
     const [isFocused, setIsFocused] = useState<Focus>({ ref: phoneRef, isFocused: false })
     const [isConnected, setIsConnected] = useState<boolean>(false)
 
-    // 인증 요청시 타이머 세팅
+    // set timer
     useEffect(() => {
         if (min === 0 && sec === 0) {
             setTimer(false)
@@ -49,7 +49,7 @@ const Find = (): JSX.Element => {
         } 
     }, [timer, sec])
 
-    // 타이머 실행시 메시지 업데이트
+    // timer message
     useEffect(() => {
         if (timer) {
             setMessage({ type: 'phone', msg: '휴대폰으로 전송된 인증번호를 입력해주세요.' })
@@ -57,7 +57,7 @@ const Find = (): JSX.Element => {
     }, [timer])
 
 
-    // 선택한 입력칸 포커스
+    // focus
     const handleFocus = (ref: React.RefObject<TextInput>) => {
         setIsFocused({
             ref: ref,
@@ -65,7 +65,7 @@ const Find = (): JSX.Element => {
         })
     }
 
-    // 포커스 해제
+    // blur
     const handleBlur = (ref: React.RefObject<TextInput>) => {
         setIsFocused({
             ref: ref,
@@ -154,7 +154,7 @@ const Find = (): JSX.Element => {
                         <Text style={[ styles.regularText, { fontSize: 20, marginBottom: 23 }]}>입력해 주세요.</Text>
 
                         <View style={ styles.inputContainer }>
-                            <TextInput style={[ styles.input, (isFocused.ref === phoneRef && isFocused.isFocused) ? { borderBottomColor: '#cccccc'} : { borderBottomColor: '#cccccc'}]}                             
+                            <TextInput style={[ styles.input, (isFocused.ref === phoneRef && isFocused.isFocused) ? { borderBottomColor: '#fd780f'} : { borderBottomColor: '#cccccc'}]}                             
                                 ref={ phoneRef } placeholder=" - 를 제외한 휴대전화번호 입력"  placeholderTextColor="#aaaaaa" returnKeyType="next" autoCapitalize='none'
                                 onChangeText={(phoneNum: string): void => setPhone(phoneNum)} keyboardType="decimal-pad"
                                 onFocus={ () => handleFocus(phoneRef) } onBlur={ () => handleBlur(phoneRef)}
@@ -179,7 +179,7 @@ const Find = (): JSX.Element => {
                         { message.type === 'phone' && <Text style={ styles.message }>{ message.msg }</Text> }
 
                         <View style={ styles.inputContainer }>
-                            <TextInput style={[ styles.input, (isFocused.ref === authNumRef && isFocused.isFocused) ? { borderBottomColor: '#cccccc'} : { borderBottomColor: '#cccccc'}]} 
+                            <TextInput style={[ styles.input, (isFocused.ref === authNumRef && isFocused.isFocused) ? { borderBottomColor: '#fd780f'} : { borderBottomColor: '#cccccc'}]} 
                                 ref={ authNumRef } placeholder=" 인증번호 입력" placeholderTextColor="#aaaaaa" returnKeyType="done" autoCapitalize='none' 
                                 onChangeText={(code: string): void => setAuthCode(code)} keyboardType="decimal-pad"
                                 onFocus={ () => handleFocus(authNumRef) } onBlur={ () => handleBlur(authNumRef)}

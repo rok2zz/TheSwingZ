@@ -7,9 +7,25 @@ export interface CourseImage {
     par: number
 }
 
+export interface CourseInfo {
+    id: number,
+    ccName: string,
+    cc: string,
+    location: string,
+    hole: number,
+    course1: number,
+    course2: number,
+    courseName1: string,
+    courseName2: string,
+    courseDifficult: number,
+    greenDifficult: number,
+}
+
+
 interface CourseState {
     courseThumbnail: CourseThumnail[],
-    courseImage: CourseImage[]
+    courseImage: CourseImage[],
+    courseInfo: CourseInfo[]
 }
 
 export interface CourseThumnail {
@@ -19,7 +35,8 @@ export interface CourseThumnail {
 
 const initialState: CourseState = {
     courseImage: [],
-    courseThumbnail: []
+    courseThumbnail: [],
+    courseInfo: []
 }
 
 const courseSlice = createSlice ({
@@ -31,9 +48,12 @@ const courseSlice = createSlice ({
         },
         saveCourseImage(state, action: PayloadAction<CourseImage[]>) {
             state.courseImage = action.payload
+        },
+        saveCourseInfo(state, action: PayloadAction<CourseInfo[]>) {
+            state.courseInfo = action.payload
         }
     }
 })
 
 export default courseSlice.reducer
-export const { saveCourseThumbnail, saveCourseImage } = courseSlice.actions
+export const { saveCourseThumbnail, saveCourseImage, saveCourseInfo } = courseSlice.actions

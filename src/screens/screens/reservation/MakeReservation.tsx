@@ -81,8 +81,7 @@ const MakeReservation = ({ route }: Props) => {
 
     const getAvailableTime = () => {
         const available: boolean[] = [true, true, true, true, true, true]
-
-        const openTime= shopInfo.openAt.split(':')
+        const openTime= shopInfo.openedAt.split(':')
         const open = new Date()
         open.setDate(revTime.getDate())
         open.setHours(parseInt(openTime[0], 10))
@@ -95,9 +94,13 @@ const MakeReservation = ({ route }: Props) => {
         close.setDate(revTime.getDate())
         close.setHours(closeHour)
         close.setMinutes(closeMin)
+        close.setSeconds(0)
+        close.setMilliseconds(0)
 
         const revClose = new Date(revTime.getTime())
         revClose.setHours(revClose.getHours() + revInfo.people + 1)
+        revClose.setSeconds(0)
+        revClose.setMilliseconds(0)
 
         if (close < open) { 
             close.setDate(close.getDate() + 1)                                    
@@ -112,27 +115,27 @@ const MakeReservation = ({ route }: Props) => {
                 available[i] = false
             }
         } else if (closeHour === revClose.getHours()) {
-            if (closeMin >= 0 && closeMin < 10) {
+            if (closeMin > 0 && closeMin < 10) {
                 for (let i = 0; i < 6; i++) {
                     available[i] = false
                 }
-            } else if (closeMin >= 10 && closeMin < 20) {
+            } else if (closeMin >= 0 && closeMin < 20) {
                 for (let i = 1; i < 6; i++) {
                     available[i] = false
                 }
-            } else if (closeMin >= 20 && closeMin < 30) {
+            } else if (closeMin >= 0 && closeMin < 30) {
                 for (let i = 2; i < 6; i++) {
                     available[i] = false
                 }
-            } else if (closeMin >= 30 && closeMin < 40) {
+            } else if (closeMin >= 0 && closeMin < 40) {
                 for (let i = 3; i < 6; i++) {
                     available[i] = false
                 }
-            } else if (closeMin >= 40 && closeMin < 50) {
+            } else if (closeMin >= 0 && closeMin < 50) {
                 for (let i = 4; i < 6; i++) {
                     available[i] = false
                 }
-            } else if (closeMin >= 50 && closeMin <=60) {
+            } else if (closeMin >= 0 && closeMin <= 60) {
                 for (let i = 5; i < 6; i++) {
                     available[i] = false
                 }
@@ -194,9 +197,6 @@ const MakeReservation = ({ route }: Props) => {
         setIsAvailable(available)
     }
 
-
-
-
     const formatTime = (time: Date) => {
         const month = time.getMonth() + 1
         const date = time.getDate()
@@ -216,6 +216,7 @@ const MakeReservation = ({ route }: Props) => {
         return `${month}월 ${date}일 (${day}) ${ampm} ${hours}시 ${min < 10 ? '0' + min : min}분~`
     }
 
+    // make reseravtion
     const reserve = async () => {
         if (isConnected) return
         Alert.alert(
@@ -230,7 +231,7 @@ const MakeReservation = ({ route }: Props) => {
                     text: '확인', 
                     onPress: async (): Promise<void> => { 
                         setIsConnected(true)
-                        const payload: Payload = await registReservation(shopInfo.id, revInfo, userInfo.realName, userInfo.phone, gameMode, selectedHole, isLeft, linkedRoom, twoRoom, twoGame)
+                        const payload: Payload = await registReservation(13, revInfo, userInfo.realName, userInfo.phone, gameMode, selectedHole, isLeft, linkedRoom, twoRoom, twoGame)
                         if (payload.code !== 1000) {
                             setIsConnected(false)
                             Alert.alert('알림','예약을 할 수 없습니다.')

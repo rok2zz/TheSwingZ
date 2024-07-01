@@ -22,6 +22,10 @@ export const useVideoList = (): VideoList[] => {
     return useSelector((state: RootState) => state.video.videoList)
 }
 
+export const useVideoListLength = (): number => {
+    return useSelector((state: RootState) => state.video.videoListLength)
+}
+
 export const useThumbnailList = (): Thumbnail[] => {
     return useSelector((state: RootState) => state.video.thumbnailList)
 }
@@ -47,7 +51,7 @@ export const useVideos = (): VideosHooks => {
 	const accessToken = useAccessToken()
 	const refreshToken = useRefreshToken()
 	const { saveAccessToken, clearUserInfo } = useAuthActions()
-	const { saveVideoList, saveSwingVideo, saveScoreCardVideo } = useVideoActions()
+	const { saveVideoList, saveVideoListLength, saveSwingVideo, saveScoreCardVideo } = useVideoActions()
 
 	// get swingthumbnail
 	const getMySwingVideoList = async (startIndex: number, cnt: number): Promise<Payload> => {
@@ -61,8 +65,6 @@ export const useVideos = (): VideosHooks => {
         }
         const jsonBody: string = JSON.stringify(body)
    
-        // if (accessToken === null) return { code: -1 }
-
         try {
             const res: any = await axios.post(appURL, jsonBody, {
                 headers: {
@@ -98,12 +100,13 @@ export const useVideos = (): VideosHooks => {
                         return payload
                     }
                     
-                    if (res.data.result && res.data.result.roomList && res.data.result.accessToken) {
+                    if (res.data.result && res.data.result.roomList && res.data.result.total && res.data.result.accessToken) {
                         if (startIndex && startIndex > 0) {
                             const list = videoList
                             if (list) {
                                 const addVideoList = list.concat(res.data.result.roomList)
                                 saveVideoList(addVideoList)
+                                saveVideoListLength(res.data.result.total)
 
                                 const payload: Payload = {
                                     code: res.data.code,
@@ -114,6 +117,7 @@ export const useVideos = (): VideosHooks => {
                         }
 
                         saveAccessToken(res.data.result.accessToken)
+                        saveVideoListLength(res.data.result.total)
 
                         const token = {
                             accessToken: res.data.result?.accessToken,
@@ -121,10 +125,6 @@ export const useVideos = (): VideosHooks => {
                         }
 
                         await AsyncStorage.setItem('token', JSON.stringify(token))
-
-                        if (Array.isArray(res.data.result.roomList)) {
-                            saveVideoList(res.data.result.roomList)
-                        }
                     }
                     
                     return { code: 1000 }
@@ -138,12 +138,13 @@ export const useVideos = (): VideosHooks => {
                 return payload
             }
             
-            if (res.data.result && res.data.result.roomList) {
+            if (res.data.result && res.data.result.roomList && res.data.result.total) {
                 if (startIndex && startIndex > 0) {
                     const list = videoList
                     if (list) {
                         const addVideoList = list.concat(res.data.result.roomList)
                         saveVideoList(addVideoList)
+                        saveVideoListLength(res.data.result.total)
 
                         const payload: Payload = {
                             code: res.data.code,
@@ -154,6 +155,7 @@ export const useVideos = (): VideosHooks => {
                 }
 
                 saveVideoList(res.data.result.roomList)
+                saveVideoListLength(res.data.result.total)
             }
 
             return { code: 1000 }
@@ -164,6 +166,7 @@ export const useVideos = (): VideosHooks => {
         return  { code: -1, msg: '알 수 없는 에러가 발생했습니다.' }
 	}
 
+    // get score card video
 	const getScoreCardVideo = async (roomId: number): Promise<Payload>  => {
 		const body: Body = {
             cls: 'Play',

@@ -1,13 +1,8 @@
-import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs"
-import { CompositeNavigationProp, NavigatorScreenParams } from "@react-navigation/native"
+import { NavigatorScreenParams } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
-import { GoogleResponse } from "./apiTypes"
-// import { KakaoOAuthToken } from "@react-native-seoul/kakao-login"
-// import { NaverLoginResponse } from "@react-native-seoul/naver-login"
-import { Store } from "./screenTypes"
 import { CourseInfo } from "../screens/screens/course/courseInfo"
-import { ReservationInfo, ReservationSetting, ShopInfo } from "../slices/reservation"
-import { Thumbnail, VideoList } from "../slices/video"
+import { ReservationSetting, ShopInfo } from "../slices/reservation"
+import { VideoList } from "../slices/video"
 
 // RootStack
 export type RootStackParamList = {
@@ -92,7 +87,12 @@ export type RootStackParamList = {
 	}
 
 	// CS
-	FAQ: undefined
+	Notice: undefined,
+	NoticeDetail: {
+		id: number
+	},
+	FAQ: undefined,
+	Inquiry: undefined
 }
 
 export type RootStackScreenName = keyof RootStackParamList
@@ -100,10 +100,10 @@ export type RootStackNavigationProp = NativeStackNavigationProp<RootStackParamLi
 
 // AuthStack
 export type AuthStackParamList = {
-	// 로그인
+	// login
 	Login: undefined,
 
-	// 회원가입
+	// register
 	Terms: {
 		type: string
 	},
@@ -119,7 +119,7 @@ export type AuthStackParamList = {
 		nickname: string
 	},
 
-	// 아이디 찾기
+	// find id & pw
 	IdentifyFind: undefined,
 	Find: undefined,
 	ResultFind: {

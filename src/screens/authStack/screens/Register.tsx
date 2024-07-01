@@ -12,6 +12,8 @@ import validate from "validate.js"
 import DownArrow from "../../../assets/imgs/login/arrow_down.svg"
 import UpArrow from "../../../assets/imgs/login/arrow_up.svg"
 import Loading from "../../../components/Loading"
+import { ServerInfo } from "../../../slices/api"
+import { useServerInfo } from "../../../hooks/useApi"
 
 interface Props {
     route: RouteProp<AuthStackParamList, 'Register'>
@@ -29,6 +31,8 @@ const Register = ({ route }: Props): JSX.Element =>  {
     const navigation = useNavigation<AuthStackNavigationProp>()
     const agreeMarketing = route.params.isMarketingChecked
     const socialType = route.params.type
+    const serverInfo: ServerInfo = useServerInfo()
+    const isReviewServer = Platform.OS === 'ios' && serverInfo.authServer === 'https://xjiptnq8k7.execute-api.ap-northeast-2.amazonaws.com/review_231123/'
 
     const { createAccount, socialCreate, checkDuplicatedId, checkDuplicatedNickname, sendMessage } = useUsers()
     const authInfo = useAuthInfo()
@@ -92,7 +96,6 @@ const Register = ({ route }: Props): JSX.Element =>  {
                 scrollViewRef.current.scrollToEnd({ animated: true })
             }
         }
-
     }, [openDropdown])
 
 
@@ -137,9 +140,9 @@ const Register = ({ route }: Props): JSX.Element =>  {
 
     // 입력할때마다 user의 정보 업데이트
     const createChangeTextHadler = (text: string): ChangeTextHandler => (value: string): void => {
-        if (value === 'nickname') {
+        if (text === 'nickname') {
             setNicknameDuplicated(true)
-        } else if (value === 'userID') {
+        } else if (text === 'userID') {
             setIdDuplicated(true)
         }
         
@@ -325,7 +328,8 @@ const Register = ({ route }: Props): JSX.Element =>  {
                                 return
                             }
                         } else {
-                            const payload: Payload = await socialCreate(socialId, socialType, user.realName, user.email, user.phone, user.nickname, user.location, authCode) 
+
+                            const payload: Payload = await socialCreate(socialId, socialType, isReviewServer ? 'name' : user.realName, isReviewServer ? 'email@apple.com' :  user.email, user.phone, user.nickname, user.location, authCode) 
                             if (payload.code !== 1000) {
                                 if (payload.code === -3002 || payload.code === -3003){
                                     setMessage({ type: 'nickname', msg: payload.msg ?? '서버에 연결할 수 없습니다.' })
@@ -459,69 +463,80 @@ const Register = ({ route }: Props): JSX.Element =>  {
                     <View style={{ marginBottom: 27 }}>
                         <Text style={[ styles.boldText, { marginBottom: 15 }]}>회원가입 정보 입력​</Text>
 
-                        { (user.realName !== '' && socialType === 'normal') ? <Text style={[ styles.regularText, { marginLeft: 10, marginVertical: 24 } ]}>{ user.realName }</Text> 
-                            :
-                        (
+                        { !isReviewServer &&
                             <>
+                                { (user.realName !== '' && socialType === 'normal') ? 
+                                    <Text style={[ styles.regularText, { marginLeft: 10, marginVertical: 24 } ]}>{ user.realName }</Text> 
+                                    :
+                                    (
+                                    <>
+                                        <View style={ styles.rowContainer }>
+                                            <TextInput style={[ styles.input, isFocused.ref === nameRef && isFocused.isFocused ? { borderBottomColor: '#fd780f'} : { borderBottomColor: '#cccccc'} ]} 
+                                                placeholder="이름 입력​" placeholderTextColor="#aaaaaa" ref={ nameRef } returnKeyType="next" autoCapitalize='none' 
+                                                onFocus={ () => handleFocus(nameRef) } onBlur={ () => handleBlur(nameRef)}
+                                                onChangeText={ createChangeTextHadler('realName') } onSubmitEditing={ () => {
+                                                    emailRef.current && emailRef.current.focus() 
+                                                }} />
+                                        </View>
+                                        { message.type === 'name' ? <Text style={ styles.message }>{ message.msg }</Text> : <View style={{ marginBottom: 24 }}></View> }
+                                    </>
+                                )}
+                                
                                 <View style={ styles.rowContainer }>
-                                    <TextInput style={[ styles.input, isFocused.ref === nameRef && isFocused.isFocused ? { borderBottomColor: '#fd780f'} : { borderBottomColor: '#cccccc'} ]} 
-                                        placeholder="이름 입력​" placeholderTextColor="#aaaaaa" ref={ nameRef } returnKeyType="next" autoCapitalize='none' 
-                                        onFocus={ () => handleFocus(nameRef) } onBlur={ () => handleBlur(nameRef)}
-                                        onChangeText={ createChangeTextHadler('realName') } onSubmitEditing={ () => {
-                                            emailRef.current && emailRef.current.focus() 
+                                    <TextInput style={[ styles.input, isFocused.ref === emailRef && isFocused.isFocused ? { borderBottomColor: '#fd780f'} : { borderBottomColor: '#cccccc'} ]} 
+                                        placeholder="이메일 입력​" placeholderTextColor="#aaaaaa" ref={ emailRef } returnKeyType="next" autoCapitalize='none' 
+                                        onFocus={ () => handleFocus(emailRef) } onBlur={ () => handleBlur(emailRef)}
+                                        onChangeText={ createChangeTextHadler('email') } onSubmitEditing={ () => {
+                                            phoneRef.current && phoneRef.current.focus() 
                                         }} />
                                 </View>
-                                { message.type === 'email' ? <Text style={ styles.message }>{ message.msg }</Text> : <View style={{ marginBottom: 24 }}></View> }
+                                { message.type === 'email' ? <Text style={ styles.message }>{ message.msg }</Text> : <View style={ socialType !== 'normal' && { marginBottom: 24 }}></View> }
                             </>
+                        }
+
+                        { (user.phone !== '' && socialType === 'normal') ? (
+                            <Text style={[ styles.regularText, { marginLeft: 10, marginVertical: 24 } ]}>{ user.phone }</Text> 
+                            ) : (
+                            <>
+                                <View style={ styles.rowContainer }>
+                                    <TextInput style={[ styles.input, (isFocused.ref === phoneRef && isFocused.isFocused) ? { borderBottomColor: '#cccccc'} : { borderBottomColor: '#cccccc'}]}                             
+                                        ref={ phoneRef } placeholder=" - 를 제외한 휴대전화번호 입력"  placeholderTextColor="#aaaaaa" returnKeyType="next" autoCapitalize='none'
+                                        onChangeText={ createChangeTextHadler('phone') } keyboardType="decimal-pad"
+                                        onFocus={ () => handleFocus(phoneRef) } onBlur={ () => handleBlur(phoneRef)}
+                                        onSubmitEditing={ () => authNumRef.current && authNumRef.current.focus() }
+                                    />             
+
+                                    { timer ?
+                                        ( 
+                                            <Pressable style={({ pressed }) => [ styles.authBtn, { borderWidth: 1, borderColo: '#121619'}, Platform.OS === 'ios' && pressed && { opacity: 0.5 }]}
+                                                onPress={ onPressSendMessage } android_ripple={{ color: '#b4b4b4' }}>
+                                                <Text style={ styles.authBtnText } >재 요청</Text>
+                                            </Pressable>
+                                        ) : (
+                                            <Pressable style={({ pressed }) => [ styles.authBtn, { backgroundColor: '#121619' }, Platform.OS === 'ios' && pressed && { opacity: 0.5 }]}
+                                                onPress={ onPressSendMessage } android_ripple={{ color: '#b4b4b4' }}>
+                                                <Text style={[ styles.authBtnText, { color: '#ffffff'} ]}>인증요청</Text>
+                                            </Pressable>
+                                        )
+                                    }
+                                </View>
+
+                                { message.type === 'phone' ? <Text style={ styles.message }>{ message.msg }</Text> : <View style={{ marginBottom: 24 }}></View> }
+
+                                <View style={ styles.rowContainer }>
+                                    <TextInput style={[ styles.input, (isFocused.ref === authNumRef && isFocused.isFocused) ? { borderBottomColor: '#cccccc'} : { borderBottomColor: '#cccccc'}]} 
+                                        ref={ authNumRef } placeholder=" 인증번호 입력" placeholderTextColor="#aaaaaa" returnKeyType="done" autoCapitalize='none' 
+                                        onChangeText={(code: string): void => setAuthCode(code)} keyboardType="decimal-pad"
+                                        onFocus={ () => handleFocus(authNumRef) } onBlur={ () => handleBlur(authNumRef)}
+                                        onSubmitEditing={ Keyboard.dismiss } 
+                                    />
+
+                                    { timer ? <Text style={ styles.timer }>{ min } : { sec }</Text> : <></> }
+                                </View>
+
+                                { message.type === 'auth' ? <Text style={ styles.message }>{ message.msg }</Text> : <View style={{ marginBottom: 24 }}></View> }
+                            </> 
                         )}
-                        
-                        <View style={ styles.rowContainer }>
-                            <TextInput style={[ styles.input, isFocused.ref === emailRef && isFocused.isFocused ? { borderBottomColor: '#fd780f'} : { borderBottomColor: '#cccccc'} ]} 
-                                placeholder="이메일 입력​" placeholderTextColor="#aaaaaa" ref={ emailRef } returnKeyType="next" autoCapitalize='none' 
-                                onFocus={ () => handleFocus(emailRef) } onBlur={ () => handleBlur(emailRef)}
-                                onChangeText={ createChangeTextHadler('email') } onSubmitEditing={ () => {
-                                    phoneRef.current && phoneRef.current.focus() 
-                                }} />
-                        </View>
-                        { message.type === 'email' ? <Text style={ styles.message }>{ message.msg }</Text> : <View style={{ marginBottom: 24 }}></View> }
-
-                        <View style={ styles.rowContainer }>
-                            <TextInput style={[ styles.input, (isFocused.ref === phoneRef && isFocused.isFocused) ? { borderBottomColor: '#cccccc'} : { borderBottomColor: '#cccccc'}]}                             
-                                ref={ phoneRef } placeholder=" - 를 제외한 휴대전화번호 입력"  placeholderTextColor="#aaaaaa" returnKeyType="next" autoCapitalize='none'
-                                onChangeText={ createChangeTextHadler('phone') } keyboardType="decimal-pad"
-                                onFocus={ () => handleFocus(phoneRef) } onBlur={ () => handleBlur(phoneRef)}
-                                onSubmitEditing={ () => authNumRef.current && authNumRef.current.focus() }
-                            />             
-
-                            { timer ?
-                                ( 
-                                    <Pressable style={({ pressed }) => [ styles.authBtn, { borderWidth: 1, borderColo: '#121619'}, Platform.OS === 'ios' && pressed && { opacity: 0.5 }]}
-                                        onPress={ onPressSendMessage } android_ripple={{ color: '#b4b4b4' }}>
-                                        <Text style={ styles.authBtnText } >재 요청</Text>
-                                    </Pressable>
-                                ) : (
-                                    <Pressable style={({ pressed }) => [ styles.authBtn, { backgroundColor: '#121619' }, Platform.OS === 'ios' && pressed && { opacity: 0.5 }]}
-                                        onPress={ onPressSendMessage } android_ripple={{ color: '#b4b4b4' }}>
-                                        <Text style={[ styles.authBtnText, { color: '#ffffff'} ]}>인증요청</Text>
-                                    </Pressable>
-                                )
-                            }
-                        </View>
-
-                        { message.type === 'phone' ? <Text style={ styles.message }>{ message.msg }</Text> : <View style={{ marginBottom: 24 }}></View> }
-
-                        <View style={ styles.rowContainer }>
-                            <TextInput style={[ styles.input, (isFocused.ref === authNumRef && isFocused.isFocused) ? { borderBottomColor: '#cccccc'} : { borderBottomColor: '#cccccc'}]} 
-                                ref={ authNumRef } placeholder=" 인증번호 입력" placeholderTextColor="#aaaaaa" returnKeyType="done" autoCapitalize='none' 
-                                onChangeText={(code: string): void => setAuthCode(code)} keyboardType="decimal-pad"
-                                onFocus={ () => handleFocus(authNumRef) } onBlur={ () => handleBlur(authNumRef)}
-                                onSubmitEditing={ Keyboard.dismiss } 
-                            />
-
-                            { timer ? <Text style={ styles.timer }>{ min } : { sec }</Text> : <></> }
-                        </View>
-
-                        { message.type === 'auth' ? <Text style={ styles.message }>{ message.msg }</Text> : <View style={{ marginBottom: 24 }}></View> }
 
                         <View style={ styles.rowContainer }>
                             <TextInput style={[ styles.input, isFocused.ref === nicknameRef && isFocused.isFocused ? { borderBottomColor: '#fd780f'} : { borderBottomColor: '#cccccc'} ]} 
@@ -672,7 +687,6 @@ const styles = StyleSheet.create({
 
         marginTop: 6,
         marginLeft: 6,
-        marginBottom: 24,
 
         color: '#c50f0b'
     },

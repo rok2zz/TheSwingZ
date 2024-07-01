@@ -123,7 +123,6 @@ export const useRecords = (): RecordsHook => {
 						return payload
 					}
 				}
-
 				const payload: Payload = {
 					code: res.data.code,
 					record: {

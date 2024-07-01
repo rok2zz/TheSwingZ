@@ -85,22 +85,17 @@ const brandList: ListProps[] = [
 const serviceList: ListProps[] = [
     // {
     //     title: '공지사항',
-    //     screen: '',
-    //     stack: 'root'
-    // },
-    // {
-    //     title: '1:1문의',
-    //     screen: '',
+    //     screen: 'Notice',
     //     stack: 'root'
     // },
     // {
     //     title: 'FAQ',
-    //     screen: '',
+    //     screen: 'FAQ',
     //     stack: 'root'
     // },
     // {
-    //     title: '마케팅문의',
-    //     screen: '',
+    //     title: '1:1문의',
+    //     screen: 'Inquiry',
     //     stack: 'root'
     // },
     {

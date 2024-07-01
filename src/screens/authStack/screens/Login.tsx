@@ -13,6 +13,9 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import appleAuth, { AndroidSigninResponse, appleAuthAndroid } from '@invertase/react-native-apple-authentication';
 import { useAuthActions } from "../../../hooks/useAuthActions"
 import { useRefreshToken } from "../../../hooks/useToken"
+import Loading from "../../../components/Loading"
+import { KakaoLoginToken, KakaoUser, login, logout, me } from "@react-native-kakao/user"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 // svg
 import Logo from "../../../assets/imgs/common/logo_w.svg"
@@ -23,9 +26,7 @@ import Kakao from "../../../assets/imgs/login/kakao.svg"
 import Naver from "../../../assets/imgs/login/naver.svg"
 import Google from "../../../assets/imgs/login/google.svg"
 import Apple from "../../../assets/imgs/login/apple.svg"
-import Loading from "../../../components/Loading"
-import { KakaoLoginToken, KakaoUser, login, logout, me } from "@react-native-kakao/user"
-import AsyncStorage from "@react-native-async-storage/async-storage"
+
 
 
 interface ModalType {
@@ -83,7 +84,7 @@ const Login = (): JSX.Element => {
 		}, [])
 	)
 
-    // autoLogin check
+    // check auto login after
     const checkAutoLogin = () => {
         setIsChecked(previousState => !previousState)
     }
@@ -95,13 +96,14 @@ const Login = (): JSX.Element => {
         }
     }
 
+    // pw clear
     const clearPwTextInput = () => {
         if (passwordRef.current) {
             passwordRef.current.setNativeProps({ text: '' })
         }
     }
 
-    // 선택한 입력칸 포커스
+    // focus id textinput
     const handleFocus = (ref: React.RefObject<TextInput>) => {
         setIsFocused({
             ref: ref,
@@ -109,7 +111,7 @@ const Login = (): JSX.Element => {
         })
     }
 
-    // 포커스 해제
+    // focus pw textinput
     const handleBlur = (ref: React.RefObject<TextInput>) => {
         setIsFocused({
             ref: ref,
@@ -117,7 +119,7 @@ const Login = (): JSX.Element => {
         })
     }
     
-    // 로그인 메소드 실행
+    // login
 	const onPressLogin = async () => {
         Keyboard.dismiss()
         if (isConnected) return // 중복 호출 방지
@@ -154,7 +156,7 @@ const Login = (): JSX.Element => {
         } 
 	}
 
-    // 카카오 로그인
+    // kakao login
     const signInWithKakao = async () => {
         if (isConnected) return // 중복 호출 방지
 
@@ -180,7 +182,7 @@ const Login = (): JSX.Element => {
         setIsConnected(false)
 	}
 
-    // 네이버 로그인
+    // naver login
     const signInWithNaver = async () => {
         if (isConnected) return // 중복 호출 방지
 
@@ -195,7 +197,6 @@ const Login = (): JSX.Element => {
         }
 
         const { failureResponse, successResponse } = await NaverLogin.login()
-        console.log(failureResponse)
         setSuccessResponse(successResponse)
         setFailureResponse(failureResponse)
 
@@ -213,16 +214,15 @@ const Login = (): JSX.Element => {
                     return
                 }
             }
-  
             setIsConnected(false)
         }
-
         setIsConnected(false)
     }
 
-    // 구글 로그인
+    // google login
     const signInWithGoogle = async () => {
         if (isConnected) return
+
         GoogleSignin.configure({
             scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
             webClientId: `417264241402-pkirhqlegssrerjshqgpd8mg6d0e2haf.apps.googleusercontent.com`, // client ID of type WEB for your server (needed to verify user ID and offline access)
@@ -256,25 +256,18 @@ const Login = (): JSX.Element => {
     // apple login
     const signInWithApple = async () => {
         if (isConnected) return
-        
+
         try {
             setIsConnected(true)
             if (Platform.OS === 'ios') {
                 const appleAuthRequestResponse = await appleAuth.performRequest({
                     requestedOperation: appleAuth.Operation.LOGIN,
-                    // Note: it appears putting FULL_NAME first is important, see issue #293
                     requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
                 })
-                console.log(appleAuthRequestResponse)
-                  // get current authentication state for user
-                  // /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
                 const credentialState = await appleAuth.getCredentialStateForUser(appleAuthRequestResponse.user)
-        
-                
-                // use credentialState response to ensure the user is authenticated
-                if (credentialState === appleAuth.State.AUTHORIZED) {
-                // user is authenticated
-                }
+
+                // if (credentialState === appleAuth.State.AUTHORIZED) {
+                // }
     
                 if (appleAuthRequestResponse.user) {
                     saveSocialId(appleAuthRequestResponse.user)
@@ -299,11 +292,11 @@ const Login = (): JSX.Element => {
                     scope: appleAuthAndroid.Scope.ALL,
                     nonce: rawNonce,
                     state,
-                  })
+                })
                 
-                  const response: AndroidSigninResponse = await appleAuthAndroid.signIn()
+                const response: AndroidSigninResponse = await appleAuthAndroid.signIn()
 
-                  if (response) {
+                if (response) {
                     saveSocialId(response.id_token ?? '')
                     const payload: Payload = await socialLogin(response.id_token ?? '', 'APPLE', isChecked)
                     setIsConnected(false)
@@ -313,13 +306,11 @@ const Login = (): JSX.Element => {
                             navigation.navigate('Terms', { type: 'APPLE' })
                         }
                     }
-        
                 }
             }
         } catch (error) {
             setIsConnected(false)
         }
-        
         setIsConnected(false)
     }
 
@@ -341,19 +332,19 @@ const Login = (): JSX.Element => {
 
                 {/* id & password input */}
                 <View style={ styles.inputContainer }>
-                    <TextInput style={[ styles.input, { marginBottom: 20 }, isFocused.ref === idRef && isFocused.isFocused ? { borderBottomColor: '#ffffff'} : { borderBottomColor: '#ffffff'}]} 
+                    <TextInput style={[ styles.input, { marginBottom: 20 }, isFocused.ref === idRef && isFocused.isFocused ? { borderBottomColor: '#fd780f'} : { borderBottomColor: '#ffffff'}]} 
                         placeholder="아이디 입력" placeholderTextColor="white" ref={ idRef } returnKeyType="next" autoCapitalize='none' onFocus={ () => handleFocus(idRef) } onBlur={ () => handleBlur(idRef)}
                         onChangeText={(userID: string): void => setUserID(userID)} onSubmitEditing={() => passwordRef.current && passwordRef.current.focus() }/>
                     <Eraser style={ styles.eraser } onPress={ clearIdTextInput } /> 
                 </View>
                 <View style={ styles.inputContainer }>
-                    <TextInput style={[ styles.input, isFocused.ref === passwordRef && isFocused.isFocused ? { borderBottomColor: '#ffffff'} : { borderBottomColor: '#ffffff'} ]} 
+                    <TextInput style={[ styles.input, isFocused.ref === passwordRef && isFocused.isFocused ? { borderBottomColor: '#fd780f'} : { borderBottomColor: '#ffffff'} ]} 
                         placeholder="비밀번호 입력" placeholderTextColor="white" ref={ passwordRef } returnKeyType="done" secureTextEntry  onFocus={ () => handleFocus(passwordRef) } onBlur={ () => handleBlur(passwordRef)}
                         onChangeText={(userPW: string): void => setUserPW(userPW)} onSubmitEditing={ onPressLogin } textContentType="oneTimeCode" />
                     <Eraser style={ styles.eraser } onPress={ clearPwTextInput } />
                 </View>
             
-            {/* error message */}
+                {/* error message */}
                 <Text style={ styles.message }>{ message }</Text>
                     
                 {/* login btn */}

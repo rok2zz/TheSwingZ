@@ -5,7 +5,7 @@ import { RootStackNavigationProp } from "../../../types/stackTypes"
 import { useCallback, useEffect, useState } from "react"
 import { SafeAreaView } from "react-native-safe-area-context"
 import Header from "../../../components/Header"
-import { useIsCached, useVideoList, useVideos } from "../../../hooks/useVideos"
+import { useIsCached, useVideoList, useVideoListLength, useVideos } from "../../../hooks/useVideos"
 import { Payload } from "../../../types/apiTypes"
 import { Thumbnail, VideoList } from "../../../slices/video"
 import FastImage from "react-native-fast-image"
@@ -23,8 +23,9 @@ import EmptyVideo from "../../../assets/imgs/swing/icon_swing.svg"
 const SwingVideo = (): JSX.Element => {
     const navigation = useNavigation<RootStackNavigationProp>()
     const { getMySwingVideoList } = useVideos()
-    const { saveIsCached } = useVideoActions()
+    const { saveIsCached, clearVideo } = useVideoActions()
     const videoList = useVideoList()
+    const total = useVideoListLength()
     const isCached = useIsCached()
 
     const [isConnected, setIsConnected] = useState<boolean>(false)
@@ -34,8 +35,7 @@ const SwingVideo = (): JSX.Element => {
     const [club, setClub] = useState<string>('All')
     const [position] = useState(new Animated.Value(0))
 
-    const [startIndex, setStartIndex] = useState<number>(0)
-    const [refreshing, setRefreshing] = useState(false)
+    const [offset, setOffset] = useState<number>(0)
 
     useEffect(() => {
         if (!isCached) {
@@ -45,7 +45,10 @@ const SwingVideo = (): JSX.Element => {
     }, [])
 
     useEffect(() => {
-        setStartIndex(videoList.length)
+        if (videoList) {
+            setOffset(videoList.length)
+        }
+        console.log(videoList)
     },[videoList]) 
 
     useEffect(() => {
@@ -61,7 +64,7 @@ const SwingVideo = (): JSX.Element => {
     }, [club])
 
     const getVideoList = async (index: number) => {
-        if (isConnected) return
+        if (isConnected || (total > 0 && index >= total)) return
  
         setIsConnected(true)
         const payload: Payload = await getMySwingVideoList(index, 5)
@@ -86,7 +89,11 @@ const SwingVideo = (): JSX.Element => {
         const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent
         const paddingToBottom = 20
         if (layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom) {
-            getVideoList(startIndex)
+            getVideoList(offset)
+
+        } else if (contentOffset.y < -10 && !isScrolled) { // refresh
+            setOffset(0)
+            getVideoList(0)
         }
 
         setTimeout(() => {
@@ -121,131 +128,119 @@ const SwingVideo = (): JSX.Element => {
         } 
     }
 
-    const onRefresh = useCallback(() => {
-        if (refreshing) return
-
-        setRefreshing(true)
-        getVideoList(0)
-        
-        setTimeout(() => {
-            setRefreshing(false)
-        }, 2000)
-    }, [])
-
     return (
         <View style={ styles.wrapper }>
             { isConnected && <View style={{ position: 'absolute', top: 0, left: 0, zIndex: 5 }}><Loading /></View>  }
-            { videoList.length === 0 ? (
-                <>
-                    <View style={[ styles.container, { alignItems: 'center'}]}>
-                        <View style={{ marginBottom: 15, marginTop: 30 }}>
-                            <EmptyVideo style={{ transform: [{ translateX: 5 }]}} />
+           
+            <ScrollView onScroll={ handleScroll } showsVerticalScrollIndicator={ false } scrollEventThrottle={ 180 }>
+                { videoList.length === 0 ? (
+                    <>
+                        <View style={[ styles.container, { alignItems: 'center'}]}>
+                            <View style={{ marginBottom: 15, marginTop: 30 }}>
+                                <EmptyVideo style={{ transform: [{ translateX: 5 }]}} />
+                            </View>
+
+                            <Text style={[ styles.regularText, { marginBottom: 3, color: '#666666'}]}>플레이별 최대 5개의</Text>
+                            <Text style={[ styles.regularText, { color: '#666666'}]}>마이 스윙폼을 기록할 수 있습니다.​</Text>
+
+                        </View>
+                        <View style={ styles.subContainer }>
+                            <Exclamation style={{ marginRight: 6, marginTop: 3 }} />
+                            <Text style={[ styles.regularText, { fontSize: 14, color: '#666666' }]}>스윙영상은 스크린골프시 자동으로 저장되며, 게임당 최대 10개 저장 후 촬영일로부터 유효기간 6개월입니다.</Text>
+                        </View>
+                    </>
+                    ) : (
+                    <View>
+                        <View style={ styles.filterContainer }>
+                            <Pressable style={[ styles.rowContainer, { marginRight: 15 }]} onPress={ () => setOpenFilter(true)}>
+                                <Text style={ styles.regularText }>{ getSelectedClub() }</Text>
+                                <Arrow style={{ marginLeft: 6, marginTop: 3 }} />
+                            </Pressable>
                         </View>
 
-                        <Text style={[ styles.regularText, { marginBottom: 3, color: '#666666'}]}>플레이별 최대 5개의</Text>
-                        <Text style={[ styles.regularText, { color: '#666666'}]}>마이 스윙폼을 기록할 수 있습니다.​</Text>
+                        <View style={ styles.container }>
+                            { videoList.map((item: VideoList, index: number) => {
+                                const dashHeight = index === videoList.length - 1 ? 10 : 250
+                                let count = item.thumbnail.length
 
-                    </View>
-                    <View style={ styles.subContainer }>
-                        <Exclamation style={{ marginRight: 6, marginTop: 3 }} />
-                        <Text style={[ styles.regularText, { fontSize: 14, color: '#666666' }]}>스윙영상은 스크린골프시 자동으로 저장되며, 게임당 최대 10개 저장 후 촬영일로부터 유효기간 6개월입니다.</Text>
-                    </View>
-                </>
-                ) : (
-                <ScrollView onScroll={ handleScroll } showsVerticalScrollIndicator={ false } scrollEventThrottle={ 16 }
-                    refreshControl={ <RefreshControl refreshing={ refreshing } onRefresh={ onRefresh } /> }
-                >
-                    <View style={ styles.filterContainer }>
-                        <Pressable style={[ styles.rowContainer, { marginRight: 15 }]} onPress={ () => setOpenFilter(true)}>
-                            <Text style={ styles.regularText }>{ getSelectedClub() }</Text>
-                            <Arrow style={{ marginLeft: 6, marginTop: 3 }} />
-                        </Pressable>
-                    </View>
-
-                    <View style={ styles.container }>
-                        { videoList.map((item: VideoList, index: number) => {
-                            const dashHeight = index === videoList.length - 1 ? 10 : 250
-                            
-                            let count = item.thumbnail.length
-                            for (let i = 0; i < item.thumbnail.length; i++) {
-                                if (club === 'Wedge') {
-                                    if (!item.thumbnail[i].club.includes('PW') && !item.thumbnail[i].club.includes('SW') && !item.thumbnail[i].club.includes('LW') && !item.thumbnail[i].club.includes('AW')) {
+                                for (let i = 0; i < item.thumbnail.length; i++) {
+                                    if (club === 'Wedge') {
+                                        if (!item.thumbnail[i].club.includes('PW') && !item.thumbnail[i].club.includes('SW') && !item.thumbnail[i].club.includes('LW') && !item.thumbnail[i].club.includes('AW')) {
+                                            count--
+                                        }
+                                    } else if (club !== 'All' && !item.thumbnail[i].club.includes(club)) {
                                         count--
                                     }
-                                } else if (club !== 'All' && !item.thumbnail[i].club.includes(club)) {
-                                    count--
                                 }
-                            }
+                                
+                                return (
+                                    <View key={ index }>
+                                        { item.thumbnail.length !== 0 && 
+                                        <View style={ styles.infoContainer }>
+                                            <View style={ styles.leftContainer }>
+                                                <View style={ styles.circle }></View>
+                                                <Svg height="250" width={ 5 } style={ styles.line } >
+                                                    <Line
+                                                        x1={ 2.5 } 
+                                                        x2={ 2.5 } 
+                                                        y1={ -5 }
+                                                        y2={ dashHeight }
+                                                        stroke='#cccccc'
+                                                        strokeWidth={ 1 }
+                                                        strokeOpacity='1'
+                                                        strokeDasharray="3, 3"
+                                                    />
+                                                </Svg>
+                                            </View>
+                                            <View>
+                                                <Text style={ styles.regularText }>{ formatDate(item.dayAt) }</Text>
+                                                <Text style={ styles.boldText }>{ item.ccName }</Text>
+                                                <ScrollView style={ styles.videoContainer } horizontal showsHorizontalScrollIndicator={ false }>
+                                                    { item.thumbnail.map((thumbnailItem: Thumbnail, thumbnailIndex: number) => {
+                                                        if (!thumbnailItem.club.includes(club) && club !== 'All' && club != 'Wedge') return
+                                                        if (club === 'Wedge') {
+                                                            if (thumbnailItem.club !== 'PW' && thumbnailItem.club !== 'AW' && thumbnailItem.club !== 'LW' && thumbnailItem.club !== 'SW') return
+                                                        }
+                                                        return (
+                                                            <View key={ thumbnailIndex }>
+                                                                { (thumbnailItem.url && thumbnailItem.url !== '') &&
+                                                                    <Pressable style={ styles.thumbnail } onPress={ () => navigation.navigate('VideoDetail', { videoInfo: item, videoIndex: index, thumbnailIndex: thumbnailIndex })}>
+                                                                        <FastImage 
+                                                                            style={ styles.thumbnailImg } 
+                                                                            source={{ 
+                                                                                uri: thumbnailItem.url,
+                                                                                priority: FastImage.priority.normal,
+                                                                                cache: FastImage.cacheControl.immutable 
+                                                                            }} 
+                                                                            resizeMode="cover" 
+                                                                        />  
+                                                                        <Play style={ styles.button } />
+                                                                        <View style={ styles.info }>
+                                                                            <Text style={[ styles.regularText, { fontSize: 14, marginBottom: 0, color: '#ffffff' }]}>{ thumbnailItem.club }</Text>
+                                                                            <Text style={[ styles.boldText, { color: '#ffffff' }]}>{ thumbnailItem.distance }m</Text>
+                                                                        </View>
+                                                                    </Pressable>
+                                                                }
+                                                            </View>
+                                                        
+                                                        )
+                                                    })}
+                                                </ScrollView>
+                                            </View>
+                                        </View> 
+                                        }
+                                    </View>
+                                )
+                            })}
+                        </View>
 
-                            if (count <= 0) return
-                            
-                            return (
-                                <View key={ index }>
-                                    { item.thumbnail.length !== 0 && 
-                                    <View style={ styles.infoContainer }>
-                                        <View style={ styles.leftContainer }>
-                                            <View style={ styles.circle }></View>
-                                            <Svg height="250" width={ 5 } style={ styles.line } >
-                                                <Line
-                                                    x1={ 2.5 } 
-                                                    x2={ 2.5 } 
-                                                    y1={ -5 }
-                                                    y2={ dashHeight }
-                                                    stroke='#cccccc'
-                                                    strokeWidth={ 1 }
-                                                    strokeOpacity='1'
-                                                    strokeDasharray="3, 3"
-                                                />
-                                            </Svg>
-                                        </View>
-                                        <View>
-                                            <Text style={ styles.regularText }>{ formatDate(item.dayAt) }</Text>
-                                            <Text style={ styles.boldText }>{ item.ccName }</Text>
-                                            <ScrollView style={ styles.videoContainer } horizontal showsHorizontalScrollIndicator={ false }>
-                                                { item.thumbnail.map((thumbnailItem: Thumbnail, thumbnailIndex: number) => {
-                                                    if (!thumbnailItem.club.includes(club) && club !== 'All' && club != 'Wedge') return
-                                                    if (club === 'Wedge') {
-                                                        if (thumbnailItem.club !== 'PW' && thumbnailItem.club !== 'AW' && thumbnailItem.club !== 'LW' && thumbnailItem.club !== 'SW') return
-                                                    }
-                                                    return (
-                                                        <View key={ thumbnailIndex }>
-                                                            { (thumbnailItem.url && thumbnailItem.url !== '') &&
-                                                                <Pressable style={ styles.thumbnail } onPress={ () => navigation.navigate('VideoDetail', { videoInfo: item, videoIndex: index, thumbnailIndex: thumbnailIndex })}>
-                                                                    <FastImage 
-                                                                        style={ styles.thumbnailImg } 
-                                                                        source={{ 
-                                                                            uri: thumbnailItem.url,
-                                                                            priority: FastImage.priority.normal,
-                                                                            cache: FastImage.cacheControl.immutable 
-                                                                        }} 
-                                                                        resizeMode="cover" 
-                                                                    />  
-                                                                    <Play style={ styles.button } />
-                                                                    <View style={ styles.info }>
-                                                                        <Text style={[ styles.regularText, { fontSize: 14, marginBottom: 0, color: '#ffffff' }]}>{ thumbnailItem.club }</Text>
-                                                                        <Text style={[ styles.boldText, { color: '#ffffff' }]}>{ thumbnailItem.distance }m</Text>
-                                                                    </View>
-                                                                </Pressable>
-                                                            }
-                                                        </View>
-                                                    
-                                                    )
-                                                })}
-                                            </ScrollView>
-                                        </View>
-                                    </View> 
-                                    }
-                                </View>
-                            )
-                        })}
+                        <View style={ styles.subContainer }>
+                            <Exclamation style={{ marginRight: 6, marginTop: 3 }} />
+                            <Text style={[ styles.regularText, { fontSize: 14, color: '#666666' }]}>스윙영상은 스크린골프시 자동으로 저장되며, 게임당 최대 10개 저장 후 촬영일로부터 유효기간 6개월입니다.</Text>
+                        </View>
                     </View>
-
-                    <View style={ styles.subContainer }>
-                        <Exclamation style={{ marginRight: 6, marginTop: 3 }} />
-                        <Text style={[ styles.regularText, { fontSize: 14, color: '#666666' }]}>스윙영상은 스크린골프시 자동으로 저장되며, 게임당 최대 10개 저장 후 촬영일로부터 유효기간 6개월입니다.</Text>
-                    </View>
-                </ScrollView>
-            )}
+                )}
+            </ScrollView>
             
             { openFilter &&
                 <View style={ styles.filter }>
@@ -419,7 +414,7 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').height,
 
         position: 'absolute',
-        top: 0,
+        bottom: 0,
         zIndex: 1
     },
     filterBox: {

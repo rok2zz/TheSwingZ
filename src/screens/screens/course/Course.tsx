@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from "react"
 import { Dimensions, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { RootStackNavigationProp } from "../../../types/stackTypes"
-import { CourseInfo, courseList } from "./courseInfo"
+// import { CourseInfo, courseList } from "./courseInfo"
 import { ImageSource } from "react-native-vector-icons/Icon"
 import { Payload } from "../../../types/apiTypes"
-import { useCourse, useCourseThumbnail } from "../../../hooks/useCourse"
-import { CourseThumnail } from "../../../slices/course"
+import { useCourse, useCourseInfo, useCourseThumbnail } from "../../../hooks/useCourse"
+import { CourseInfo, CourseThumnail } from "../../../slices/course"
 import FastImage from "react-native-fast-image"
 
 // svg
@@ -25,6 +25,7 @@ const Course = (): JSX.Element => {
     const navigation = useNavigation<RootStackNavigationProp>()
 
     const { getCourseThumbnail } = useCourse()
+    const courseInfo = useCourseInfo()
     const courseThumbnail: CourseThumnail[] = useCourseThumbnail()
 
     const [sort, setSort] = useState<boolean>(true)
@@ -36,17 +37,23 @@ const Course = (): JSX.Element => {
     const [isConnected, setIsConnected] = useState<boolean>(false)
     const [isLoaded, setIsLoaded] = useState<boolean>(false)
 
-    const [sortedCourse, setSortedCourse] = useState<CourseInfo[]>(courseList)
+    const [sortedCourse, setSortedCourse] = useState<CourseInfo[]>([])
     const [searchedCourse, setSearchedCourse] = useState<CourseInfo[]>([])
-    const [thumbnail, setThumbnail] = useState<ImageSource>(require('../../../assets/imgs/course/course_detail.png'))
 
 	const searchRef = useRef<TextInput>(null)
 
     useEffect(() => {
-        setSearchedCourse(sortedCourse.sort((a, b) => a.ccName.localeCompare(b.ccName)))
+        if (courseInfo) {
+            setSortedCourse([...courseInfo])
+        }
         getCourse()
     }, [])
 
+    useEffect(() => {
+        if (sortedCourse && sortedCourse.length > 0) {
+            setSearchedCourse(sortedCourse.sort((a, b) => a.ccName.localeCompare(b.ccName)))
+        }
+    }, [sortedCourse])
     const getCourse = async () => {
         if (isConnected) return
 
@@ -83,12 +90,12 @@ const Course = (): JSX.Element => {
             return 0
         }).sort((a, b) => {
             if (easySort) {
-                return a.courseDifficulty + a.greenDifficulty - b.courseDifficulty - b.greenDifficulty
+                return a.courseDifficult + a.greenDifficult - b.courseDifficult - b.greenDifficult
             }
             return 0
         }).sort((a, b) => {
             if (difficultsort) {
-                return b.courseDifficulty + b.greenDifficulty - a.courseDifficulty - a.greenDifficulty
+                return b.courseDifficult + b.greenDifficult - a.courseDifficult - a.greenDifficult
             }
             return 0
         }))
@@ -118,12 +125,12 @@ const Course = (): JSX.Element => {
             return 0
         }).sort((a, b) => {
             if (easySort) {
-                return a.courseDifficulty + a.greenDifficulty - b.courseDifficulty - b.greenDifficulty
+                return a.courseDifficult + a.greenDifficult - b.courseDifficult - b.greenDifficult
             }
             return 0
         }).sort((a, b) => {
             if (difficultsort) {
-                return b.courseDifficulty + b.greenDifficulty - a.courseDifficulty - a.greenDifficulty
+                return b.courseDifficult + b.greenDifficult - a.courseDifficult - a.greenDifficult
             }
             return 0
         }))
@@ -153,7 +160,7 @@ const Course = (): JSX.Element => {
             return 0
         }).sort((a, b) => {
             if (!easySort) {
-                return a.courseDifficulty + a.greenDifficulty - b.courseDifficulty - b.greenDifficulty
+                return a.courseDifficult + a.greenDifficult - b.courseDifficult - b.greenDifficult
             }
             return 0
         }))
@@ -183,7 +190,7 @@ const Course = (): JSX.Element => {
             return 0
         }).sort((a, b) => {
             if (!difficultsort) {
-                return b.courseDifficulty + b.greenDifficulty - a.courseDifficulty - a.greenDifficulty
+                return b.courseDifficult + b.greenDifficult - a.courseDifficult - a.greenDifficult
             }
             return 0
         }))
@@ -329,30 +336,30 @@ const Course = (): JSX.Element => {
                                         <Text style={ styles.courseText }>{ item.hole }홀, { item.course1 }, { item.course2 }</Text>
                                         <Text style={ styles.courseText }>{ item.location }</Text>
                                         <View style={[ styles.courseRow, { marginBottom: 14 }]}>
-                                            { Array.from({ length: Number(item.courseDifficulty.toFixed(0)) }, (_, i) => i).map((index: number) => {
-                                                if (Math.floor(item.courseDifficulty) === index) {
+                                            { Array.from({ length: Number(item.courseDifficult.toFixed(0)) }, (_, i) => i).map((index: number) => {
+                                                if (Math.floor(item.courseDifficult) === index) {
                                                     return <HalfStar key={ index } />
                                                 }
                                                 return (                                         
                                                     <FilledStar style={ styles.star } key={ index } />
                                                 )
                                             })}                          
-                                            { Array.from({ length: 5 - Number(item.courseDifficulty.toFixed(0)) }, (_, i) => i).map((index: number) => {
+                                            { Array.from({ length: 5 - Number(item.courseDifficult.toFixed(0)) }, (_, i) => i).map((index: number) => {
                                                 return (                                         
                                                     <EmptyStar style={ styles.star } key={ index } />
                                                 )
                                             })}           
                                         </View>
                                         <View style={ styles.courseRow }>
-                                            { Array.from({ length: Number(item.greenDifficulty.toFixed(0)) }, (_, i) => i).map((index: number) => {
-                                                if (Math.floor(item.greenDifficulty) === index) {
+                                            { Array.from({ length: Number(item.greenDifficult.toFixed(0)) }, (_, i) => i).map((index: number) => {
+                                                if (Math.floor(item.greenDifficult) === index) {
                                                     return <HalfStar key={ index } />
                                                 }
                                                 return (                                         
                                                     <FilledStar style={ styles.star } key={ index } />
                                                 )
                                             })}                       
-                                            { Array.from({ length: 5 - Number(item.greenDifficulty.toFixed(0)) }, (_, i) => i).map((index: number) => {
+                                            { Array.from({ length: 5 - Number(item.greenDifficult.toFixed(0)) }, (_, i) => i).map((index: number) => {
                                                 return (                                         
                                                     <EmptyStar style={ styles.star } key={ index } />
                                                 )

@@ -176,10 +176,8 @@ export const useUsers = (): UsersHook => {
             ]
         }
         const jsonBody: string = JSON.stringify(body)
-        console.log(jsonBody)
         try {
             const res: LoginResponse = await axios.post(authURL, jsonBody)
-            console.log(res.data)
             // 오류 발생시
             if (res.data.code !== 1000) {
                 const payload: Payload = {
@@ -428,7 +426,6 @@ export const useUsers = (): UsersHook => {
         const jsonBody = JSON.stringify(body)
         try {
             const res: LoginResponse = await axios.post(authURL, jsonBody)
-            console.log(res.data)
 
             if (res.data.code !== 1000) {
                 const payload: Payload = {
@@ -437,6 +434,17 @@ export const useUsers = (): UsersHook => {
                 }    
 
                 return payload
+            }
+
+            if (res.data.result && res.data.result.uid) {
+                const settingPayload: Payload = await createSettingValue(res.data.result.uid)
+
+                if (settingPayload.code !== 1000) {
+                    return  { 
+                        code: settingPayload.code, 
+                        msg: settingPayload.msg 
+                    }
+                }
             }
             
             return { code: 1000 }

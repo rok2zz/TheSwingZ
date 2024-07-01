@@ -1503,6 +1503,13 @@
   resolved "https://registry.yarnpkg.com/@mj-studio/js-util/-/js-util-1.1.3.tgz#361e722faa34081413cec81caf75a6881f1f6cec"
   integrity sha512-XZe1V3J1CJ9DbPY0GlPTOES7UdnWcoUe3kIjmUWMvwmunOb/kYuDWiswu5eogHhcPSlM3LpYQYU2HhMzf3N6tw==
 
+"@mj-studio/react-native-naver-map@^1.5.9":
+  version "1.5.9"
+  resolved "https://registry.yarnpkg.com/@mj-studio/react-native-naver-map/-/react-native-naver-map-1.5.9.tgz#65b8b8935e423e950b4e515bc1b23678d1ff7423"
+  integrity sha512-EJqKDWrMPMlPoBzw+sWnGFuLidVgb385qRac4llBaw7BLaskwtdMxj83cw55s3s8DO5nkEYzermro2Nn2IFBAg==
+  dependencies:
+    object-hash "^3.0.0"
+
 "@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1":
   version "5.1.1-v1"
   resolved "https://registry.yarnpkg.com/@nicolo-ribaudo/eslint-scope-5-internals/-/eslint-scope-5-internals-5.1.1-v1.tgz#dbf733a965ca47b1973177dc0bb6c889edcfb129"
@@ -5671,6 +5678,11 @@ object-assign@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
   integrity sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==
+
+object-hash@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/object-hash/-/object-hash-3.0.0.tgz#73f97f753e7baffc0e2cc9d6e079079744ac82e9"
+  integrity sha512-RSn9F68PjH9HqtltsSnqYC1XXoWe9Bju5+213R98cNGttag9q9yAOTzdbsqvIa7aNm5WffBZFpWYr2aWrklWAw==
 
 object-inspect@^1.13.1:
   version "1.13.1"

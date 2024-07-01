@@ -150,7 +150,6 @@ const FindShop = () => {
                         const available: boolean[] = [true, true, true, true, true, true]
                         let reason = ''
                         const getShopTime = () => {
-                            
                             const now = new Date()
                             const openTime= item.openedAt.split(':')
                             const open = new Date()
@@ -312,16 +311,36 @@ const FindShop = () => {
                                                         <View style={[ styles.storeContainer, index === 0 && { borderTopWidth: 0 }]}>
                                                             <View style={{ flexDirection: 'row' }}>
                                                                 <View style={ styles.imgContainer }>
-                                                                    <Image style={ styles.img } source={ require('../../../../../assets/imgs/store/store_default.jpg' )} />
+                                                                    { !item.image ?
+                                                                        <Image style={ styles.img } source={ require('../../../../../assets/imgs/store/store_default.jpg' )} />
+                                                                        :
+                                                                        <FastImage 
+                                                                            style={ styles.img } 
+                                                                            source={{ 
+                                                                                uri: 'https://' + item.image,
+                                                                                priority: FastImage.priority.normal,
+                                                                                cache: FastImage.cacheControl.immutable 
+                                                                            }} 
+                                                                            resizeMode="cover"
+                                                                        /> 
+                                                                    }
+                                                                    { available.every(value => value === false) && 
+                                                                        <View style={[ styles.disableInfo, reason === 'time' && { backgroundColor: '#f0f0f0' }, reason === 'reservation' && { backgroundColor: '#fae9eb' }]}>
+                                                                            { reason === 'time' ?
+                                                                                <Text style={[ styles.semiboldText, { color: '#333333' }]}>영업준비중</Text>
+                                                                                    :
+                                                                                <Text style={[ styles.semiboldText, { color: '#d61111' }]}>​예약불가능</Text>
+                                                                            }
+                                                                        </View>
+                                                                    }
                                                                 </View>
-
                                                                 <View>
                                                                     <Text style={ styles.nameText }>{ item.title }</Text>
                                                                     <Text style={ styles.addressText }>{ item.address }</Text>
-                                                                    <View style={ styles.rowContainer }>
+                                                                    {/* <View style={ styles.rowContainer }>
                                                                         <Location style={{ marginRight: 3 }} />
                                                                         <Text style={ styles.distanceText }>999m</Text>
-                                                                    </View>
+                                                                    </View> */}
                                                                 </View>
                                                             </View>
 

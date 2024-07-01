@@ -33,7 +33,6 @@ import MakeReservation from "./screens/reservation/MakeReservation";
 import ManageReservation from "./screens/reservation/ManageReservation";
 import ResultReservation from "./screens/reservation/ResultReservation";
 import ShopDetail from "./screens/reservation/ShopDetail";
-import FAQ from "./screens/cs/FAQ";
 import Splash from "./screens/Splash";
 import Withdrawal from "./screens/mypage/Withdrawal";
 import ResultWithdrawal from "./screens/mypage/ResultWithdrawal";
@@ -43,10 +42,24 @@ import VideoDetail from "./screens/nasmo/VideoDetail";
 import Intro from "./screens/intro/Intro";
 import NaverLogin from "@react-native-seoul/naver-login";
 import { initializeKakaoSDK } from "@react-native-kakao/core";
+import NoticeDetail from "./screens/cs/NoticeDetail";
+import Inquiry from "./screens/cs/Inquiry";
+import Notice from "./screens/cs/Notice";
+import FAQ from "./screens/cs/FAQ";
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
-export const version = '1.1.0'
+export const version = '1.1.1'
+
+// kakao native key
+const kakaoKey = 'ba013042f5a0f6ae1e923f20137aad80'
+
+// naver login Key
+const consumerKey = `djATVwGtndKljOjNfTqv`
+const consumerSecret = `HhXUQEo4xt`
+const appName = Platform.OS === 'android' ? `com.theswingz` : `com.theswinggolf.theswingz`
+const serviceUrlSchemeIOS = `com.theswinggolf.theswingz`
+
 
 const RootStack = (): JSX.Element => {
 	const serverInfo: ServerInfo = useServerInfo()
@@ -61,18 +74,9 @@ const RootStack = (): JSX.Element => {
 	const [refreshToken, setRefreshToken] = useState<string | null>()
 	const [openSplash, setOpenSplash] = useState<boolean>(true)
 
-	// kakao native key
-	const kakaoKey = 'ba013042f5a0f6ae1e923f20137aad80'
-
-	// naver login Key
-	const consumerKey = `djATVwGtndKljOjNfTqv`
-	const consumerSecret = `HhXUQEo4xt`
-	const appName = Platform.OS === 'android' ? `com.theswingz` : `com.theswinggolf.theswingz`
-	const serviceUrlSchemeIOS = `com.theswinggolf.theswingz`
-
 	useEffect(() => {
 		async function getServerInfo(): Promise<void> {
-			const payload: Payload = await getApi('live', version)
+			const payload: Payload = await getApi('alpha', version)
 			if (payload.code !== 1000) {
 				Alert.alert(
 					'알림',
@@ -157,6 +161,7 @@ const RootStack = (): JSX.Element => {
 				clearUserInfo()
 				return
 			}
+
 			if (payload.code === 1000) {
 				const rawToken = await AsyncStorage.getItem('token') ?? ''
 				const rawUserInfo = await AsyncStorage.getItem('userInfo') ?? ''
@@ -187,14 +192,22 @@ const RootStack = (): JSX.Element => {
 		}, 2000)
 	}, [serverInfo])
 
+
 	useEffect(() => {
 		setRefreshToken(refresh)
 	}, [refresh])
 
+	// check if app is launched for first time
 	useEffect((): void => {
 		checkIsFirst()
 	}, [isFirst])
 
+	const checkIsFirst = async (): Promise<void> => {
+		const isFirstVisit = await AsyncStorage.getItem('isFirst') === 'false' ? false : true
+		setFirst(isFirstVisit)
+	}
+
+	// social login initialize
 	const socialInitialize = () => {
 		initializeKakaoSDK(kakaoKey)
 		NaverLogin.initialize({
@@ -206,10 +219,7 @@ const RootStack = (): JSX.Element => {
 	   })
 	}
 
-	const checkIsFirst = async (): Promise<void> => {
-		const isFirstVisit = await AsyncStorage.getItem('isFirst') === 'false' ? false : true
-		setFirst(isFirstVisit)
-	}
+	
 
 	return (
 		<Stack.Navigator>
@@ -297,9 +307,18 @@ const RootStack = (): JSX.Element => {
 							 }} />	
 							<Stack.Screen name='VideoDetail' component={ VideoDetail } options={{ headerShown: false }} />	
 
-							{/* FAQ */}
-							<Stack.Screen name='FAQ' component={ FAQ } options={{ 
+							{/* CS */}
+							<Stack.Screen name='Notice' component={ Notice } options={{ 
 								header: () => <Header title="공지사항" type={ 0 } isFocused />
+							}} />
+							<Stack.Screen name='NoticeDetail' component={ NoticeDetail } options={{ 
+								header: () => <Header title="공지사항 상세" type={ 0 } isFocused />
+							}} />
+							<Stack.Screen name='FAQ' component={ FAQ } options={{ 
+								header: () => <Header title="FAQ" type={ 0 } isFocused />
+							}} />
+							<Stack.Screen name='Inquiry' component={ Inquiry } options={{ 
+								headerShown: false
 							}} />
 						</>
 					}

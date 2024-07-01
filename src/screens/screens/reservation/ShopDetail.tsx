@@ -14,6 +14,7 @@ import Star from "../../../assets/imgs/store/star_fill.svg"
 import Loading from "../../../assets/imgs/common/loading.svg"
 import FastImage from "react-native-fast-image"
 import Swiper from "react-native-swiper"
+import { NaverMapMarkerOverlay, NaverMapView } from "@mj-studio/react-native-naver-map"
 
 interface Props {
     route: RouteProp<RootStackParamList, 'ShopDetail'>
@@ -40,7 +41,9 @@ const ShopDetail = ({ route }: Props) => {
         openedAt: '',
         closedAt: '',
         option: '',
-        image: ''
+        image: '',
+        closedYn: '',
+        restYn: ''
     })
     const [bill, setBill] = useState<Bill[]>([])
     const [shopImages, setShopImages] = useState<ShopImages[]>([])
@@ -63,7 +66,6 @@ const ShopDetail = ({ route }: Props) => {
         if (isConnected) return
         const payload: Payload = await getShopInfo(shopId)
         setIsConnected(false)
-        console.log(payload)
         if (payload.code !== 1000) {
             return
         }
@@ -121,7 +123,7 @@ const ShopDetail = ({ route }: Props) => {
 
         return ''
     }
-
+    
     const getPay = (time: string, hole: number, week: string) => {
         if (bill && bill.length > 0) {
             if (time === 'after') {
@@ -209,29 +211,22 @@ const ShopDetail = ({ route }: Props) => {
                     </View>
 
                     <View style={ styles.mapContainer }>
-                        {/* <MapView
-                            provider={ PROVIDER_GOOGLE }
-                            region={{
+                        <NaverMapView
+                            style={{ flex: 1, height: 375 }}
+                            camera={{
                                 latitude: Number(shopInfo.latitude),
                                 longitude: Number(shopInfo.longitude),
-                                latitudeDelta: 0.0012,
-                                longitudeDelta: 0.0012,
+                                zoom: 16
                             }}
-                            style={{ width: '100%', height: 375 }}
-                            zoomEnabled={ false }
-                            scrollEnabled={ false }
-                        >
-                            <Marker
-                                coordinate={{
-                                    latitude: Number(shopInfo.latitude),
-                                    longitude: Number(shopInfo.longitude)
-                                }}
-                                isPreselected={ true }
-                                title={ shopInfo.title }
-                            >
-                                <Image source={ require('../../../assets/imgs/store/map_pin.png')  } />
-                            </Marker>
-                        </MapView> */}
+                        >   
+                            <NaverMapMarkerOverlay
+                                latitude={ Number(shopInfo.latitude) }
+                                longitude={ Number(shopInfo.longitude) }
+                                image={ require('../../../assets/imgs/store/map_pin.png')}
+                                width={24}
+                                height={34}
+                            />
+                        </NaverMapView>
                     </View>
 
                     <View style={{ marginBottom: 48 }}>

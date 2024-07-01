@@ -3,7 +3,6 @@ import { RootStackNavigationProp, RootStackParamList } from "../../../types/stac
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import TopTabBar from "../../../components/tabBar/TopTabBar"
 import { useEffect, useState } from "react"
-import { CourseInfo } from "./courseInfo"
 import { ImageSource } from "react-native-vector-icons/Icon"
 import { useCourse, useCourseImage } from "../../../hooks/useCourse"
 import { Payload } from "../../../types/apiTypes"
@@ -17,7 +16,7 @@ import FilledStar from "../../../assets/imgs/course/star_fill.svg"
 import HalfStar from "../../../assets/imgs/course/star_half.svg"
 import LeftArrow from "../../../assets/imgs/course/arrow_left.svg"
 import RightArrow from "../../../assets/imgs/course/arrow_right.svg"
-import { CourseImage } from "../../../slices/course"
+import { CourseImage, CourseInfo } from "../../../slices/course"
 
 interface Props {
     route: RouteProp<RootStackParamList, 'CourseDetail'>
@@ -145,15 +144,15 @@ const CourseDetail = ({ route }: Props): JSX.Element => {
                     <View style={ styles.courseRow }>
                         <Text style={ styles.infoText }>코스난이도</Text>
                         <View style={ styles.rowContainer }>
-                            { Array.from({ length: Number(course.courseDifficulty.toFixed(0)) }, (_, i) => i).map((index: number) => {
-                                if (Math.floor(course.courseDifficulty) === index) {
+                            { Array.from({ length: Number(course.courseDifficult.toFixed(0)) }, (_, i) => i).map((index: number) => {
+                                if (Math.floor(course.courseDifficult) === index) {
                                     return <HalfStar key={ index } />
                                 }
                                 return (                                         
                                     <FilledStar style={ styles.star } key={ index } />
                                 )
                             })}                        
-                            { Array.from({ length: 5 - Number(course.courseDifficulty.toFixed(0)) }, (_, i) => i).map((index: number) => {
+                            { Array.from({ length: 5 - Number(course.courseDifficult.toFixed(0)) }, (_, i) => i).map((index: number) => {
                                 return (                                         
                                     <EmptyStar style={ styles.star } key={ index } />
                                 )
@@ -163,15 +162,15 @@ const CourseDetail = ({ route }: Props): JSX.Element => {
                     <View style={[ styles.courseRow, { marginBottom: 0 }]}>
                         <Text style={ styles.infoText }>그린난이도</Text>
                         <View style={ styles.rowContainer }>
-                            { Array.from({ length:  Number(course.greenDifficulty.toFixed(0)) }, (_, i) => i).map((index: number) => {
-                                if (Math.floor(course.greenDifficulty) === index) {
+                            { Array.from({ length:  Number(course.greenDifficult.toFixed(0)) }, (_, i) => i).map((index: number) => {
+                                if (Math.floor(course.greenDifficult) === index) {
                                     return <HalfStar key={ index } />
                                 }
                                 return (                                         
                                     <FilledStar style={ styles.star } key={ index } />
                                 )
                             })}                        
-                            { Array.from({ length: 5 - Number(course.greenDifficulty.toFixed(0)) }, (_, i) => i).map((index: number) => {
+                            { Array.from({ length: 5 - Number(course.greenDifficult.toFixed(0)) }, (_, i) => i).map((index: number) => {
                                 return (                                         
                                     <EmptyStar style={ styles.star } key={ index } />
                                 )

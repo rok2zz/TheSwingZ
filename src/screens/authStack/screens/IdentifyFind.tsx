@@ -35,6 +35,7 @@ const IdentifyFind = (): JSX.Element => {
         }
     }
 
+    // receive message from webview
     const handleMessage = (event: any) => {
         const data = JSON.parse(event?.nativeEvent?.data);
 

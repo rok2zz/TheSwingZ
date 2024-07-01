@@ -34,7 +34,8 @@ interface RecordState {
     swingVideo: SwingVideo,
     videoIndex: VideoIndex
     scoreCardVideo: VideoList,
-    isCached: boolean
+    isCached: boolean,
+    videoListLength: number,
 }
 
 const initialState: RecordState = {
@@ -53,7 +54,8 @@ const initialState: RecordState = {
         dayAt: '',
         thumbnail: []
     },
-    isCached: false
+    isCached: false,
+    videoListLength: 0
 }
 
 const videoSlice = createSlice ({
@@ -62,6 +64,9 @@ const videoSlice = createSlice ({
     reducers: {
         saveVideoList(state, action: PayloadAction<VideoList[]>) {
             state.videoList = action.payload
+        },
+        saveVideoListLength(state, action: PayloadAction<number>) {
+            state.videoListLength = action.payload
         },
         saveScoreCardVideo(state, action: PayloadAction<VideoList>) {
             state.scoreCardVideo = action.payload
@@ -91,4 +96,4 @@ const videoSlice = createSlice ({
 })
 
 export default videoSlice.reducer
-export const { saveVideoList, saveThumbnailList, saveScoreCardVideo, saveSwingVideo, removeSwingVideo, clearVideo, removeScoreCardVideo, saveIsCached } = videoSlice.actions
+export const { saveVideoList, saveVideoListLength, saveThumbnailList, saveScoreCardVideo, saveSwingVideo, removeSwingVideo, clearVideo, removeScoreCardVideo, saveIsCached } = videoSlice.actions

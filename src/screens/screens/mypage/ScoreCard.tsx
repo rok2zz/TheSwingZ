@@ -10,11 +10,11 @@ import { CcInfo, Payload, PositionInfo, UserProfileImgs } from "../../../types/a
 import { useScoreCardVideo, useThumbnailList, useVideos } from "../../../hooks/useVideos"
 import { Thumbnail } from "../../../slices/video"
 import { CourseImage } from "../../../slices/course"
-import { useCourse, useCourseImage } from "../../../hooks/useCourse"
+import { useCourse, useCourseImage, useCourseInfo } from "../../../hooks/useCourse"
 import { useVideoActions } from "../../../hooks/useVideoActions"
-import { courseList } from "../course/courseInfo"
 import Loading from "../../../components/Loading"
 import FastImage from "react-native-fast-image"
+import { Line, Svg } from "react-native-svg"
 
 // svg
 import Location from "../../../assets/imgs/my/location_white.svg"
@@ -30,6 +30,11 @@ import Mulligan from "../../../assets/imgs/my/mulligan.svg"
 import Play from "../../../assets/imgs/swing/play.svg"
 import LeftArrow from "../../../assets/imgs/course/arrow_left.svg"
 import RightArrow from "../../../assets/imgs/course/arrow_right.svg"
+import Triangle from "../../../assets/imgs/my/triangle_minimap.svg"
+import X from "../../../assets/imgs/my/x_minimap.svg"
+import OBX from "../../../assets/imgs/my/x_ob_minimap.svg"
+import Left from "../../../assets/imgs/my/triangle_left.svg"
+import Right from "../../../assets/imgs/my/triangle_right.svg"
 
 interface Props {
     route: RouteProp<RootStackParamList, 'ScoreCard'>
@@ -47,7 +52,8 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
     const { getProfileImages } = useUsers()
     const { getScoreCardVideo } = useVideos()
     const { getCourseImage } = useCourse()
-    const courseInfo = useCourseImage()
+    const minimapInfo = useCourseImage()
+    const courseInfo = useCourseInfo()
 
     const [recordIndex, setRecordIndex] = useState<number>(0)
     const [recordArr, setRecordArr] = useState<Record>()
@@ -91,7 +97,6 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
         if (recordArr && recordArr.ccArr.length > 0) {
             getMinimapSource()
         } 
-        console.log(recordArr?.inArr)
     }, [recordArr])
 
     useEffect(() => {
@@ -99,30 +104,45 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
     }, [type])
 
     useEffect(() => {
-        setMinimapList(courseInfo)
-    }, [courseInfo])
+        setMinimapList(minimapInfo)
+    }, [minimapInfo])
 
     useEffect(() => {
         let sortedMinimap: CourseImage[] = []
-        if (minimapList && minimapList.length > 0) {
-            for (let i = 0; i < minimapList.length; i++) {
-                if (minimapList[i].courseNumber === recordArr?.ccArr[0].firstCourse) {
-                    sortedMinimap = sortedMinimap.concat(minimapList[i])
-                }
-            }
     
-            for (let i = 0; i < minimapList.length; i++) {
-                if (minimapList[i].courseNumber === recordArr?.ccArr[0].secondCourse) {
-                    sortedMinimap = sortedMinimap.concat(minimapList[i])
+        if (minimapList && minimapList.length > 0) {
+            if (recordArr?.ccArr[0].courseOrder === 'Out') {
+                for (let i = 0; i < minimapList.length; i++) {
+                    if (minimapList[i].courseNumber === recordArr?.ccArr[0].firstCourse) {
+                        sortedMinimap = sortedMinimap.concat(minimapList[i])
+                    }
+                }
+        
+                for (let i = 0; i < minimapList.length; i++) {
+                    if (minimapList[i].courseNumber === recordArr?.ccArr[0].secondCourse) {
+                        sortedMinimap = sortedMinimap.concat(minimapList[i])
+                    }
+                }
+            } else if (recordArr?.ccArr[0].courseOrder === 'In') {
+                for (let i = 0; i < minimapList.length; i++) {
+                    if (minimapList[i].courseNumber === recordArr?.ccArr[0].secondCourse) {
+                        sortedMinimap = sortedMinimap.concat(minimapList[i])
+                    }
+                }
+
+                for (let i = 0; i < minimapList.length; i++) {
+                    if (minimapList[i].courseNumber === recordArr?.ccArr[0].firstCourse) {
+                        sortedMinimap = sortedMinimap.concat(minimapList[i])
+                    }
                 }
             }
+
             setSortedMinimapList(sortedMinimap)
         }
     }, [minimapList])
 
     const getMinimapSource = async () => {
         const payload: Payload = await getCourseImage(recordArr?.ccArr[0].ccId ?? 0, recordArr?.ccArr[0].firstCourse ?? 1, recordArr?.ccArr[0].secondCourse ?? 2)
-
         if (payload.code !== 1000) {
             return
         }
@@ -138,7 +158,6 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
             }
 
             const payload: Payload = await getProfileImages(uidArr) 
-
             setIsConnected(false)
             if (payload.code !== 1000) {
                 return
@@ -155,6 +174,7 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
 
         setIsConnected(true)
         const payload: Payload = await getScore('A', myProfile.uid, roomId, null, null)
+
         setIsConnected(false)
         if (payload.code !== 1000) {
             Alert.alert('알림', '서버에 오류가 발생했습니다.')
@@ -174,7 +194,6 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                 setIsFolded(prevState => [...prevState, true])    
             }
             setMyPositionArr(posArr)
-
         }
     }
 
@@ -204,16 +223,31 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
     }
 
     const getCourseName = (courseNumber: number) => {
+        if (recordArr?.ccArr[0].courseOrder === 'In') {
+            if (courseNumber === 2) {
+                for (let i = 0; i < courseInfo.length; i++) {
+                    if (courseInfo[i].id === recordArr?.ccArr[0].ccId) {
+                        return courseInfo[i].courseName1
+                    }
+                }
+            } else if (courseNumber === 1) {
+                for (let i = 0; i < courseInfo.length; i++) {
+                    if (courseInfo[i].id === recordArr?.ccArr[0].ccId) {
+                        return courseInfo[i].courseName2
+                    }
+                }
+            }
+        }
         if (courseNumber === 1) {
-            for (let i = 0; i < courseList.length; i++) {
-                if (courseList[i].id === recordArr?.ccArr[0].ccId) {
-                    return courseList[i].courseName1
+            for (let i = 0; i < courseInfo.length; i++) {
+                if (courseInfo[i].id === recordArr?.ccArr[0].ccId) {
+                    return courseInfo[i].courseName1
                 }
             }
         } else if (courseNumber === 2) {
-            for (let i = 0; i < courseList.length; i++) {
-                if (courseList[i].id === recordArr?.ccArr[0].ccId) {
-                    return courseList[i].courseName2
+            for (let i = 0; i < courseInfo.length; i++) {
+                if (courseInfo[i].id === recordArr?.ccArr[0].ccId) {
+                    return courseInfo[i].courseName2
                 }
             }
         }
@@ -269,7 +303,6 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                                     <Text style={ styles.infoText }>{ myRecord.inArr[recordIndex].userCount }인</Text>
                                 </View>                    
                             </View>
-
                             <Text style={ styles.ccText }>{ getCcName() }</Text>
                             
                             <View style={[ styles.rowContainer, { paddingBottom: 66 }]}>
@@ -667,7 +700,7 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                                 </ScrollView>
                             </>
                         }
-                        
+
                         { myPositionArr && myPositionArr.length > 0 && sortedMinimapList && sortedMinimapList.length > 0 &&
                             <View style={ styles.mapContainer }>
                                 <Text style={[ styles.boldText]}>홀 공략 기록​</Text>
@@ -720,64 +753,178 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                                         const startY = (item.stMiniY - 880) * mapSizeY / 2337 - 4
                                         const endX = (item.edMiniX - 280) * mapSizeX / 1488 - 4
                                         const endY = (item.edMiniY - 880) * mapSizeY / 2337 - 4
-
+                                        const isLeft = (endX - startX) > 0 ? false : true
                                         const dx = endX - startX
                                         const dy = endY - startY
-                                        const length = Math.sqrt(dx * dx + dy * dy)
                                         const angle = Math.atan2(dy, dx) * (180 / Math.PI)
-                                         
-                                        const isHazard = (item.landPlace === 'OB' || item.landPlace === 'Hazard' || item.landPlace === 'Road') ? true : false
+                                        const isHazard = (item.landPlace === 'Hazard' || item.landPlace === 'Road') ? true : false
+                                        let isResqued = false
+
+                                        if (index > 0) {
+                                            isResqued = myPositionArr[index - 1].landPlace === 'Hazard' || myPositionArr[index - 1].landPlace === 'Road'
+                                        }
+
+                                        const getDistance = () => {
+                                            return item.totalDistance.toFixed(1)
+                                        }
+
+                                        const getShotCount = () => {
+                                            if (item.shotCount === 1) return '1st'
+                                            if (item.shotCount === 2) return '2nd'
+                                            if (item.shotCount === 3) return '3rd'
+
+                                            return item.shotCount + 'th'
+                                        }
+
                                         if (type === 0 && item.holeNumber === hole) {
                                             return (
-                                                <View style={{ position: 'absolute', top: 0, left: 0 }} key={ index }>
-                                                    <View>
-                                                        <View style ={[{
-                                                            position: 'absolute',
-                                                            top: startY + 3,
-                                                            left: startX + 3,
-                                                            width: length,
-                                                            height: 2,
-                                                            transform: [{ rotate: `${angle}deg`}],
-                                                            transformOrigin: '0 0',
-                                                            backgroundColor: '#e20500'
-                                                            }, isHazard && { backgroundColor: 'blue'}]}
-                                                        />
-                                                    </View>
-                                                    <View style={[ styles.circle, { left: startX, top: startY }, isHazard && { backgroundColor: 'blue'}]}>
-                                                        <View style={ styles.miniCircle }></View>
-                                                    </View>
-                                                    <View style={[ styles.circle, { left: endX, top: endY }, isHazard && { backgroundColor: 'blue'}]}>
-                                                        <View style={ styles.miniCircle }></View>
-                                                    </View>
+                                                <View style={ styles.positionContainer } key={ index }>
+                                                    { item.landPlace === 'OB' ? (
+                                                        <Svg height="100%" width="100%">
+                                                             <Line
+                                                                x1={startX}
+                                                                y1={startY}
+                                                                x2={endX}
+                                                                y2={endY}
+                                                                stroke="#ffff00"
+                                                                strokeWidth="2"
+                                                            />
+                                                            <View style={[ styles.circle, { left: startX - 4, top: startY - 4, backgroundColor: '#ffff00' }]}>
+                                                                <View style={ styles.miniCircle }></View>
+                                                            </View>
+                                                            <View style={[{ position: 'absolute', left: endX, top: endY, transform: [{ rotate: `${angle + 90}deg`}]}]}>
+                                                                <OBX style={{ position: 'absolute', left: -4, top: -4 }}  />
+                                                            </View>                                                       
+                                                        </Svg>
+                                                    ) : (
+                                                        <Svg height="100%" width="100%">
+                                                             <Line
+                                                                x1={startX}
+                                                                y1={startY}
+                                                                x2={endX}
+                                                                y2={endY}
+                                                                stroke={ isHazard ? '#e20500' : 'blue' }
+                                                                strokeWidth="2"
+                                                            />
+                                                            { isResqued ? (
+                                                                <View style={[{ position: 'absolute', left: startX, top: startY, transform: [{ rotate: `${angle + 90}deg`}]}]}>
+                                                                    <Triangle style={[{ position: 'absolute', left: -5, top: -5 }]} />  
+                                                                </View>
+                                                                ) : (
+                                                                <View style={[ styles.circle, { left: startX - 4, top: startY - 4 }]}>
+                                                                    <View style={ styles.miniCircle }></View>
+                                                                </View>
+                                                            )}
+
+                                                            { isHazard ? (
+                                                                <View style={[{ position: 'absolute', left: endX, top: endY, transform: [{ rotate: `${angle + 90}deg`}]}]}>
+                                                                    <X style={{ position: 'absolute', left: -4, top: -4 }}  />
+                                                                </View>
+                                                                ) : (
+                                                                <>
+                                                                    <View style={[ styles.circle, { left: endX - 4, top: endY - 4 }]}>
+                                                                        <View style={ styles.miniCircle }></View>
+                                                                    </View>
+                                                                   
+                                                                </>
+                                                            )}
+                                                        </Svg>
+                                                    )}
+                                                    { isLeft ? (
+                                                        <View style={[ styles.positionBox, { right: Dimensions.get('window').width - endX - 25, top: endY - 12.5 }]}>
+                                                            <View style={ styles.positionInfo }>
+                                                                <Text style={[ styles.regularText, { fontSize: 12, color: '#949494' }]}>{ getShotCount() }</Text>
+                                                                <Text style={ styles.semiBoldText }>{ getDistance() }m</Text>
+                                                            </View>
+                                                            <Left />
+                                                        </View>   
+                                                        ) : (
+                                                        <>
+                                                            <View style={[ styles.positionBox, { left: endX + 5, top: endY - 12.5 }]}>
+                                                                <Right />
+                                                                <View style={ styles.positionInfo }>
+                                                                    <Text style={[ styles.regularText, { fontSize: 12, color: '#949494' }]}>{ getShotCount() }</Text>
+                                                                    <Text style={ styles.semiBoldText }>{ getDistance() }m</Text>
+                                                                </View>
+                                                            </View>   
+                                                        </>
+                                                    )}
                                                 </View>
                                             )
-                                        } else if (type === 1 && item.holeNumber === hole + 8) {
+                                        } else if (type === 1 && item.holeNumber === hole + 9) {
                                             return (
-                                                <View style={{ position: 'absolute', top: 0, left: 0 }} key={ index }>
-                                                    <View>
-                                                        <View style ={[{
-                                                            position: 'absolute',
-                                                            top: startY + 3,
-                                                            left: startX + 3,
-                                                            width: length,
-                                                            height: 2,
-                                                            transform: [{ rotate: `${angle}deg`}],
-                                                            transformOrigin: '0 0',
-                                                            backgroundColor: '#e20500'
-                                                            }, isHazard && { backgroundColor: 'blue'}]}
-                                                        />
-                                                    </View>
-                                                    <View style={[ styles.circle, { left: startX, top: startY }, isHazard && { backgroundColor: 'blue'}]}>
-                                                        <View style={ styles.miniCircle }></View>
-                                                    </View>
-                                                    <View style={[ styles.circle, { left: endX, top: endY }, isHazard && { backgroundColor: 'blue'}]}>
-                                                        <View style={ styles.miniCircle }></View>
-                                                    </View>
+                                                <View style={ styles.positionContainer } key={ index }>
+                                                    { item.landPlace === 'OB' ? (
+                                                        <Svg height="100%" width="100%">
+                                                             <Line
+                                                                x1={startX}
+                                                                y1={startY}
+                                                                x2={endX}
+                                                                y2={endY}
+                                                                stroke="#ffff00"
+                                                                strokeWidth="2"
+                                                            />
+                                                            <View style={[ styles.circle, { left: startX - 4, top: startY - 4, backgroundColor: '#ffff00' }]}>
+                                                                <View style={ styles.miniCircle }></View>
+                                                            </View>
+                                                            <View style={[{ position: 'absolute', left: endX, top: endY, transform: [{ rotate: `${angle + 90}deg`}]}]}>
+                                                                <OBX style={{ position: 'absolute', left: -4, top: -4 }}  />
+                                                            </View>                                                       
+                                                        </Svg>
+                                                    ) : (
+                                                        <Svg height="100%" width="100%">
+                                                             <Line
+                                                                x1={startX}
+                                                                y1={startY}
+                                                                x2={endX}
+                                                                y2={endY}
+                                                                stroke={ isHazard ? '#e20500' : 'blue' }
+                                                                strokeWidth="2"
+                                                            />
+                                                            { isResqued ? (
+                                                                <View style={[{ position: 'absolute', left: startX, top: startY, transform: [{ rotate: `${angle + 90}deg`}]}]}>
+                                                                    <Triangle style={[{ position: 'absolute', left: -5, top: -5 }]} />  
+                                                                </View>
+                                                                ) : (
+                                                                <View style={[ styles.circle, { left: startX - 4, top: startY - 4 }]}>
+                                                                    <View style={ styles.miniCircle }></View>
+                                                                </View>
+                                                            )}
+
+                                                            { isHazard ? (
+                                                                <View style={[{ position: 'absolute', left: endX, top: endY, transform: [{ rotate: `${angle + 90}deg`}]}]}>
+                                                                    <X style={{ position: 'absolute', left: -4, top: -4 }}  />
+                                                                </View>
+                                                                ) : (
+                                                                <View style={[ styles.circle, { left: endX - 4, top: endY - 4 }]}>
+                                                                    <View style={ styles.miniCircle }></View>
+                                                                </View>
+                                                            )}
+                                                        </Svg>
+                                                    )}
+                                                    { isLeft ? (
+                                                        <View style={[ styles.positionBox, { right: Dimensions.get('window').width - endX - 25, top: endY - 12.5 }]}>
+                                                            <View style={ styles.positionInfo }>
+                                                                <Text style={[ styles.regularText, { fontSize: 12, color: '#949494' }]}>{ getShotCount() }</Text>
+                                                                <Text style={ styles.semiBoldText }>{ getDistance() }m</Text>
+                                                            </View>
+                                                            <Left />
+                                                        </View>   
+                                                        ) : (
+                                                        <>
+                                                            <View style={[ styles.positionBox, { left: endX + 5, top: endY - 12.5 }]}>
+                                                                <Right />
+                                                                <View style={ styles.positionInfo }>
+                                                                    <Text style={[ styles.regularText, { fontSize: 12, color: '#949494' }]}>{ getShotCount() }</Text>
+                                                                    <Text style={ styles.semiBoldText }>{ getDistance() }m</Text>
+                                                                </View>
+                                                            </View>   
+                                                        </>
+                                                    )}
                                                 </View>
                                             )
                                         }
                                     })}
-                                    
                                 </View>
                             </View>
                         }
@@ -826,6 +973,15 @@ const styles = StyleSheet.create({
         includeFontPadding: false,
         fontSize: 14,
         fontFamily: 'Pretendard-Regular',
+
+        color: '#ffffff'
+    },
+    semiBoldText: {
+        includeFontPadding: false,
+        fontSize: 16,
+        fontFamily: 'Pretendard-Regular',
+
+        marginLeft: 3,
 
         color: '#ffffff'
     },
@@ -1066,6 +1222,20 @@ const styles = StyleSheet.create({
         left: 15,
         bottom: 15,
     },
+    line1: {
+        position: 'absolute',
+        width: 10,
+        height: 2,
+        backgroundColor: '#e20500',
+        transform: [{ rotate: '45deg' }],
+    },
+        line2: {
+        position: 'absolute',
+        width: 10,
+        height: 2,
+        backgroundColor: '#e20500',
+        transform: [{ rotate: '-45deg' }],
+    },
     circle: {
         alignItems: 'center',
         justifyContent: 'center',
@@ -1076,7 +1246,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
 
         borderRadius: 30,
-        backgroundColor: '#e20500'
+        backgroundColor: 'blue'
     },
     miniCircle: {
         width: 4,
@@ -1132,6 +1302,32 @@ const styles = StyleSheet.create({
         top: 26,
 
         zIndex: 1
+    },
+    positionContainer: {
+        width: '100%',
+        height: '100%',
+
+        position: 'absolute',
+        top: 0,
+        left: 0,
+
+        overflow: 'hidden'
+    },
+    positionBox: {
+        flexDirection: 'row',   
+        alignItems: 'center',
+
+        position: 'absolute'
+    },
+    positionInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+
+        paddingVertical: 3,
+        paddingHorizontal: 6,
+
+        borderRadius: 3,
+        backgroundColor: '#121619'
     }
 })
 

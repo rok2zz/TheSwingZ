@@ -1,5 +1,5 @@
 import { UserInfo } from "../slices/auth"
-import { CourseImage, CourseThumnail } from "../slices/course"
+import { CourseImage, CourseInfo, CourseThumnail } from "../slices/course"
 import { Record, Stat } from "../slices/record"
 import { ReservationInfo, ReservationTime, ShopInfo } from "../slices/reservation"
 import { Thumbnail, VideoList } from "../slices/video"
@@ -20,6 +20,115 @@ export interface Body {
     cls: string,
     method: string,
     params?: (string | boolean | number | number[] | UserSettingBody[] | Date | null)[]
+}
+
+export interface Response {
+    data: { 
+        code: number,
+        msg?: string,
+
+        result?: {
+            uid?: number | null,
+            phone?: string,
+            name?: string,
+            nick?: string 
+            user?: {
+                name?: string | null,
+                category?: string
+            }
+        
+            payload?: string,
+            url?: string,
+        
+            users?: UserProfileImgs[]
+
+            // course
+            ccList?: CourseInfo[]
+
+            // board
+            noticeList?: NoticeListResult
+            notice?: NoticeResult
+        
+            // token
+            token?: string,
+            accessToken?: string,
+            refreshToken?: string,
+        }
+    }
+}
+
+// board result
+export interface NoticeListResult {
+    total?: number,
+    list?: NoticeList[]
+}
+
+export interface NoticeList {
+    id: number,
+    type: number,
+    title: string,
+    pinYn: string,
+    view: number,
+    createdAt: string
+}
+
+export interface NoticeResult {
+    detail: {
+        id: number,
+        title: string,
+        detail: string,
+        type: number,
+        view: number,
+        createdAt: string,
+        attach: NoticeAttach[]
+    },
+    before: {
+        id: number,
+        title: string,
+        type: number,
+        createdAt: string
+    },
+    after: {
+        id: number,
+        title: string,
+        type: number,
+        createdAt: string
+    }
+}
+
+export interface NoticeAttach {
+    key: string
+}
+
+export interface FAQResult {
+    list?: FAQList[]
+}
+
+export interface FAQList {
+    id: number,
+    title: string,
+    detail: string,
+    type: number,
+    attach: string[]
+}
+
+export interface InquiryResult {
+    total?: number,
+    list?: InquiryList[],
+    inquiry?: Inquiry
+}
+
+export interface InquiryList {
+    id: number,
+    status: string,
+    title: string,
+    type: number,
+    realName: string,
+    createdAt: string
+}
+
+export interface Inquiry {
+
 }
 
 export interface UserSettingBody {
@@ -52,7 +161,11 @@ export interface Payload {
     shopImages?: ShopImages[],
     notice?: string,
 
-    userProfileImgs?: UserProfileImgs[]
+    userProfileImgs?: UserProfileImgs[],
+
+
+    noticeList?: NoticeListResult,
+    noticeResult?: NoticeResult
 }
 
 export interface LoginResult {
@@ -107,14 +220,7 @@ export interface UserProfileImgs {
     url: string
 }
 
-export interface Response {
-    data: { 
-        code: number,
-        msg?: string,
 
-        result?: ResponseResult
-    }
-}
 
 export interface LoginResponse {
     data: { 
@@ -276,7 +382,8 @@ export interface CcInfo {
     ccName: string,
     courseName: string,
     firstCourse: number,
-    secondCourse: number
+    secondCourse: number,
+    courseOrder: string
 }
 
 export interface RoomInfo {
@@ -323,7 +430,8 @@ export interface PositionInfo {
     edMiniY: number,
     shotCount: number,
     landPlace: string,
-    shotQuality: string
+    shotQuality: string,
+    totalDistance: number,
 }
 
 // video
@@ -336,7 +444,24 @@ export interface VideoResponse {
             roomList?: VideoList[] | VideoList,
             thumbnailList?: Thumbnail[]
             url?: string,
+            total?: number,
             accessToken?: string
+        }
+    }
+}
+
+// board
+export interface BoardResponse {
+    data: {
+        code: number,
+        msg?: string,
+
+        result?: {
+            total?: number,
+            noticeResult: {
+                list: string,
+                id: number
+            }
         }
     }
 }

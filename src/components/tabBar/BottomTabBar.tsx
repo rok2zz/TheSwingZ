@@ -51,6 +51,7 @@ const BottomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps): JS
         }).start()
 
         setTimeout(() => {
+            setHeight(0)
         }, 600)
     }, [isOpen])
 
@@ -60,7 +61,7 @@ const BottomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps): JS
 
 
     return (
-        <View style={[ styles.wrapper]}>
+        <View style={[ styles.wrapper, height === 500 && { height: height } ]}>
             { state.routes.map((route: any , index: number) => {
                 let isFocused = state.index === index
         

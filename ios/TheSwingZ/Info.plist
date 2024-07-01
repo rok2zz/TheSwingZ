@@ -21,9 +21,15 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 
+	<!-- google login client id -->
 	<key>GIDClientID</key>
 	<string>417264241402-flbh9kuiel6cjacvhksln6huisqbiptd.apps.googleusercontent.com</string>
 
+	<!-- naver map client id -->
+	<key>NMFClientId</key>
+  	<string>t9e812yrbw</string>
+
+	<!-- kakao & naver login info -->
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

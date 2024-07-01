@@ -24,7 +24,7 @@ const Terms = ({ route }: Props): JSX.Element =>  {
     const [isAllChecked, setIsAllChecked] = useState<boolean>(false)
     const [isTermsChecked, setIsTermsChecked] = useState<boolean>(false)
     const [isPrivacyChecked, setIsPrivacyChecked] = useState<boolean>(false)
-    const [isFinanceChecked, setIsFinanceChecked] = useState<boolean>(false)
+    // const [isFinanceChecked, setIsFinanceChecked] = useState<boolean>(false)
     const [isAgeChecked, setIsAgeChecked] = useState<boolean>(false)
     const [isMarketingChecked, setIsMarketingChecked] = useState<boolean>(false)
     const [message, setMessage] = useState<string>('')
@@ -193,7 +193,6 @@ const Terms = ({ route }: Props): JSX.Element =>  {
                 </View>
             </ScrollView>
         </>
-
     )
 }
 

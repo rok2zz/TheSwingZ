@@ -12,6 +12,7 @@ import DownArrow from "../../../assets/imgs/store/arrow_down.svg"
 import Tell from "../../../assets/imgs/store/tell.svg"
 import Share from "../../../assets/imgs/store/share.svg"
 import Loading from "../../../components/Loading"
+import { NaverMapMarkerOverlay, NaverMapView } from "@mj-studio/react-native-naver-map"
 
 const ManageReservation = () => {
     const { getMyReservation, deleteReservation } = useReservation()
@@ -179,28 +180,22 @@ const ManageReservation = () => {
                                         }
 
                                         <View style={ styles.map }>
-                                            {/* <MapView
-                                                scrollEnabled={ false }
-                                                provider={ PROVIDER_GOOGLE }
-                                                initialRegion={{
+                                           <NaverMapView
+                                                style={{ height: 146 }}
+                                                camera={{
                                                     latitude: Number(item.latitude),
                                                     longitude: Number(item.longitude),
-                                                    latitudeDelta: 0.0012,
-                                                    longitudeDelta: 0.0012,
+                                                    zoom: 16
                                                 }}
-                                                style={{ width: '100%', height: 146 }}
-                                                zoomEnabled={ false }
-                                                onTouchStart={() => true}
-                                            >
-                                                <Marker
-                                                    coordinate={{
-                                                        latitude: Number(item.latitude), longitude: Number(item.longitude)
-                                                    }}
-                                                    isPreselected={ true }
-                                                >
-                                                    <Image source={ require('../../../assets/imgs/store/map_pin.png')  } />
-                                                </Marker>
-                                            </MapView> */}
+                                            >   
+                                                <NaverMapMarkerOverlay
+                                                    latitude={ Number(item.latitude) }
+                                                    longitude={ Number(item.longitude) }
+                                                    image={ require('../../../assets/imgs/store/map_pin.png')}
+                                                    width={24}
+                                                    height={34}
+                                                />
+                                            </NaverMapView>
                                         </View>
                                         
                                         <Text style={[ styles.regularText, { marginTop: 12, marginBottom: 9 }]}>{ item.address }</Text>

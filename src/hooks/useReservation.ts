@@ -359,6 +359,7 @@ export const useReservation = (): ReservationHook => {
                     "accessToken": accessToken
                 }
             })
+
             if (res.data.code !== 1000) {
                 const payload: Payload = {
                     code: res.data.code,
