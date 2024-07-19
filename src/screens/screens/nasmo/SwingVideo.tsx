@@ -48,7 +48,6 @@ const SwingVideo = (): JSX.Element => {
         if (videoList) {
             setOffset(videoList.length)
         }
-        console.log(videoList)
     },[videoList]) 
 
     useEffect(() => {
@@ -349,7 +348,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontFamily: 'Pretendard-SemiBold',
 
-        marginLeft: 30,
+        marginLeft: 18,
 
         color: '#121619'
     },

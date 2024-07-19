@@ -1,9 +1,9 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { RootStackParamList } from "../types/stackTypes"
+import { RootStackNavigationProp, RootStackParamList } from "../types/stackTypes"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useEffect, useState } from "react"
 import SplashScreen from 'react-native-splash-screen';
-import { useIsFirst, useUserInfo, useUsers } from "../hooks/useUsers"
+import { useIsFirst, useIsMainLoaded, useUserInfo, useUsers } from "../hooks/useUsers"
 import { UserInfo } from "../slices/auth"
 import { useApi, useServerInfo } from "../hooks/useApi";
 import { ServerInfo } from "../slices/api";
@@ -46,6 +46,10 @@ import NoticeDetail from "./screens/cs/NoticeDetail";
 import Inquiry from "./screens/cs/Inquiry";
 import Notice from "./screens/cs/Notice";
 import FAQ from "./screens/cs/FAQ";
+import { useNavigation } from "@react-navigation/native";
+import ScreenSetting from "./screens/mypage/ScreenSetting";
+import AlarmSetting from "./screens/mypage/AlarmSetting";
+import InquiryDetail from "./screens/cs/InquiryDetail";
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
@@ -59,7 +63,6 @@ const consumerKey = `djATVwGtndKljOjNfTqv`
 const consumerSecret = `HhXUQEo4xt`
 const appName = Platform.OS === 'android' ? `com.theswingz` : `com.theswinggolf.theswingz`
 const serviceUrlSchemeIOS = `com.theswinggolf.theswingz`
-
 
 const RootStack = (): JSX.Element => {
 	const serverInfo: ServerInfo = useServerInfo()
@@ -76,7 +79,7 @@ const RootStack = (): JSX.Element => {
 
 	useEffect(() => {
 		async function getServerInfo(): Promise<void> {
-			const payload: Payload = await getApi('alpha', version)
+			const payload: Payload = await getApi('live', version)
 			if (payload.code !== 1000) {
 				Alert.alert(
 					'알림',
@@ -192,9 +195,9 @@ const RootStack = (): JSX.Element => {
 		}, 2000)
 	}, [serverInfo])
 
-
 	useEffect(() => {
 		setRefreshToken(refresh)
+		
 	}, [refresh])
 
 	// check if app is launched for first time
@@ -218,8 +221,6 @@ const RootStack = (): JSX.Element => {
 			disableNaverAppAuthIOS: false,
 	   })
 	}
-
-	
 
 	return (
 		<Stack.Navigator>
@@ -253,6 +254,14 @@ const RootStack = (): JSX.Element => {
 								header: () => <Header title="회원탈퇴" type={ 0 } isFocused/>
 							}} />	
 
+							{/* setting */}
+							<Stack.Screen name='AlarmSetting' component={ AlarmSetting } options={{ 
+								header: () => <Header title="알림설정​" type={ 0 } isFocused/>
+							}} />								
+							<Stack.Screen name='ScreenSetting' component={ ScreenSetting } options={{ 
+								header: () => <Header title="스크린설정​" type={ 0 } isFocused/>
+							}} />	
+							
 							{/* QRLogin and ScreenLogin */}
 							<Stack.Screen name='ScreenLogin' component={ ScreenLogin } options={{ 
 								header: () => <Header title="스크린 로그인​" type={ 3 } isFocused />
@@ -319,6 +328,9 @@ const RootStack = (): JSX.Element => {
 							}} />
 							<Stack.Screen name='Inquiry' component={ Inquiry } options={{ 
 								headerShown: false
+							}} />
+							<Stack.Screen name='InquiryDetail' component={ InquiryDetail } options={{ 
+								header: () => <Header title="나의 문의내역" type={ 0 } isFocused />
 							}} />
 						</>
 					}

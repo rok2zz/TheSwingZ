@@ -49,14 +49,18 @@ export interface UserInfo {
 }
 
 export interface UserSetting {
-    openProfileRecord: boolean,
-    searchFriend: boolean,
+    groupCode: string,
+    codeId: string,
+    codeName: string,
+    codeValue: string,
+    codeStatus: string
+}
 
-    notification: boolean,
-    friend: boolean,
-    comment: boolean,
-
-    marketing: boolean
+export interface SettingOption {
+    codeId: string,
+    optionName: string,
+    optionValue: string,
+    optionNo: string
 }
 
 export interface UpdatedProfile {
@@ -69,7 +73,7 @@ interface AuthState {
     refreshToken?: string | null,
     authInfo: AuthInfo,
     userInfo: UserInfo,
-    userSetting: UserSetting,
+    userSetting: UserSetting[],
     socialId: string,
     isFirst: boolean,
     isTabConnected: boolean,
@@ -106,16 +110,13 @@ const initialState: AuthState = {
         favoriteLocate: '',
         profileImg: null
     },
-    userSetting: {
-        openProfileRecord: true,
-        searchFriend: true,
-
-        notification: true,
-        friend: true,
-        comment: true,
-
-        marketing: true
-    },
+    userSetting: [{
+        groupCode: '',
+        codeId: '',
+        codeName: '',
+        codeValue: '',
+        codeStatus: ''
+    }],
     socialId: '',
     isFirst: true,
     isTabConnected: true,
@@ -138,7 +139,7 @@ const authSlice = createSlice ({
         saveUserInfo(state, action: PayloadAction<UserInfo>) {
             state.userInfo = action.payload
         },
-        saveUserSetting(state, action: PayloadAction<UserSetting>) {
+        saveUserSetting(state, action: PayloadAction<UserSetting[]>) {
             state.userSetting = action.payload
         },
         saveSocialId(state, action: PayloadAction<string>) {

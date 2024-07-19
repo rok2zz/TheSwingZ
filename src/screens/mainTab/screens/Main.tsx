@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Alert, BackHandler, Dimensions, Image, Platform, Pressable, RefreshControl, ScrollView, StatusBar, StyleSheet, Text, ToastAndroid, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-import { useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native"
+import { RouteProp, useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native"
 import { useRecentAvgRecord, useRecentAvgStat, useRecord, useRecords, useStat } from "../../../hooks/useRecords"
 import { Stat } from "../../../slices/record"
 import { UserInfo } from "../../../slices/auth"
 import { Record } from "../../../slices/record"
 import { useIsMainLoaded, useUserInfo } from "../../../hooks/useUsers"
 import { CcInfo, Payload } from "../../../types/apiTypes"
-import { MainTabNavigationProp, RootStackNavigationProp } from "../../../types/stackTypes"
+import { MainTabNavigationProp, MainTabParamList, RootStackNavigationProp } from "../../../types/stackTypes"
 import { useRecordActions } from "../../../hooks/useRecordActions"
 import { useMyRevList, useReservation } from "../../../hooks/useReservation"
 import { ReservationInfo } from "../../../slices/reservation"
@@ -18,6 +18,7 @@ import { Thumbnail } from "../../../slices/video"
 import FastImage from "react-native-fast-image"
 import { useAccessToken } from "../../../hooks/useToken"
 import { useAuthActions } from "../../../hooks/useAuthActions"
+import { useCourse } from "../../../hooks/useCourse"
 
 import RadarChart from "../../../components/RadarChart"
 
@@ -40,23 +41,21 @@ import Flag from "../../../assets/imgs/main/flag.svg"
 import EmptyVideo from "../../../assets/imgs/main/video_empty.svg"
 import BrandLogo from "../../../assets/imgs/brand/logo.svg"
 import Play from "../../../assets/imgs/swing/play.svg"
-import Home from "../../../assets/imgs/common/icon_home_on.svg"
-import { useVideoActions } from "../../../hooks/useVideoActions"
-import { useReservationActions } from "../../../hooks/useReservationActions"
-import { useCourse } from "../../../hooks/useCourse"
 
-const Main = (): JSX.Element => {
+interface Props {
+    route: RouteProp<MainTabParamList, 'Main'>
+}
+
+const Main = ({ route }: Props): JSX.Element => {
     const navigation = useNavigation<MainTabNavigationProp>()
     const rootNavigation = useNavigation<RootStackNavigationProp>()
+    const deepLink = route.params?.screen
     const isFocused = useIsFocused()
     const { getScore, getStat, getRecentAvgShots, getRecentAvgTeeDistance, getRecentAvgPutts } = useRecords()
     const { getMySwingVideoList } = useVideos()
     const { getMyReservation } = useReservation()
     const { getCourseInfo } = useCourse()
     const { saveIsTabConnected, saveIsMainLoaded } = useAuthActions() 
-    const { clearRecord } = useRecordActions()
-    const { clearVideo } = useVideoActions()
-    const { clearReservation } = useReservationActions()
     const isMainLoaded = useIsMainLoaded()
 
     const { saveRecord, saveRecentAvgRecord, saveStat, saveRecentAvgStat } = useRecordActions()
@@ -160,7 +159,6 @@ const Main = (): JSX.Element => {
         }
     }, [record])
 
-
     useEffect(() => {
         if (isMainLoaded) {
             setAllStat(stat)
@@ -198,6 +196,27 @@ const Main = (): JSX.Element => {
         })
         setRevList(sortedList)
     }, [myRevList])
+
+    useEffect(() => {
+        handleDeepLink(deepLink ?? '')
+    }, [route])
+
+    const handleDeepLink = (url: string) => {
+		if (url) {
+			const route = url.replace(/.*?:\/\//g, '') // "yourdomain.com/path/to/content"
+			const [path, ...params] = route.split('#')
+
+            if (path === 'myz') {
+				const [type, beforeScreen] = params
+				navigation.navigate('MainTab' as any, { screen: 'MyZ', params: { type: parseInt(type, 10), beforeScreen: beforeScreen }})
+			} else if (path === 'scorecard') {
+                const [roomId] = params
+				rootNavigation.navigate('ScoreCard',{ roomId: Number(roomId) })
+            } else if (path === 'managereservation') {
+				rootNavigation.navigate('ManageReservation')
+			} 
+		}
+	}
 
     // get recent 5 game's record in 18hole game
     const getMyRecentRecord = async (): Promise<void> => {
@@ -239,7 +258,7 @@ const Main = (): JSX.Element => {
         }
     }
 
-    // get resetvation
+    // get reservation
     const getRevInfo = async () => {
         const payload: Payload = await getMyReservation(null)
         if (payload.code !== 1000) {

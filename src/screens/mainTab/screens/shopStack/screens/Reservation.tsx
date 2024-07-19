@@ -506,13 +506,13 @@ const Reservation = ({ route }: Props): JSX.Element => {
                                             ) : (
                                             <>
                                                 { index === 0 &&
-                                                <View style={{ alignItems: 'center' }}>
-                                                    <View style={ styles.nonFavorite }>
-                                                        <Flag style={{ transform: [{ translateX: 5 }]}} />
+                                                    <View style={{ alignItems: 'center' }}>
+                                                        <View style={ styles.nonFavorite }>
+                                                            <Flag style={{ transform: [{ translateX: 5 }]}} />
+                                                        </View>
+        
+                                                        <Text>즐겨찾기 매장이 없습니다.</Text>
                                                     </View>
-    
-                                                    <Text>즐겨찾기 매장이 없습니다.</Text>
-                                                </View>
                                                 }
                                             </>
                                         )}

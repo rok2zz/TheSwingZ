@@ -41,6 +41,7 @@ export const useCourse = (): CourseHooks => {
 
         try {
             const res: Response = await axios.post(appURL, jsonBody)
+
             if (res.data.code !== 1000) {
                 const payload: Payload = {
                     code: res.data.code ?? -1,
@@ -50,7 +51,6 @@ export const useCourse = (): CourseHooks => {
                 return payload
             }
             if (res.data.result?.ccList) {
-                console.log(res.data.result.ccList.length)
                 saveCourseInfo(res.data.result.ccList)
             }
             return { code: 1000 }

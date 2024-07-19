@@ -55,7 +55,6 @@ const MyZ = ({ route }: Props): JSX.Element => {
 
     useEffect(() => {
         setType(routeType ?? 0)
-
         if (record.ccArr && record.ccArr.length < 5) {
             const newStartIndex = startIndex + record.ccArr.length
             setStartIndex(newStartIndex)
@@ -69,7 +68,6 @@ const MyZ = ({ route }: Props): JSX.Element => {
     }, [record])
 
     useEffect(() => {
-        setImageUri('')
         getProfileImg()
     }, [myProfile])
 
@@ -83,7 +81,7 @@ const MyZ = ({ route }: Props): JSX.Element => {
             setIsConnected(true)
             const payload: Payload = await getProfileImages([myProfile.uid])
             if (payload.code !== 1000) {
-            setIsConnected(false)
+                setIsConnected(false)
                 return
             }
 
@@ -243,11 +241,11 @@ const MyZ = ({ route }: Props): JSX.Element => {
 
                         <View style={ styles.profileInfo }>
                             <Text style={ styles.nickname } onPress={ () => navigation.navigate('ModifyProfile') }>{ myProfile.nick ?? 'nickname' }</Text>
-                            {/* <View style={ styles.settingContainer }>
-                                <Pressable style={ styles.settingBox } onPress={ ()=> {} }>
+                            <View style={ styles.settingContainer }>
+                                <Pressable style={ styles.settingBox } onPress={ () => navigation.navigate('ScreenSetting') }>
                                     <Text style={ styles.settingText }>스크린설정</Text>
                                 </Pressable>
-                            </View> */}
+                            </View>
                         </View>
                     </View>
 
@@ -523,7 +521,7 @@ const styles = StyleSheet.create({
         paddingVertical: 9,
         paddingHorizontal: 6,
 
-        color: '#ffffff'
+        color: '#949494'
     },
     summaryContainer: {        
         marginTop: 16,

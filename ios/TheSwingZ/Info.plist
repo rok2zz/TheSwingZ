@@ -1,123 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
-	<key>CFBundleDisplayName</key>
-	<string>더스윙제트</string>
-	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
-	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>$(PRODUCT_NAME)</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
-
-	<!-- google login client id -->
-	<key>GIDClientID</key>
-	<string>417264241402-flbh9kuiel6cjacvhksln6huisqbiptd.apps.googleusercontent.com</string>
-
-	<!-- naver map client id -->
-	<key>NMFClientId</key>
-  	<string>t9e812yrbw</string>
-
-	<!-- kakao & naver login info -->
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>kakaoba013042f5a0f6ae1e923f20137aad80</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>naver</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.theswinggolf.theswingz</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.417264241402-flbh9kuiel6cjacvhksln6huisqbiptd</string>
-			</array>
-		</dict>
-	</array>
-	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>naversearchapp</string>
-		<string>naversearchthirdlogin</string>
-		<string>kakaokompassauth</string>
-		<string>kakaolink</string>
-		<string>kakaoplus</string>
-	</array>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
-	<key>NSAppTransportSecurity</key>
 	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<false/>
-		<key>NSAllowsLocalNetworking</key>
+		<key>CFBundleDevelopmentRegion</key>
+		<string>en</string>
+		<key>CFBundleDisplayName</key>
+		<string>더스윙제트</string>
+		<key>CFBundleExecutable</key>
+		<string>$(EXECUTABLE_NAME)</string>
+		<key>CFBundleIdentifier</key>
+		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+		<key>CFBundleInfoDictionaryVersion</key>
+		<string>6.0</string>
+		<key>CFBundleName</key>
+		<string>$(PRODUCT_NAME)</string>
+		<key>CFBundlePackageType</key>
+		<string>APPL</string>
+		<key>CFBundleShortVersionString</key>
+		<string>$(MARKETING_VERSION)</string>
+		<key>CFBundleSignature</key>
+		<string>????</string>
+		<key>GIDClientID</key>
+		<string>417264241402-flbh9kuiel6cjacvhksln6huisqbiptd.apps.googleusercontent.com</string>
+		<key>NMFClientId</key>
+		<string>t9e812yrbw</string>
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>kakaoba013042f5a0f6ae1e923f20137aad80</string>
+				</array>
+			</dict>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLName</key>
+				<string>naver</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.theswinggolf.theswingz</string>
+				</array>
+			</dict>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.googleusercontent.apps.417264241402-flbh9kuiel6cjacvhksln6huisqbiptd</string>
+				</array>
+			</dict>
+			<dict>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>theswingz</string>
+				</array>
+			</dict>
+		</array>
+		<key>CFBundleVersion</key>
+		<string>$(CURRENT_PROJECT_VERSION)</string>
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>naversearchapp</string>
+			<string>naversearchthirdlogin</string>
+			<string>kakaokompassauth</string>
+			<string>kakaolink</string>
+			<string>kakaoplus</string>
+		</array>
+		<key>LSRequiresIPhoneOS</key>
 		<true/>
+		<key>NSAppTransportSecurity</key>
+		<dict>
+			<key>NSAllowsArbitraryLoads</key>
+			<false/>
+			<key>NSAllowsLocalNetworking</key>
+			<true/>
+		</dict>
+		<key>NSCameraUsageDescription</key>
+		<string>QR로그인 서비스를 제공하기 위해 카메라를 사용합니다.</string>
+		<key>NSContactsUsageDescription</key>
+		<string>앱 내에서 원하는 매장 선택 후, 전화 연결 시 사용합니다.​ 연락처 정보는 서버로 전송될 수 있습니다.</string>
+		<key>NSLocationAlwaysUsageDescription</key>
+		<string>주변의 가까운 매장을 찾기 위해 항상 위치정보를 사용합니다.​</string>
+		<key>NSLocationUsageDescription</key>
+		<string>주변의 가까운 매장을 찾기 위해 정확한 위치정보를 사용합니다.​</string>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>주변의 가까운 매장을 찾기 위해 위치정보를 사용합니다.​</string>
+		<key>NSPhotoLibraryAddUsageDescription</key>
+		<string>스윙영상(나의스윙)을 내 폰에 저장 기능 이용 시 사용합니다.​</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>스윙영상(나의스윙)을 내 폰에 저장 기능 이용 시 사용합니다.​</string>
+		<key>UIAppFonts</key>
+		<array>
+			<string>fonts/Pretendard-Regular.ttf</string>
+			<string>fonts/Pretendard-Black.ttf</string>
+			<string>fonts/Pretendard-SemiBold.ttf</string>
+			<string>fonts/Pretendard-ExtraBold.ttf</string>
+			<string>fonts/Pretendard-Bold.ttf</string>
+			<string>fonts/Pretendard-Light.ttf</string>
+			<string>fonts/Pretendard-Medium.ttf</string>
+			<string>fonts/Pretendard-Thin.ttf</string>
+			<string>fonts/Pretendard-ExtraLight.ttf</string>
+			<string>fonts/MaterialIcons.ttf</string>
+		</array>
+		<key>UILaunchStoryboardName</key>
+		<string>LaunchScreen</string>
+		<key>UIRequiredDeviceCapabilities</key>
+		<array>
+			<string>armv7</string>
+		</array>
+		<key>UIStatusBarStyle</key>
+		<string/>
+		<key>UISupportedInterfaceOrientations</key>
+		<array>
+			<string>UIInterfaceOrientationPortrait</string>
+		</array>
+		<key>UIViewControllerBasedStatusBarAppearance</key>
+		<false/>
 	</dict>
-	<key>NSCameraUsageDescription</key>
-	<string>QR로그인 서비스를 제공하기 위해 카메라를 사용합니다.</string>
-	<key>NSContactsUsageDescription</key>
-	<string>앱 내에서 원하는 매장 선택 후, 전화 연결 시 사용합니다.​ 연락처 정보는 서버로 전송될 수 있습니다.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>주변의 가까운 매장을 찾기 위해 항상 위치정보를 사용합니다.​</string>
-	<key>NSLocationUsageDescription</key>
-	<string>주변의 가까운 매장을 찾기 위해 정확한 위치정보를 사용합니다.​</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>주변의 가까운 매장을 찾기 위해 위치정보를 사용합니다.​</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>스윙영상(나의스윙)을 내 폰에 저장 기능 이용 시 사용합니다.​</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>스윙영상(나의스윙)을 내 폰에 저장 기능 이용 시 사용합니다.​</string>
-	<key>UIAppFonts</key>
-	<array>
-		<string>fonts/Pretendard-Regular.ttf</string>
-		<string>fonts/Pretendard-Black.ttf</string>
-		<string>fonts/Pretendard-SemiBold.ttf</string>
-		<string>fonts/Pretendard-ExtraBold.ttf</string>
-		<string>fonts/Pretendard-Bold.ttf</string>
-		<string>fonts/Pretendard-Light.ttf</string>
-		<string>fonts/Pretendard-Medium.ttf</string>
-		<string>fonts/Pretendard-Thin.ttf</string>
-		<string>fonts/Pretendard-ExtraLight.ttf</string>
-		<string>fonts/MaterialIcons.ttf</string>
-	</array>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>armv7</string>
-	</array>
-	<key>UIStatusBarStyle</key>
-	<string></string>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
-</dict>
 </plist>

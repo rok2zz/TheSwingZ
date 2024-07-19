@@ -231,7 +231,7 @@ const MakeReservation = ({ route }: Props) => {
                     text: '확인', 
                     onPress: async (): Promise<void> => { 
                         setIsConnected(true)
-                        const payload: Payload = await registReservation(13, revInfo, userInfo.realName, userInfo.phone, gameMode, selectedHole, isLeft, linkedRoom, twoRoom, twoGame)
+                        const payload: Payload = await registReservation(shopInfo.id, revInfo, userInfo.realName, userInfo.phone, gameMode, selectedHole, isLeft, linkedRoom, twoRoom, twoGame)
                         if (payload.code !== 1000) {
                             setIsConnected(false)
                             Alert.alert('알림','예약을 할 수 없습니다.')

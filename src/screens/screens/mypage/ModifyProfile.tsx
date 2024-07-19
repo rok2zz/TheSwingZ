@@ -33,26 +33,16 @@ const listItem: ListProps[] = [
         screen: 'CheckPW',
         stack: 'root'
     },
-    // { 
-    //     title: '간편로그인 관리​',
-    //     screen: '',
-    //     stack: 'root'
-    // },
-    // { 
-    //     title: '알림설정​',
-    //     screen: '',
-    //     stack: 'root'
-    // },
-    // { 
-    //     title: '라운드설정​',
-    //     screen: '',
-    //     stack: 'root'
-    // },
-    // { 
-    //     title: '스크린설정​',
-    //     screen: '',
-    //     stack: 'root'
-    // },
+    { 
+        title: '알림설정​',
+        screen: 'AlarmSetting',
+        stack: 'root'
+    },
+    { 
+        title: '스크린설정​',
+        screen: 'ScreenSetting',
+        stack: 'root'
+    },
 ]
 
 

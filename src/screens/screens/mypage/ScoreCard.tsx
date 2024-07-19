@@ -55,7 +55,6 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
     const minimapInfo = useCourseImage()
     const courseInfo = useCourseInfo()
 
-    const [recordIndex, setRecordIndex] = useState<number>(0)
     const [recordArr, setRecordArr] = useState<Record>()
     const [myPositionArr, setMyPositionArr] = useState<PositionInfo[]>([])
     const [profileImgs, setProfileImgs] = useState<UserProfileImgs[]>([])
@@ -75,21 +74,9 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
     const mapSizeY = (Dimensions.get('window').width - 30) * 441 / 281
 
     useEffect(() => {
-        if (myRecord.ccArr) {
-            for (let i = 0; i < myRecord.ccArr.length; i++) {
-                if (myRecord.ccArr[i].roomId === roomId) {
-                    setYear(myRecord.parcount[i].date.slice(0, 4))
-                    setmonth(myRecord.parcount[i].date.slice(4, 6))
-                    setdate(myRecord.parcount[i].date.slice(6, 8))
-                    setRecordIndex(i)
-                    getScoreCard()
-                    getVideoList()
-                    return
-                }
-            }
-        }
-
-    }, [roomId])
+        getScoreCard()
+        getVideoList()
+    }, [])
 
     useEffect(() => {
         getProfileImg()
@@ -174,7 +161,7 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
 
         setIsConnected(true)
         const payload: Payload = await getScore('A', myProfile.uid, roomId, null, null)
-
+        console.log(payload)
         setIsConnected(false)
         if (payload.code !== 1000) {
             Alert.alert('알림', '서버에 오류가 발생했습니다.')
@@ -189,6 +176,9 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
             posArr.sort((a, b) => { 
                 return a.holeNumber - b.holeNumber 
             })
+            setYear(payload.record.parcount[0].date.slice(0, 4))
+            setmonth(payload.record.parcount[0].date.slice(4, 6))
+            setdate(payload.record.parcount[0].date.slice(6, 8))
 
             for (let i = 0; i < payload.record.ccArr.length; i++) {
                 setIsFolded(prevState => [...prevState, true])    
@@ -216,10 +206,10 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
     }
 
     const getCcName = () => {
-        const a = myRecord.ccArr[recordIndex].courseName.split('(')[1]
+        const a = recordArr?.ccArr[0].courseName.split('(')[1] ?? ''
         const coruseName = a.split(')')[0]
 
-        return (myRecord.ccArr[recordIndex].ccName + '-' + coruseName) ?? ''
+        return (recordArr?.ccArr[0].ccName + '-' + coruseName) ?? ''
     }
 
     const getCourseName = (courseNumber: number) => {
@@ -300,7 +290,7 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                                 <View style={ styles.rowContainer }>
                                     <Text style={ styles.infoText }>stroke</Text>
                                     <View style={ styles.bar }></View>
-                                    <Text style={ styles.infoText }>{ myRecord.inArr[recordIndex].userCount }인</Text>
+                                    <Text style={ styles.infoText }>{ recordArr.inArr[0].userCount }인</Text>
                                 </View>                    
                             </View>
                             <Text style={ styles.ccText }>{ getCcName() }</Text>

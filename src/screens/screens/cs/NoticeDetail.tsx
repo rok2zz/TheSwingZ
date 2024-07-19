@@ -1,7 +1,7 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native"
+import { Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from "react-native"
 import { useBoard } from "../../../hooks/useBoard"
-import { RouteProp } from "@react-navigation/native"
-import { RootStackParamList } from "../../../types/stackTypes"
+import { RouteProp, useNavigation } from "@react-navigation/native"
+import { RootStackNavigationProp, RootStackParamList } from "../../../types/stackTypes"
 import { useEffect, useState } from "react"
 import { NoticeResult, Payload } from "../../../types/apiTypes"
 import AsyncStorage from "@react-native-async-storage/async-storage"
@@ -12,6 +12,7 @@ interface Props {
 }
 
 const NoticeDetail = ({ route }: Props) => {
+    const navigation = useNavigation<RootStackNavigationProp>()
     const id = route.params.id ?? 0
     const { getNotice } = useBoard()
 
@@ -25,7 +26,6 @@ const NoticeDetail = ({ route }: Props) => {
 
     useEffect(() => {
         if (isViewed !== -1) {
-            console.log(isViewed + ';asdf')
             getNoticeDetail()
         }
     }, [isViewed])
@@ -56,7 +56,6 @@ const NoticeDetail = ({ route }: Props) => {
         if (isConnected) return
 
         setIsConnected(true)
-        console.log(isViewed, '2')
         const payload: Payload = await getNotice(id, isViewed)
         if (payload.code !== 1000) {
             return
@@ -93,7 +92,7 @@ const NoticeDetail = ({ route }: Props) => {
             <head>
                 <style>
                     body {
-                        font-size: 45px;
+                        font-size: 45pt;
                         font-family: Arial, sans-serif;
                     }
                 </style>
@@ -103,28 +102,53 @@ const NoticeDetail = ({ route }: Props) => {
             </body>
         </html>
     `
+
+    const injectedCSS = `
+        body::-webkit-scrollbar {
+            display: none;
+        }
+        body {
+            -ms-overflow-style: none;  /* Internet Explorer 10+ */
+            scrollbar-width: none;  /* Firefox */
+        }
+    `;
+
+    const injectedJavaScript = `
+        const style = document.createElement('style');
+        style.innerHTML = \`${injectedCSS}\`;
+        document.head.appendChild(style);
+        window.ReactNativeWebView.postMessage(document.body.scrollHeight);
+    `
+
     return (
-        <ScrollView style={ styles.wrapper }>
-            { !notice ? (
-                <View style={ styles.container }>
-                     
-                    <Text style={ styles.boldText }>등록된 공지사항이 없습니다.</Text>
-                </View>
-                ) : (
-                <View style={ styles.container }>
-                    <Text style={ styles.boldText }>{ notice.detail.title }</Text>
-                    <Text style={[ styles.regularText, { fontSize: 13, marginTop: 9, marginBottom: 18, color: '#949494' }]}>{ formatDate(notice.detail.createdAt) }</Text>
-                     
-                    <View style={ styles.detailContainer }>
+        <View style={ styles.wrapper }>
+            { notice ? (
+                <>
+                    <View style={ styles.container }>
+                        <Text style={ styles.boldText }>{ notice.detail.title }</Text>
+                        <Text style={[ styles.regularText, { fontSize: 13, marginTop: 9, marginBottom: 18, color: '#949494' }]}>{ formatDate(notice.detail.createdAt) }</Text>
+                    </View>
+                    <View style={[ styles.detailContainer, { width: '100%', height: Dimensions.get('window').height - 320 }]}>
                         <WebView
+                            injectedJavaScript={injectedJavaScript}
                             originWhitelist={['*']}
                             source={{ html: htmlContent }}
+                            scrol
                         />  
                     </View>
+                </>
+            ) : (
+                <View style={ styles.container }>
+                    <Text style={ styles.boldText }>등록된 공지사항이 없습니다.</Text>
                 </View>
             )}
             
-        </ScrollView>
+            <View style={{ marginTop: 24, marginBottom :48 }}>
+                <Pressable style={ styles.button } onPress={ () => navigation.goBack() }>
+                    <Text style={ styles.semiBoldText }>목록으로</Text>
+                </Pressable>
+            </View>
+        </View>
     )
 }
 
@@ -137,6 +161,9 @@ const styles = StyleSheet.create({
     container: {
         marginTop: 24,
         marginHorizontal: 15,
+
+        borderBottomWidth: 1,
+        borderBottomColor: '#eeeeee',
     },
     boldText: {
         includeFontPadding: false,
@@ -152,14 +179,25 @@ const styles = StyleSheet.create({
 
         color: '#121619'
     },
-    detailContainer: {
-        width: '100%',
-        height: '100%',
-        paddingTop: 30,
-        marginBottom: 60,
+    semiBoldText: {
+        includeFontPadding: false,
+        fontSize: 16,
+        fontFamily: 'Pretendard-SemiBold',
 
-        borderTopWidth: 1,
-        borderTopColor: '#eeeeee',
+        color: '#fd780f'
+    },
+    detailContainer: {
+        marginHorizontal: 15,
+    },
+    button: {
+        alignItems: 'center',
+
+        paddingVertical: 13,
+        marginHorizontal: 15,
+
+        borderRadius: 3,
+        borderWidth: 1,
+        borderColor: '#fd780f'
     }
 })
 

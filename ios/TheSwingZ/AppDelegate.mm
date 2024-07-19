@@ -6,9 +6,11 @@
 #import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h>
 #import <React/RCTLinkingManager.h>
 #import <RNCKakaoUser/RNCKakaoUserUtil.h>
+#import <React/RCTLinkingManager.h>
 
 @implementation AppDelegate
 
+// kakao & naver login
 - (BOOL)application:(UIApplication *)application
      openURL:(NSURL *)url
      options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
@@ -21,8 +23,25 @@
       if([RNCKakaoUserUtil isKakaoTalkLoginUrl:url]) {
         return [RNCKakaoUserUtil handleOpenUrl:url];
       }
- return NO;
+  return [RCTLinkingManager application:application openURL:url options:options];
 }
+
+// deep link
+// - (BOOL)application:(UIApplication *)application
+//    openURL:(NSURL *)url
+//    options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
+// {
+//   return [RCTLinkingManager application:application openURL:url options:options];
+// }
+
+// universal link
+// - (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity
+//  restorationHandler:(nonnull void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler
+// {
+//  return [RCTLinkingManager application:application
+//                   continueUserActivity:userActivity
+//                     restorationHandler:restorationHandler];
+// }
 
 // google
 // - (BOOL)application:(UIApplication *)application openURL:(nonnull NSURL *)url options:(nonnull NSDictionary<NSString *,id> *)options {

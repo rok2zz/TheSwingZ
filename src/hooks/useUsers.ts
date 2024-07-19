@@ -11,7 +11,6 @@ import { ServerInfo } from "../slices/api";
 import { useServerInfo } from "./useApi";
 import ImageResizer from "react-native-image-resizer";
 import { useAccessToken, useRefreshToken } from "./useToken";
-import NaverLogin from "@react-native-seoul/naver-login";
 
 interface UsersHook {
     idLogin: (userID: string, userPW: string, auto: boolean) => Promise<Payload>,
@@ -38,8 +37,9 @@ interface UsersHook {
 
     getProfileImages: (uidArr: number[]) => Promise<Payload>,
 
+    createSettingValue: (uid: number) => Promise<Payload>,
     getSettingValue: (uid: number) => Promise<Payload>,
-    setSettingValue: (uid: number, setting: UserSetting) => Promise<Payload>,
+    setSettingValue: (uid: number, configList: UserSetting[]) => Promise<Payload>,
 }
 
 export const useAuthInfo = (): AuthInfo => {
@@ -50,7 +50,7 @@ export const useUserInfo = (): UserInfo => {
     return useSelector((state: RootState) => state.auth.userInfo)
 }
 
-export const useUserSetting = (): UserSetting => {
+export const useUserSetting = (): UserSetting[] => {
     return useSelector((state: RootState) => state.auth.userSetting)
 }
 
@@ -1087,7 +1087,7 @@ export const useUsers = (): UsersHook => {
                 if (res.data.code === -5000) {
                     const res: Response = await axios.post(appURL, jsonBody, {
                         headers: {
-                            'accessToken': accessToken
+                            'refreshToken': refreshToken
                         }
                     })
     
@@ -1160,8 +1160,7 @@ export const useUsers = (): UsersHook => {
             cls: "UserConfig",
             method: "add",
             params: [
-                uid,
-                'C'
+                uid
             ]
         }
     
@@ -1192,14 +1191,13 @@ export const useUsers = (): UsersHook => {
             cls: "UserConfig",
             method: "list",
             params: [
-                uid,
-                'C'
+                uid
             ]
         }
     
         const jsonBody: string = JSON.stringify(body)   
         try {
-            const res: SettingResponse = await axios.post(gameURL, jsonBody)
+            const res: Response = await axios.post(gameURL, jsonBody)
             if (res.data.code !== 1000) {
                 const payload: Payload = {
                     code: res.data.code,
@@ -1208,38 +1206,15 @@ export const useUsers = (): UsersHook => {
 
                 return payload
             }
-
-            if (res.data.result && res.data.result?.confList.length > 0) {
-                saveUserSetting({
-                    openProfileRecord: res.data.result.confList[0].codeValue === 'Y' ? true : false,
-                    searchFriend: res.data.result.confList[1].codeValue === 'Y' ? true : false,
-
-                    notification: res.data.result.confList[2].codeValue === 'Y' ? true : false,
-                    friend: res.data.result.confList[3].codeValue === 'Y' ? true : false,
-                    comment: res.data.result.confList[4].codeValue === 'Y' ? true : false,
-
-                    marketing: res.data.result.confList[5].codeValue === 'Y' ? true : false,
-                })
+            
+            if (res.data.result && res.data.result?.confList && res.data.result.confList.length > 0) {
+                const payload: Payload = {
+                    code: res.data.code,
+                    configList: res.data.result?.confList,
+                    optionList: res.data.result?.optionList
+                }
+                return payload
             }
-
-            if (res.data.result && res.data.result.confList.length <= 0) {
-                console.log('설정값없음')
-                await createSettingValue(uid)
-                await getSettingValue(uid)
-
-                // const userSetting: UserSetting = {
-                //     openProfileRecord: true ,
-                //     searchFriend: true,
-
-                //     notification: true,
-                //     friend: true,
-                //     comment: true,
-
-                //     marketing: true,
-                // }
-            }
-
-            return { code: res.data.code }
 
         } catch (error: any) {
             errorHandler(error)
@@ -1248,53 +1223,18 @@ export const useUsers = (): UsersHook => {
     }
 
     // 설정 변경하기
-    const setSettingValue = async (uid: number, setting: UserSetting): Promise<Payload> => {
-        const userSetting: UserSettingBody[] = [
-            {
-                codeId: 'C0001',
-                codeValue: setting.openProfileRecord ? 'Y' : 'N',
-                codeStatus: 'Y'
-            },
-            {
-                codeId: 'C0002',
-                codeValue: setting.searchFriend ? 'Y' : 'N',
-                codeStatus: 'Y'
-            },
-            {
-                codeId: 'C0003',
-                codeValue: setting.notification ? 'Y' : 'N',
-                codeStatus: 'Y'
-            },
-            {
-                codeId: 'C0004',
-                codeValue: setting.friend ? 'Y' : 'N',
-                codeStatus: 'Y'
-            },
-            {
-                codeId: 'C0005',
-                codeValue: setting.comment ? 'Y' : 'N',
-                codeStatus: 'Y'
-            },
-            {
-                codeId: 'C0006',
-                codeValue: setting.marketing ? 'Y' : 'N',
-                codeStatus: 'Y'
-            },
-        ]
-
-        
+    const setSettingValue = async (uid: number, configList: UserSetting[]): Promise<Payload> => {
         const body: Body = {
             cls: "UserConfig",
             method: "change",
             params: [
                 uid,
                 'C',
-                userSetting
+                configList
             ]
         }
-    
+        
         const jsonBody: string = JSON.stringify(body)   
-
         try {
             const res: SettingResponse = await axios.post(gameURL, jsonBody)
             if (res.data.code !== 1000) {
@@ -1306,10 +1246,13 @@ export const useUsers = (): UsersHook => {
                 return payload
             }
 
-            if (res.data.result?.confList) {
-
+            if (res.data.result && res.data.result?.confList) {
+                const payload: Payload = {
+                    code: res.data.code,
+                    configList: res.data.result?.confList
+                }
+                return payload
             }
-
 
             return { code: res.data.code }
 
@@ -1321,7 +1264,8 @@ export const useUsers = (): UsersHook => {
 
     return { idLogin, socialLogin, autoLogin, createAccount, socialCreate, 
         sendMessage, findID, checkPW, resetPW, screenLogin, getProfileImages,
-        modifyProfile, modifyUserInfo, logout, deleteAccount, getSettingValue, setSettingValue,
+        modifyProfile, modifyUserInfo, logout, deleteAccount, 
+        createSettingValue, getSettingValue, setSettingValue,
         checkDuplicatedId, checkDuplicatedNickname }
 }
 

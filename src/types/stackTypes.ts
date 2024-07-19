@@ -1,8 +1,8 @@
 import { NavigatorScreenParams } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
-import { CourseInfo } from "../screens/screens/course/courseInfo"
 import { ReservationSetting, ShopInfo } from "../slices/reservation"
 import { VideoList } from "../slices/video"
+import { CourseInfo } from "../slices/course"
 
 // RootStack
 export type RootStackParamList = {
@@ -40,6 +40,10 @@ export type RootStackParamList = {
 		success: boolean,
 		reason?: string
 	}
+
+	// setting
+	AlarmSetting: undefined,
+	ScreenSetting: undefined,
 
 	// shop
 	ShopDetail: {
@@ -92,7 +96,10 @@ export type RootStackParamList = {
 		id: number
 	},
 	FAQ: undefined,
-	Inquiry: undefined
+	Inquiry: undefined,
+	InquiryDetail: {
+		id: number
+	}
 }
 
 export type RootStackScreenName = keyof RootStackParamList
@@ -136,7 +143,9 @@ export type AuthStackNavigationProp = NativeStackNavigationProp<AuthStackParamLi
 
 // MainTab
 export type MainTabParamList = {
-    Main: undefined,
+    Main: {
+		screen?: string
+	},
 	ShopStack: undefined,
 	MyZ: {
 		type: number,

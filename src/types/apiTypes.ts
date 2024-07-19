@@ -1,4 +1,4 @@
-import { UserInfo } from "../slices/auth"
+import { SettingOption, UserInfo, UserSetting } from "../slices/auth"
 import { CourseImage, CourseInfo, CourseThumnail } from "../slices/course"
 import { Record, Stat } from "../slices/record"
 import { ReservationInfo, ReservationTime, ShopInfo } from "../slices/reservation"
@@ -48,7 +48,14 @@ export interface Response {
             // board
             noticeList?: NoticeListResult
             notice?: NoticeResult
-        
+            faqList?: FAQResult,
+            inquiryList?: InquiryListResult
+            inquiry?: Inquiry
+
+            // user config
+            confList?: UserSetting[],
+            optionList?: SettingOption[],
+
             // token
             token?: string,
             accessToken?: string,
@@ -112,10 +119,9 @@ export interface FAQList {
     attach: string[]
 }
 
-export interface InquiryResult {
+export interface InquiryListResult {
     total?: number,
     list?: InquiryList[],
-    inquiry?: Inquiry
 }
 
 export interface InquiryList {
@@ -124,11 +130,26 @@ export interface InquiryList {
     title: string,
     type: number,
     realName: string,
-    createdAt: string
+    createdAt: string,
 }
 
 export interface Inquiry {
+    detail: [{
+        id: number,
+        title: string,
+        type: number,
+        reference: number,
+        createdAt: string
+    }],
+    files?: [{
+        boardId: number,
+        fileName: string
+    }]
+}
 
+interface InquiryFiles {
+    boardId: number,
+    fileName: string
 }
 
 export interface UserSettingBody {
@@ -163,9 +184,16 @@ export interface Payload {
 
     userProfileImgs?: UserProfileImgs[],
 
+    // userconfig
+    configList?: UserSetting[],
+    optionList?: SettingOption[],
 
+    // board
     noticeList?: NoticeListResult,
-    noticeResult?: NoticeResult
+    noticeResult?: NoticeResult,
+    faqList?: FAQResult,
+    inquiryList?: InquiryListResult,
+    inquiry?: Inquiry
 }
 
 export interface LoginResult {

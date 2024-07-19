@@ -31,6 +31,10 @@ const RadarChart = ({ record, stat }: Props): JSX.Element => {
         setPoints(pointArr)
     },[record])
 
+    // useEffect(() => {
+    //     console.log(points)
+    // }, [points])
+
 
     const calculateEdgePoint = useMemo(() => {
         return (index: number, scale: number = 1): Point => {
@@ -157,10 +161,10 @@ const RadarChart = ({ record, stat }: Props): JSX.Element => {
                         }
                        
                         { points && points.map((item: Point, index: number) => (
-                                <Circle key={ index } cx={ item[0] } cy={ item[1] } r="6" fill="#ff580f" fillOpacity={ 0.38 } />
+                            <Circle key={ index } cx={ item[0] } cy={ item[1] } r="6" fill="#ff580f" fillOpacity={ 0.38 } />
                         ))}
                         { points && points.map((item: Point, index: number) => (
-                                <Circle key={ index } cx={ item[0] } cy={ item[1] } r="3" fill="#ef7617" />
+                            <Circle key={ index } cx={ item[0] } cy={ item[1] } r="3" fill="#ef7617" />
                         ))}
                         
                     </Svg>
