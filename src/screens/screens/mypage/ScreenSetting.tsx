@@ -230,7 +230,6 @@ const ScreenSetting = (): JSX.Element => {
                                 setOpenSelectModal(false)
                             }
                             
-                            
                             if (item.codeId === userConfig[configIndex].codeId) {
                                 if (Number(item.optionNo) % 2 === 0 && Number(item.optionNo) > 0) return
                                     

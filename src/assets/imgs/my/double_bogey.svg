@@ -1,10 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="26" viewBox="0 0 24 26">
-    <g id="그룹_4093" data-name="그룹 4093" transform="translate(-98 -1194)">
-      <g id="사각형_3251" data-name="사각형 3251" transform="translate(98 1194)" fill="none" stroke="#56c78a" stroke-width="1">
-        <rect width="24" height="26" stroke="none"/>
-        <rect x="0.5" y="0.5" width="23" height="25" fill="none"/>
-      </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
+  <g id="img_4" transform="translate(-68 -552)">
+    <rect id="사각형_3237" data-name="사각형 3237" width="12" height="12" transform="translate(68 552)" fill="#e0f7ed"/>
+    <g id="사각형_3238" data-name="사각형 3238" transform="translate(69 553)" fill="none" stroke="#56c78a" stroke-width="1">
+      <rect width="10" height="10" stroke="none"/>
+      <rect x="0.5" y="0.5" width="9" height="9" fill="none"/>
     </g>
-  </svg>
-  
-  
+    <g id="사각형_3289" data-name="사각형 3289" transform="translate(71 555)" fill="none" stroke="#56c78a" stroke-width="1">
+      <rect width="6" height="6" stroke="none"/>
+      <rect x="0.5" y="0.5" width="5" height="5" fill="none"/>
+    </g>
+  </g>
+</svg>

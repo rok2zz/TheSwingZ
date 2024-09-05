@@ -69,7 +69,7 @@ const ManageReservation = () => {
                         setIsConnected(true)
                         const payload: Payload = await deleteReservation(revId)
                         if (payload.code !== 1000) {
-                            Alert.alert('알림','예약을 취소할 수 없습니다.')
+                            Alert.alert('알림', '예약을 취소할 수 없습니다.')
                             setIsConnected(false)
                             return
                         }

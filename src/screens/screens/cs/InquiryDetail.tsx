@@ -9,6 +9,8 @@ interface Props {
     route: RouteProp<RootStackParamList, 'InquiryDetail'>
 }
 
+const inquiryTypeList = ['스크린골프', '앱 이용문의', '회원정보', '오류/불편접수', '기타']
+
 const InquiryDetail = ({ route }: Props): JSX.Element => {
     const navigation = useNavigation<RootStackNavigationProp>()
     const inquiryId = route.params.id
@@ -66,12 +68,12 @@ const InquiryDetail = ({ route }: Props): JSX.Element => {
             { inquiry &&
                 <View style={ styles.container }>
                     <View style={ styles.titleContainer }>
-                        <Text style={ styles.boldText }>{ inquiry.detail[0].title }</Text>
+                        <Text style={ styles.boldText }>[{ inquiryTypeList[inquiry.detail[0].type]}] { inquiry.detail[0].title }</Text>
                         <Text style={[ styles.regularText, { fontSize: 13, marginTop: 9, marginBottom: 18, color: '#949494' }]}>{ formatDate(inquiry.detail[0].createdAt) }</Text>
                     </View>
-                    {/* <View style={ styles.contentContainer }>
-                        <Text style={ styles.regularText }>{ inquiry.detail[0]. }</Text>
-                    </View> */}
+                    <View style={ styles.contentContainer }>
+                        <Text style={ styles.regularText }>{ inquiry.detail[0].detail }</Text>
+                    </View>
                 </View>
             }
             
@@ -128,6 +130,9 @@ const styles = StyleSheet.create({
         borderRadius: 3,
         borderWidth: 1,
         borderColor: '#fd780f'
+    },
+    contentContainer: {
+        marginTop: 10
     }
 })
 

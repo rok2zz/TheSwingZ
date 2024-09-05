@@ -215,7 +215,7 @@ const VideoDetail = ({ route }: Props): JSX.Element => {
                     <View style={[ styles.rowContainer, { marginBottom: 18 }]}>
                         <View style={[ styles.rowContainer, { flex: 1 }]}>
                             { profileImg === '' || !profileImg ? 
-                                <View style={[ styles.profileImg, { alignItems: 'center', justifyContent: 'center', backgroundColor: 'skyblue' }]}>
+                                <View style={[ styles.profileImg, { alignItems: 'center', justifyContent: 'center', backgroundColor: '#dddddd' }]}>
                                     <EmptyImg width={ 40 } height={ 40 } /> 
                                 </View>
                                 : 
@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
 
         marginRight: 12,
 
-        borderRadius: 50
+        borderRadius: 50,
     },
     videoContainer: {
         marginTop: 15,

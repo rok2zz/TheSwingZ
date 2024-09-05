@@ -6,7 +6,7 @@ import { UserInfo } from "../../../slices/auth"
 import { useUserInfo, useUsers } from "../../../hooks/useUsers"
 import { useRecord, useRecords } from "../../../hooks/useRecords"
 import { Record } from "../../../slices/record"
-import { CcInfo, Payload, PositionInfo, UserProfileImgs } from "../../../types/apiTypes"
+import { CcInfo, Count, Payload, PositionInfo, RoomInfo, UserProfileImgs } from "../../../types/apiTypes"
 import { useScoreCardVideo, useThumbnailList, useVideos } from "../../../hooks/useVideos"
 import { Thumbnail } from "../../../slices/video"
 import { CourseImage } from "../../../slices/course"
@@ -15,6 +15,7 @@ import { useVideoActions } from "../../../hooks/useVideoActions"
 import Loading from "../../../components/Loading"
 import FastImage from "react-native-fast-image"
 import { Line, Svg } from "react-native-svg"
+import { getFSInfo } from "react-native-fs"
 
 // svg
 import Location from "../../../assets/imgs/my/location_white.svg"
@@ -35,6 +36,8 @@ import X from "../../../assets/imgs/my/x_minimap.svg"
 import OBX from "../../../assets/imgs/my/x_ob_minimap.svg"
 import Left from "../../../assets/imgs/my/triangle_left.svg"
 import Right from "../../../assets/imgs/my/triangle_right.svg"
+import Crown from "../../../assets/imgs/my/icon_crown.svg"
+import Competition from "../../../assets/imgs/main/icon_competition.svg"
 
 interface Props {
     route: RouteProp<RootStackParamList, 'ScoreCard'>
@@ -69,6 +72,7 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
     const [sortedMinimapList, setSortedMinimapList] = useState<CourseImage[]>([])
     const [type, setType] = useState<number>(0)
     const [hole, setHole] = useState<number>(1)
+    const [holeLength, setHoleLength] = useState<number>(18)
 
     const mapSizeX = Dimensions.get('window').width - 30
     const mapSizeY = (Dimensions.get('window').width - 30) * 441 / 281
@@ -133,7 +137,6 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
         if (payload.code !== 1000) {
             return
         }
-
     }
 
     const getProfileImg = async () => {
@@ -161,7 +164,6 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
 
         setIsConnected(true)
         const payload: Payload = await getScore('A', myProfile.uid, roomId, null, null)
-        console.log(payload)
         setIsConnected(false)
         if (payload.code !== 1000) {
             Alert.alert('알림', '서버에 오류가 발생했습니다.')
@@ -182,6 +184,15 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
 
             for (let i = 0; i < payload.record.ccArr.length; i++) {
                 setIsFolded(prevState => [...prevState, true])    
+            }
+
+            if (payload.record.shotcount) {
+                for (let i = 1; i <= 18; i++) {
+                    if ((payload.record.shotcount[0] as any)[`hole${i}`] === null) {
+                        setHoleLength(i)
+                        break
+                    }
+                }
             }
             setMyPositionArr(posArr)
         }
@@ -206,6 +217,8 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
     }
 
     const getCcName = () => {
+        if (!recordArr?.ccArr[0].courseName) return ''
+        
         const a = recordArr?.ccArr[0].courseName.split('(')[1] ?? ''
         const coruseName = a.split(')')[0]
 
@@ -270,6 +283,77 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
         }
     }
 
+    const getPlayMode = (item: string) => {
+        switch (item) {
+            case 'Stroke':
+                return '스트로크'
+            case 'Match':
+                return '매치'
+            case 'Foursome':
+                return '포썸'
+        }
+
+        return ''
+    }
+
+    const getCompType = () => {
+        switch (recordArr?.inArr[0].compType) {
+            case 'H':
+                return '본사대회'                 
+            case 'S':
+                return '매장대회'
+            case 'U':
+                return '유저대회'
+            case 'E':
+                return '기타대회'                           
+        }
+
+        return '대회'
+    }
+
+    const formatDate = () => {
+        const stDate = new Date(recordArr?.inArr[0].compStDate ?? '')
+        const edDate = new Date(recordArr?.inArr[0].compEdDate?? '')
+        const day = ['일', '월', '화', '수', '목', '금', '토']
+        const stMonth = (stDate.getMonth() + 1) < 10 ? '0' + (stDate.getMonth() + 1) : (stDate.getMonth() + 1)
+        const edMonth = (edDate.getMonth() + 1) < 10 ? '0' + (edDate.getMonth() + 1) : (edDate.getMonth() + 1)
+        const stDay = (stDate.getDate()) < 10 ? '0' + (stDate.getDate()) : (stDate.getDate())
+        const edDay = (edDate.getDate()) < 10 ? '0' + (edDate.getDate()) : (edDate.getDate())
+
+        return stDate.getFullYear().toString().slice(2, 4) + `.${stMonth}.${stDay}(${day[stDate.getDay()]}) ~`  +
+                `${edDate.getFullYear().toString().slice(2, 4)}.${edMonth}.${edDay}(${day[edDate.getDay()]})`
+    }
+
+    const getProfileImgUrl = (uid: number) => {
+        if (profileImgs && profileImgs.length > 0) {
+            for (let j = 0; j < profileImgs.length; j++) {
+                if (uid === profileImgs[j].uid) {
+                    return profileImgs[j].url
+                }
+            }
+        }
+        return ''
+    }
+
+    const getMatchScore = (index: number) => {
+        let matchScore: number = 0
+
+        if (recordArr && recordArr.shotcount) {
+            for (let i = 1; i <= 18; i++) {
+                matchScore += (recordArr.shotcount[index] as any)[`hole${i}`]
+            }
+        }       
+        return matchScore < 0 ? matchScore * -1 : matchScore
+    }
+
+    const getFinalScoreType = (score: number) => {
+        if (score > 0) {
+            return 'Up'
+        } else if (score < 0) {
+            return 'Dn'
+        } 
+        return 'A/S'
+    }
 
     return (
         <>
@@ -281,30 +365,279 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                 </View> 
             }
             <ScrollView style={ styles.wrapper } showsVerticalScrollIndicator={ false }>
-                { recordArr && recordArr.ccArr.length > 0 &&
+                { recordArr && recordArr.inArr.length > 0 &&
                     <>
                         <View style={ styles.ccInfoContainer }>
                             <View style={ styles.rowContainer }>
                                 <Text style={[ styles.infoText, { flex: 1 }]}>{ year }.{ month }.{ date }</Text>
 
                                 <View style={ styles.rowContainer }>
-                                    <Text style={ styles.infoText }>stroke</Text>
+                                    <Text style={ styles.infoText }>{ getPlayMode(recordArr.inArr[0].playMode ?? '') }</Text>
                                     <View style={ styles.bar }></View>
                                     <Text style={ styles.infoText }>{ recordArr.inArr[0].userCount }인</Text>
                                 </View>                    
                             </View>
                             <Text style={ styles.ccText }>{ getCcName() }</Text>
                             
-                            <View style={[ styles.rowContainer, { paddingBottom: 66 }]}>
+                            <View style={[ styles.rowContainer, recordArr.inArr[0].gameMode === 'Competition' ? { paddingBottom: 31 } : { paddingBottom: 66 }]}>
                                 <View style={[ styles.rowContainer, { flex: 1}]}>
                                     <Location style={ styles.location } />
                                     <Text style={ styles.infoText }>{ recordArr.inArr[0].shopName }</Text>
                                 </View>
-                                <Share />
+                                {/* <Share /> */}
                             </View>
+
+                            { recordArr.inArr[0].gameMode === 'Competition' && recordArr.inArr[0].compId && recordArr.inArr[0].compId > 0 &&
+                                <Pressable style={ styles.compContainer } onPress={ () => navigation.navigate('CompetitionDetail', { id: recordArr.inArr[0].compId, before: 'ScoreCard' })}>
+                                    <View style={[ styles.rowContainer, { marginBottom: 10 }]}>
+                                        <View style={ styles.compCircle }>
+                                            <Competition width={16} height={16} />
+                                        </View>
+                                        <View style={ styles.compType }>
+                                            <Text style={ styles.regularText }>{ getCompType() }</Text>
+                                        </View>
+                                        {/* <View style={ styles.courseType }>
+                                            <Text style={[ styles.regularText, { color: '#666666' }]}>Aasdf</Text>
+                                        </View> */}
+                                    </View>
+                                    <Text style={[ styles.boldText, { marginBottom: 10 }]}>{ recordArr.inArr[0].compName ?? '' }</Text>
+                                    <View style={[ styles.rowContainer, { marginBottom: 8 }]}>
+                                        <Text style={[ styles.regularText, { flex: 1, fontSize: 13, color: '#949494' }]}>{ formatDate() }</Text>
+                                        <Text style={ styles.extraLightText }>랭킹보기→</Text>
+                                    </View>
+                                </Pressable>
+                            }
                         </View>
 
-                        { recordArr.ccArr.map((item: CcInfo, index: number) => {
+                        {/* match */}
+                        { recordArr.inArr[0].playMode === 'Match' && 
+                            <View style={[ styles.scoreCardContainer, { marginBottom: 48 }]}>
+                                { recordArr.inArr.map((item: RoomInfo, matchIndex: number) => {         
+                                    const getScoreType = () => {
+                                        let matchScore: number = 0
+                                        for (let i = 1; i <= 18; i++) {
+                                            matchScore += (recordArr.shotcount[matchIndex] as any)[`hole${i}`]
+                                        }
+                                        if (matchScore > 0) {
+                                            return 'Up'
+                                        } else if (matchScore < 0) {
+                                            return 'Dn'
+                                        }
+
+                                        return 'A/S'
+                                    }
+
+                                    return (
+                                        <View style={[ styles.rowContainer, { paddingTop: 18, paddingBottom: 12, paddingHorizontal: 15 }, matchIndex === 1 && { backgroundColor: '#fbfbfb' }]} key={ matchIndex }>
+                                            <View style={[ styles.rowContainer, { flex: 1 }]}>
+                                                <View style={ styles.imgContainer }>
+                                                        { getProfileImgUrl(item.uid) === '' ?
+                                                            <EmptyImg />
+                                                            :
+                                                            <FastImage 
+                                                                style={ styles.img } 
+                                                                source={{ 
+                                                                    uri: getProfileImgUrl(item.uid),
+                                                                    priority: FastImage.priority.normal,
+                                                                    cache: FastImage.cacheControl.immutable 
+                                                                }} 
+                                                                resizeMode="cover"
+                                                            />
+                                                        }
+                                                        { matchIndex === 0 &&
+                                                            <View style={ styles.crownContainer }>
+                                                                <Crown />
+                                                            </View>
+                                                        }
+                                                    </View>
+                                                <View>
+                                                    <Text style={[ styles.boldText, { fontSize: 10, marginBottom: 6, color: '#009746' }]}>PLAYER { matchIndex + 1 }</Text>
+                                                    <Text style={[ styles.regularText, { fontSize: 16, color: '#121619' }]}>{ item.nick }</Text>
+                                                </View>
+                                            </View>
+                                            <View style={[ styles.rowContainer, { alignItems: 'baseline' }]}>
+                                                <Text style={[ styles.semiBoldText, { fontSize: 24, marginLeft: 0, color: '#121619' }]}>{ getMatchScore(matchIndex) }</Text>
+                                                <Text style={[ styles.regularText, { fontSize: 16, color: '#121619' }]}>{ getScoreType() }</Text>
+                                            </View>
+                                        </View>
+                                    )
+                                })}
+
+                                { recordArr.shotcount && recordArr.shotcount[0].hole1 && 
+                                    <>
+                                        <View style={ styles.scoreCard }>
+                                            <View style={[ styles.scoreCardRow, { backgroundColor: '#f6f6f6' }]}>
+                                                <View style={ styles.typeBox }>
+                                                    <Text style={ styles.typeText }>HOLE</Text>
+                                                </View>
+                                                <View style={ styles.centerRow }>
+                                                    { Array.from({ length: 9 }, (_, index: number) => (
+                                                        <Text style={ styles.holeText } key={ index }>{ index + 1 }</Text>
+                                                    ))}
+                                                </View>
+                                                <View style={[ styles.typeBox, { width: 40 }]}>
+                                                    <Text style={ styles.typeText }>총합</Text>
+                                                </View>                                
+                                            </View>
+                                        </View>
+
+                                        { recordArr.shotcount.map((item: Count, matchIndex: number) => {     
+                                            const shotArr: [string, number][] = Object.entries(item).filter(([key]) => key.includes('hole'))
+                                            const getScoreType = (score: number) => {
+                                                switch (score) {
+                                                    case 1:
+                                                        return 'Up'
+                                                    case 0:
+                                                        return 'H'
+                                                    case -1:
+                                                        return ''
+                                                }
+                                            }
+
+                                            const getFirstMatchScore = () => {
+                                                let shotCount: number = 0
+                                                for (let i = 1; i <= 9; i++) {
+                                                    shotCount += (item as any)[`hole${i}`]
+                                                }
+
+                                                return shotCount
+                                            }
+                                    
+                                            return (
+                                                <View style={[ styles.scoreCardRow, !recordArr.shotcount[0].hole10 && matchIndex === 1 && { borderBottomColor: '#fcbc8a' }]} key={ matchIndex }>
+                                                    <View style={ styles.typeBox }>
+                                                        <Text style={[ styles.typeText, { color: '#121619' }]}>{ matchIndex + 1 }P</Text>
+                                                    </View>                                    
+                                                    <View style={ styles.centerRow }>
+                                                        { shotArr.map(([key, value]: [string, number], hole: number ) => {
+                                                            if (hole > 8) return
+                                                            if (value && hole < 9) {
+                                                                return (
+                                                                    <View style={[ styles.scoreBox, { backgroundColor: '#ffffff'} ]} key={ hole }>
+                                                                        <Text style={ styles.scoreText } >{ getScoreType(value) }</Text>
+                                                                    </View>
+                                                                )
+                                                            } else if (value === 0 && hole < 9) {
+                                                                return (
+                                                                    <View key={ hole }>
+                                                                        <Text style={[ styles.scoreText, { color: '#949494' }]} >H</Text>
+                                                                    </View>
+                                                                )
+                                                            } else if (value === null) {
+                                                                return (
+                                                                    <View style={[ styles.scoreBox, { width: (Dimensions.get('window').width - 122) / 9, backgroundColor: '#f6f6f6'} ]} key={ hole }></View>
+                                                                )
+                                                            }
+                                                        })}
+                                                    </View>
+                                                    <View style={[ styles.typeBox, { width: 40 }]}>
+                                                        <Text style={[ styles.semiBoldText, { fontSize: 11, marginLeft: 0, color: '#121619' }]}>{ getFirstMatchScore() === 0 ? '' : getFirstMatchScore() }</Text>
+                                                        <Text style={[ styles.regularText, { fontSize: 11, color: '#121619' }]}>{ getFinalScoreType(getFirstMatchScore()) }</Text>
+                                                    </View>                                
+                                                </View>
+                                            )
+                                        })}                               
+                                    </>
+                                }
+
+                                { recordArr.shotcount && recordArr.shotcount[0].hole10 !== null && 
+                                    <>
+                                        <View style={ styles.scoreCard }>
+                                            <View style={[ styles.scoreCardRow, { backgroundColor: '#f6f6f6' }]}>
+                                                <View style={ styles.typeBox }>
+                                                    <Text style={ styles.typeText }>HOLE</Text>
+                                                </View>
+                                                <View style={ styles.centerRow }>
+                                                    { Array.from({ length: 9 }, (_, index: number) => (
+                                                        <Text style={ styles.holeText } key={ index }>{ index + 10 }</Text>
+                                                    ))}
+                                                </View>
+                                                <View style={[ styles.typeBox, { width: 40 }]}>
+                                                    <Text style={ styles.typeText }>총합</Text>
+                                                </View>                                
+                                            </View>
+                                        </View>
+
+                                        { recordArr.shotcount.map((item: Count, matchIndex: number) => {     
+                                            const shotArr: [string, number][] = Object.entries(item).filter(([key]) => key.includes('hole'))
+                                            const getScoreType = (score: number) => {
+                                                switch (score) {
+                                                    case 1:
+                                                        return 'Up'
+                                                    case 0:
+                                                        return 'H'
+                                                    case -1:
+                                                        return ''
+                                                }
+                                            }
+
+                                            const getLastMatchScore = () => {
+                                                let shotCount: number = 0
+                                        
+                                                for (let i = 1; i <= 18; i++) {
+                                                    shotCount += (item as any)[`hole${i}`]
+                                                }
+                                                
+                                                return shotCount
+                                            }
+
+                                            return (
+                                                <View style={[ styles.scoreCardRow, matchIndex === 1 && { borderBottomColor: '#fcbc8a' }]} key={ matchIndex }>
+                                                    <View style={ styles.typeBox }>
+                                                        <Text style={[ styles.typeText, { color: '#121619' }]}>{ matchIndex + 1 }P</Text>
+                                                    </View>                                    
+                                                    <View style={ styles.centerRow }>
+                                                        { shotArr.map(([key, value]: [string, number], hole: number ) => {
+                                                            if (hole < 9) return
+                                                            if (value && hole > 8) {
+                                                                return (
+                                                                    <View style={[ styles.scoreBox, value !== null && { backgroundColor: '#ffffff'} ]} key={ hole }>
+                                                                        <Text style={ styles.scoreText } >{ getScoreType(value)}</Text>
+                                                                    </View>
+                                                                )
+                                                            } else if (value === 0 && hole > 8) {
+                                                                return (
+                                                                    <View key={ hole }>
+                                                                        <Text style={[ styles.scoreText, { color: '#949494' }]} >H</Text>
+                                                                    </View>
+                                                                )
+                                                            } else if (value === null) {
+                                                                return (
+                                                                    <View style={[ styles.scoreBox, { width: (Dimensions.get('window').width - 122) / 9, backgroundColor: '#f6f6f6' } ]} key={ hole }></View>
+                                                                )
+                                                            }
+                                                        })}
+                                                    </View>
+                                                    <View style={[ styles.typeBox, { width: 40 }]}>
+                                                        <Text style={[ styles.semiBoldText, { fontSize: 11, marginLeft: 0, color: '#121619' }]}>{ getLastMatchScore() === 0 ? '' : (getLastMatchScore() < 0 ? getLastMatchScore() * -1 : getLastMatchScore()) }</Text>
+                                                        <Text style={[ styles.regularText, { fontSize: 11, color: '#121619' }]}>{ getFinalScoreType(getLastMatchScore()) }</Text>
+                                                    </View>                                     
+                                                </View>
+                                            )
+                                        })}    
+                                    </>
+                                }
+
+                                <View style={ styles.resultContainer }>
+                                    { getMatchScore(0) === getMatchScore(1) ? (
+                                        <View style={[ styles.rowContainer ]}>
+                                            <Text style={[ styles.boldText, { fontSize: 14, marginBottom: 0 }]}>무승부</Text>
+                                            <Text style={[ styles.regularText, { color: '#121619' }]}>로 게임종료</Text>
+                                        </View>
+                                    ) : (
+                                        <View style={[ styles.rowContainer ]}>
+                                            <Text style={[ styles.boldText, { fontSize: 14, marginBottom: 0 }]}>{ getMatchScore(0) > getMatchScore(1) ? recordArr.inArr[0].nick : recordArr.inArr[1].nick }</Text>
+                                            <Text style={[ styles.regularText, { color: '#121619' }]}>님이 </Text>
+                                            <Text style={[ styles.boldText, { fontSize: 14, marginBottom: 0 }]}>{ getMatchScore(0) > getMatchScore(1) ? getMatchScore(0) : getMatchScore(1) }Up</Text>
+                                            <Text style={[ styles.regularText, { color: '#121619' }]}>으로 승리</Text>
+                                        </View>
+                                    )}
+                                </View>
+                            </View>
+                        }
+
+                        {/* stroke */}
+                        { recordArr.inArr[0].playMode === 'Stroke' && recordArr.inArr.map((item: RoomInfo, index: number) => {
                             const parArr: [string, number][] = Object.entries(recordArr.parcount[index]).filter(([key]) => key.includes('hole'))
                             const shotArr: [string, number][] = Object.entries(recordArr.shotcount[index]).filter(([key]) => key.includes('hole'))
                             const puttArr: [string, number][] = Object.entries(recordArr.puttcount[index]).filter(([key]) => key.startsWith('hole'))
@@ -378,62 +711,161 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                                 return type
                             }
 
-                            const getProfileImg = () => {
-                                if (profileImgs && profileImgs.length > 0) {
-                                    for (let j = 0; j < profileImgs.length; j++) {
-                                        if (item.uid === profileImgs[j].uid) {
-                                            return profileImgs[j].url
-                                        }
-                                    }
-                                }
-                                return ''
-                            }
+                        
+                            // if (recordArr && recordArr.inArr[0].playMode === 'Match') {
+                            //     return (
+                            //         <View style={ styles.scoreCardContainer } key={ index }>
+                            //             <Text>asdf</Text>
+                            //         </View>
+                            //     )
+                            // }
 
                             return (
                                 <View style={ styles.scoreCardContainer } key={ index }>
                                     {/* my scorecard */}
-                                    <View>
-                                        <View style={[ styles.nicknameComtainer, index === 0 && { marginTop: 7 }]}>
-                                            <Pressable style={[ styles.rowContainer, { flex: 1 }]}>
-                                                    <View style={ styles.imgContainer }>
-                                                        { getProfileImg() === '' ?
-                                                            <EmptyImg width={ 36 } height={ 36 } />
-                                                            :
-                                                            <FastImage 
-                                                                style={ styles.img } 
-                                                                source={{ 
-                                                                    uri: getProfileImg(),
-                                                                    priority: FastImage.priority.normal,
-                                                                    cache: FastImage.cacheControl.immutable 
-                                                                }} 
-                                                                resizeMode="cover"
-                                                            />
-                                                        }
+                                    <View style={[ styles.nicknameComtainer, index === 0 && { marginTop: 7 }]}>
+                                        <Pressable style={[ styles.rowContainer, { flex: 1 }]}>
+                                            <View style={ styles.imgContainer }>
+                                                { getProfileImgUrl(item.uid) === '' ?
+                                                    <EmptyImg width={20} height={20} />
+                                                    :
+                                                    <FastImage 
+                                                        style={ styles.img } 
+                                                        source={{ 
+                                                            uri: getProfileImgUrl(item.uid),
+                                                            priority: FastImage.priority.normal,
+                                                            cache: FastImage.cacheControl.immutable 
+                                                        }} 
+                                                        resizeMode="cover"
+                                                    />
+                                                }
+                                            </View>
+                                            <Text style={ styles.nicknameText }>{ item.nick ?? '' }</Text>
+                                        </Pressable>
+
+                                        <Pressable style={ styles.rowContainer } onPress={ () => { setIsFolded(prevState => {
+                                            const isFolded = [...prevState]
+                                            isFolded[index] = !isFolded[index]
+                                            return isFolded
+                                        })}}>
+                                            <Text style={ styles.totalShotText }>{ getFirstShotCount() + getLastShotCount() }</Text>
+                                            { !isFolded[index] && <UpArrow style={{ marginLeft: 12 }} /> }
+                                            { isFolded[index] && <DownArrow style={{ marginLeft: 12 }} />}
+                                        </Pressable>
+                                    </View>
+
+                                    { !isFolded[index] &&
+                                        <>
+                                            <View style={[ styles.scoreCard, !recordArr.shotcount[index].hole10 && { marginBottom: 18, borderBottomWidth: 1 }]}>
+                                                <View style={[ styles.scoreCardRow, { backgroundColor: '#f6f6f6' }]}>
+                                                    <View style={ styles.typeBox }>
+                                                        <Text style={ styles.typeText }>HOLE</Text>
                                                     </View>
-                                                <Text style={ styles.nicknameText }>{ recordArr.inArr[index].nick }</Text>
-                                            </Pressable>
+                                                    <View style={ styles.centerRow }>
+                                                        { Array.from({ length: 9 }, (_, index: number) => (
+                                                            <Text style={ styles.holeText } key={ index }>{ index + 1 }</Text>
+                                                        ))}
+                                                    </View>
+                                                    <View style={[ styles.typeBox, { width: 40 }]}>
+                                                        <Text style={ styles.typeText }>총합</Text>
+                                                    </View>                                
+                                                </View>
 
-                                            <Pressable style={ styles.rowContainer } onPress={ () => { setIsFolded(prevState => {
-                                                const isFolded = [...prevState]
-                                                isFolded[index] = !isFolded[index]
-                                                return isFolded
-                                            })}}>
-                                                <Text style={ styles.totalShotText }>{ getFirstShotCount() + getLastShotCount() }</Text>
-                                                { !isFolded[index] && <UpArrow style={{ marginLeft: 12 }} /> }
-                                                { isFolded[index] && <DownArrow style={{ marginLeft: 12 }} />}
-                                            </Pressable>
-                                        </View>
+                                                <View style={ styles.scoreCardRow }>
+                                                    <View style={ styles.typeBox }>
+                                                        <Text style={[ styles.typeText, { color: '#121619' }]}>PAR</Text>
+                                                    </View>
+                                                    <View style={ styles.centerRow }>
+                                                        { parArr.map(([key, value]: [string, number], hole: number ) => {
+                                                            if (value && hole < 9) {
+                                                                return (
+                                                                    <View key={ hole }>
+                                                                        <Text style={ styles.scoreText } >{`${ value }`}</Text>
+                                                                    </View>
+                                                                )
+                                                            } else if (value === 0 && hole < 9) {
+                                                                return (
+                                                                    <View key={ hole }>
+                                                                        <Text style={ styles.scoreText } >0</Text>
+                                                                    </View>
+                                                                )
+                                                            }
+                                                        })}
+                                                    </View>
+                                                    <View style={[ styles.typeBox, { width: 40 }]}>
+                                                        <Text style={ styles.scoreText }>{ getParSum(0) }</Text>
+                                                    </View>                               
+                                                </View>
 
-                                        { !isFolded[index] &&
-                                            <>
-                                                <View style={[ styles.scoreCard, !recordArr.shotcount[index].hole10 && { marginBottom: 18, borderBottomWidth: 1 }]}>
+                                                <View style={ styles.scoreCardRow }>
+                                                    <View style={ styles.typeBox }>
+                                                        <Text style={[ styles.typeText, { color: '#121619' }]}>SCORE</Text>
+                                                    </View>                                    
+                                                    <View style={[ styles.centerRow, { backgroundColor: '#f3f3f3' }]}>
+                                                        { shotArr.map(([key, value]: [string, number], hole: number ) => {
+                                                            if (value && hole < 9) {
+                                                                return (
+                                                                    <View style={[ styles.scoreBox ,getScoreType(hole, value) > 0 && { backgroundColor: '#FFDABE' }, 
+                                                                        getScoreType(hole, value) < 0 && { backgroundColor: '#E0F7ED' },
+                                                                    ]} key={ hole }>
+                                                                        <Text style={ styles.scoreText } >{`${ value }`}</Text>
+                                                                        
+                                                                        { getScoreType(hole, value) > 1 && <View style={ styles.smallCircle } ></View> }
+                                                                        { getScoreType(hole, value) >= 1 && <View style={ styles.bigCircle } ></View> }
+                                                                        { getScoreType(hole, value) <= -1 && <View style={ styles.bigSquare } ></View> }
+                                                                        { getScoreType(hole, value) < -1 && <View style={ styles.smallSquare }></View> }
+                                                                        { (recordArr.mulliganArr[index] as any)[`hole${hole + 1}`] === 'Y' && <Mulligan style={ styles.mulligan } /> }
+                                                                    </View>
+                                                                )
+                                                            } else if (value === 0 && hole > 8) {
+                                                                return (
+                                                                    <View key={ hole }>
+                                                                        <Text style={ styles.scoreText } >0</Text>
+                                                                    </View>
+                                                                )
+                                                            }
+                                                        })}
+                                                    </View>
+                                                    <View style={[ styles.typeBox, { width: 40 }]}>
+                                                        <Text style={ styles.scoreText }>{ getFirstShotCount() }</Text>
+                                                    </View>                                
+                                                </View>
+                                                <View style={ styles.scoreCardRow }>
+                                                    <View style={ styles.typeBox }>
+                                                        <Text style={[ styles.typeText, { color: '#121619' }]}>PUTT</Text>
+                                                    </View>                                    
+                                                    <View style={ styles.centerRow }>
+                                                        { puttArr.map(([key, value]: [string, number], hole: number ) => {
+                                                            if (value && hole < 9) {
+                                                                return (
+                                                                    <View  key={ hole }>
+                                                                        <Text style={ styles.scoreText } >{`${ value }`}</Text>
+                                                                    </View>
+                                                                )
+                                                            } else if (value === 0 && hole < 9) {
+                                                                return (
+                                                                    <View key={ hole }>
+                                                                        <Text style={ styles.scoreText } >0</Text>
+                                                                    </View>
+                                                                )
+                                                            }
+                                                        })} 
+                                                    </View>
+                                                    <View style={[ styles.typeBox, { width: 40 }]}>
+                                                        <Text style={ styles.scoreText }>{ getFirstPuttCount() }</Text>
+                                                    </View>                                
+                                                </View>
+                                            </View>
+
+                                            { recordArr.shotcount[index].hole10 && 
+                                                <View style={[ styles.scoreCard, { marginBottom: 18, borderBottomWidth: 1 }]}>
                                                     <View style={[ styles.scoreCardRow, { backgroundColor: '#f6f6f6' }]}>
                                                         <View style={ styles.typeBox }>
                                                             <Text style={ styles.typeText }>HOLE</Text>
                                                         </View>
                                                         <View style={ styles.centerRow }>
                                                             { Array.from({ length: 9 }, (_, index: number) => (
-                                                                <Text style={ styles.holeText } key={ index }>{ index + 1 }</Text>
+                                                                <Text style={ styles.holeText } key={ index }>{ index + 10 }</Text>
                                                             ))}
                                                         </View>
                                                         <View style={[ styles.typeBox, { width: 40 }]}>
@@ -447,44 +879,10 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                                                         </View>
                                                         <View style={ styles.centerRow }>
                                                             { parArr.map(([key, value]: [string, number], hole: number ) => {
-                                                                if (value && hole < 9) {
+                                                                if (value && hole > 8) {
                                                                     return (
                                                                         <View key={ hole }>
                                                                             <Text style={ styles.scoreText } >{`${ value }`}</Text>
-                                                                        </View>
-                                                                    )
-                                                                } else if (value === 0 && hole < 9) {
-                                                                    return (
-                                                                        <View key={ hole }>
-                                                                            <Text style={ styles.scoreText } >0</Text>
-                                                                        </View>
-                                                                    )
-                                                                }
-                                                            })}
-                                                        </View>
-                                                        <View style={[ styles.typeBox, { width: 40 }]}>
-                                                            <Text style={ styles.scoreText }>{ getParSum(0) }</Text>
-                                                        </View>                               
-                                                    </View>
-
-                                                    <View style={ styles.scoreCardRow }>
-                                                        <View style={ styles.typeBox }>
-                                                            <Text style={[ styles.typeText, { color: '#121619' }]}>SCORE</Text>
-                                                        </View>                                    
-                                                        <View style={[ styles.centerRow, { backgroundColor: '#f3f3f3' }]}>
-                                                            { shotArr.map(([key, value]: [string, number], hole: number ) => {
-                                                                if (value && hole < 9) {
-                                                                    return (
-                                                                        <View style={[ styles.scoreBox ,getScoreType(hole, value) > 0 && { backgroundColor: '#FFDABE' }, 
-                                                                            getScoreType(hole, value) < 0 && { backgroundColor: '#E0F7ED' },
-                                                                        ]} key={ hole }>
-                                                                            <Text style={ styles.scoreText } >{`${ value }`}</Text>
-                                                                            
-                                                                            { getScoreType(hole, value) > 1 && <View style={ styles.smallCircle } ></View> }
-                                                                            { getScoreType(hole, value) >= 1 && <View style={ styles.bigCircle } ></View> }
-                                                                            { getScoreType(hole, value) <= -1 && <View style={ styles.bigSquare } ></View> }
-                                                                            { getScoreType(hole, value) < -1 && <View style={ styles.smallSquare }></View> }
-                                                                            { (recordArr.mulliganArr[index] as any)[`hole${hole + 1}`] === 'Y' && <Mulligan style={ styles.mulligan } /> }
                                                                         </View>
                                                                     )
                                                                 } else if (value === 0 && hole > 8) {
@@ -497,22 +895,55 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                                                             })}
                                                         </View>
                                                         <View style={[ styles.typeBox, { width: 40 }]}>
-                                                            <Text style={ styles.scoreText }>{ getFirstShotCount() }</Text>
+                                                            <Text style={ styles.scoreText }>{ getParSum(9) }</Text>
+                                                        </View>                               
+                                                    </View>
+
+                                                    <View style={ styles.scoreCardRow }>
+                                                        <View style={ styles.typeBox }>
+                                                            <Text style={[ styles.typeText, { color: '#121619' }]}>SCORE</Text>
+                                                        </View>                                    
+                                                        <View style={[ styles.centerRow, { backgroundColor: '#f3f3f3' }]}>
+                                                        { shotArr.map(([key, value]: [string, number], hole: number ) => {
+                                                            if (value && hole > 8) {
+                                                                return (
+                                                                    <View style={[ styles.scoreBox ,getScoreType(hole, value) > 0 && { backgroundColor: '#FFDABE' }, 
+                                                                        getScoreType(hole, value) < 0 && { backgroundColor: '#E0F7ED' },
+                                                                    ]} key={ hole }>
+                                                                        <Text style={ styles.scoreText } >{`${ value }`}</Text>
+                                                                        { getScoreType(hole, value) > 1 && <View style={ styles.smallCircle } ></View> }
+                                                                        { getScoreType(hole, value) >= 1 && <View style={ styles.bigCircle } ></View> }
+                                                                        { getScoreType(hole, value) <= -1 && <View style={ styles.bigSquare } ></View> }
+                                                                        { getScoreType(hole, value) < -1 && <View style={ styles.smallSquare }></View> }
+                                                                        { (recordArr.mulliganArr[index] as any)[`hole${hole + 1}`] === 'Y' && <Mulligan style={ styles.mulligan } /> }
+                                                                    </View>
+                                                                )
+                                                            } else if (value === 0 && hole > 8) {
+                                                                return (
+                                                                    <View key={ hole }>
+                                                                        <Text style={ styles.scoreText } >0</Text>
+                                                                    </View>
+                                                                )
+                                                            }
+                                                        })}
+                                                        </View>
+                                                        <View style={[ styles.typeBox, { width: 40 }]}>
+                                                            <Text style={ styles.scoreText }>{ getLastShotCount() }</Text>
                                                         </View>                                
                                                     </View>
                                                     <View style={ styles.scoreCardRow }>
-                                                    <View style={ styles.typeBox }>
+                                                        <View style={ styles.typeBox }>
                                                             <Text style={[ styles.typeText, { color: '#121619' }]}>PUTT</Text>
                                                         </View>                                    
                                                         <View style={ styles.centerRow }>
                                                             { puttArr.map(([key, value]: [string, number], hole: number ) => {
-                                                                if (value && hole < 9) {
+                                                                if (value && hole > 8) {
                                                                     return (
-                                                                        <View  key={ hole }>
+                                                                        <View key={ hole }>
                                                                             <Text style={ styles.scoreText } >{`${ value }`}</Text>
                                                                         </View>
                                                                     )
-                                                                } else if (value === 0 && hole < 9) {
+                                                                } else if (value === 0 && hole > 8) {
                                                                     return (
                                                                         <View key={ hole }>
                                                                             <Text style={ styles.scoreText } >0</Text>
@@ -522,145 +953,44 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                                                             })} 
                                                         </View>
                                                         <View style={[ styles.typeBox, { width: 40 }]}>
-                                                            <Text style={ styles.scoreText }>{ getFirstPuttCount() }</Text>
+                                                            <Text style={ styles.scoreText }>{ getLastPuttCount() }</Text>
                                                         </View>                                
                                                     </View>
                                                 </View>
-                                                { recordArr.shotcount[index].hole10 && 
-                                                    <View style={[ styles.scoreCard, { marginBottom: 18, borderBottomWidth: 1 }]}>
-                                                        <View style={[ styles.scoreCardRow, { backgroundColor: '#f6f6f6' }]}>
-                                                            <View style={ styles.typeBox }>
-                                                                <Text style={ styles.typeText }>HOLE</Text>
-                                                            </View>
-                                                            <View style={ styles.centerRow }>
-                                                                { Array.from({ length: 9 }, (_, index: number) => (
-                                                                    <Text style={ styles.holeText } key={ index }>{ index + 10 }</Text>
-                                                                ))}
-                                                            </View>
-                                                            <View style={[ styles.typeBox, { width: 40 }]}>
-                                                                <Text style={ styles.typeText }>총합</Text>
-                                                            </View>                                
-                                                        </View>
-
-                                                        <View style={ styles.scoreCardRow }>
-                                                            <View style={ styles.typeBox }>
-                                                                <Text style={[ styles.typeText, { color: '#121619' }]}>PAR</Text>
-                                                            </View>
-                                                            <View style={ styles.centerRow }>
-                                                                { parArr.map(([key, value]: [string, number], hole: number ) => {
-                                                                    if (value && hole > 8) {
-                                                                        return (
-                                                                            <View key={ hole }>
-                                                                                <Text style={ styles.scoreText } >{`${ value }`}</Text>
-                                                                            </View>
-                                                                        )
-                                                                    } else if (value === 0 && hole > 8) {
-                                                                        return (
-                                                                            <View key={ hole }>
-                                                                                <Text style={ styles.scoreText } >0</Text>
-                                                                            </View>
-                                                                        )
-                                                                    }
-                                                                })}
-                                                            </View>
-                                                            <View style={[ styles.typeBox, { width: 40 }]}>
-                                                                <Text style={ styles.scoreText }>{ getParSum(9) }</Text>
-                                                            </View>                               
-                                                        </View>
-
-                                                        <View style={ styles.scoreCardRow }>
-                                                            <View style={ styles.typeBox }>
-                                                                <Text style={[ styles.typeText, { color: '#121619' }]}>SCORE</Text>
-                                                            </View>                                    
-                                                            <View style={[ styles.centerRow, { backgroundColor: '#f3f3f3' }]}>
-                                                            { shotArr.map(([key, value]: [string, number], hole: number ) => {
-                                                                if (value && hole > 8) {
-                                                                    return (
-                                                                        <View style={[ styles.scoreBox ,getScoreType(hole, value) > 0 && { backgroundColor: '#FFDABE' }, 
-                                                                            getScoreType(hole, value) < 0 && { backgroundColor: '#E0F7ED' },
-                                                                        ]} key={ hole }>
-                                                                            <Text style={ styles.scoreText } >{`${ value }`}</Text>
-                                                                            { getScoreType(hole, value) > 1 && <View style={ styles.smallCircle } ></View> }
-                                                                            { getScoreType(hole, value) >= 1 && <View style={ styles.bigCircle } ></View> }
-                                                                            { getScoreType(hole, value) <= -1 && <View style={ styles.bigSquare } ></View> }
-                                                                            { getScoreType(hole, value) < -1 && <View style={ styles.smallSquare }></View> }
-                                                                            { (recordArr.mulliganArr[index] as any)[`hole${hole + 1}`] === 'Y' && <Mulligan style={ styles.mulligan } /> }
-                                                                        </View>
-                                                                    )
-                                                                } else if (value === 0 && hole > 8) {
-                                                                    return (
-                                                                        <View key={ hole }>
-                                                                            <Text style={ styles.scoreText } >0</Text>
-                                                                        </View>
-                                                                    )
-                                                                }
-                                                            })}
-                                                            </View>
-                                                            <View style={[ styles.typeBox, { width: 40 }]}>
-                                                                <Text style={ styles.scoreText }>{ getLastShotCount() }</Text>
-                                                            </View>                                
-                                                        </View>
-                                                        <View style={ styles.scoreCardRow }>
-                                                        <View style={ styles.typeBox }>
-                                                                <Text style={[ styles.typeText, { color: '#121619' }]}>PUTT</Text>
-                                                            </View>                                    
-                                                            <View style={ styles.centerRow }>
-                                                                { puttArr.map(([key, value]: [string, number], hole: number ) => {
-                                                                    if (value && hole > 8) {
-                                                                        return (
-                                                                            <View key={ hole }>
-                                                                                <Text style={ styles.scoreText } >{`${ value }`}</Text>
-                                                                            </View>
-                                                                        )
-                                                                    } else if (value === 0 && hole > 8) {
-                                                                        return (
-                                                                            <View key={ hole }>
-                                                                                <Text style={ styles.scoreText } >0</Text>
-                                                                            </View>
-                                                                        )
-                                                                    }
-                                                                })} 
-                                                            </View>
-                                                            <View style={[ styles.typeBox, { width: 40 }]}>
-                                                                <Text style={ styles.scoreText }>{ getLastPuttCount() }</Text>
-                                                            </View>                                
-                                                        </View>
-                                                    </View>
-                                                }
-                                                
-                                            </>
-                                        }
-                                    </View>
+                                            }
+                                            
+                                        </>
+                                    }
                                 </View>
                             )
                         })}
                         
-
-                        <View style={ styles.container }>
-                            <View style={[ styles.rowContainer, { justifyContent: 'space-between' }]}>
-                                <View style={ styles.rowContainer }>
-                                    <Eagle />
-                                    <Text style={ styles.scoreTypeText }>이글이상</Text>
-                                </View>
-                                <View style={ styles.rowContainer }>
-                                    <Buddy />
-                                    <Text style={ styles.scoreTypeText }>버디</Text>
-                                </View>
-                                <View style={ styles.rowContainer }>
-                                    <Bogey />
-                                    <Text style={ styles.scoreTypeText }>보기</Text>
-                                </View>
-                                <View style={ styles.rowContainer }>
-                                    <DoubleBogey />
-                                    <Text style={ styles.scoreTypeText }>더블보기 이상</Text>
-                                </View>
-                                <View style={ styles.rowContainer }>
-                                    <Mulligan />
-                                    <Text style={ styles.scoreTypeText }>멀리건</Text>
+                        { recordArr.inArr[0].playMode !== 'Match' &&
+                            <View style={ styles.container }>
+                                <View style={[ styles.rowContainer, { justifyContent: 'space-between' }]}>
+                                    <View style={ styles.rowContainer }>
+                                        <Eagle />
+                                        <Text style={ styles.scoreTypeText }>이글이상</Text>
+                                    </View>
+                                    <View style={ styles.rowContainer }>
+                                        <Buddy />
+                                        <Text style={ styles.scoreTypeText }>버디</Text>
+                                    </View>
+                                    <View style={ styles.rowContainer }>
+                                        <Bogey />
+                                        <Text style={ styles.scoreTypeText }>보기</Text>
+                                    </View>
+                                    <View style={ styles.rowContainer }>
+                                        <DoubleBogey />
+                                        <Text style={ styles.scoreTypeText }>더블보기 이상</Text>
+                                    </View>
+                                    <View style={ styles.rowContainer }>
+                                        <Mulligan />
+                                        <Text style={ styles.scoreTypeText }>멀리건</Text>
+                                    </View>
                                 </View>
                             </View>
-
-                        </View>
+                        }
 
                         { videoList && videoList.thumbnail.length > 0 &&
                             <>
@@ -690,8 +1020,8 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                                 </ScrollView>
                             </>
                         }
-
-                        { myPositionArr && myPositionArr.length > 0 && sortedMinimapList && sortedMinimapList.length > 0 &&
+                        
+                        { myPositionArr && myPositionArr.length > 0 && sortedMinimapList && sortedMinimapList.length > 0 && 
                             <View style={ styles.mapContainer }>
                                 <Text style={[ styles.boldText]}>홀 공략 기록​</Text>
                                 <View style={[ styles.rowContainer, { marginBottom: 15 }]}>
@@ -755,7 +1085,9 @@ const ScoreCard = ({ route }: Props): JSX.Element => {
                                         }
 
                                         const getDistance = () => {
-                                            return item.totalDistance.toFixed(1)
+                                            if (item.totalDistance) {
+                                                return item.totalDistance.toFixed(1) ?? 0
+                                            }
                                         }
 
                                         const getShotCount = () => {
@@ -959,6 +1291,13 @@ const styles = StyleSheet.create({
 
         color: '#ffffff'
     },
+    extraLightText: {
+        includeFontPadding: false,
+        fontSize: 13,
+        fontFamily: 'Pretendard-ExtraLight',
+
+        color: '#fd780f'
+    },
     regularText: {
         includeFontPadding: false,
         fontSize: 14,
@@ -969,7 +1308,7 @@ const styles = StyleSheet.create({
     semiBoldText: {
         includeFontPadding: false,
         fontSize: 16,
-        fontFamily: 'Pretendard-Regular',
+        fontFamily: 'Pretendard-SemiBold',
 
         marginLeft: 3,
 
@@ -1021,6 +1360,9 @@ const styles = StyleSheet.create({
         })
     },
     imgContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+
         width: 36,
         height: 36,
 
@@ -1028,13 +1370,28 @@ const styles = StyleSheet.create({
 
         borderRadius: 20,
 
-        backgroundColor: '#f1f3f8'
+        backgroundColor: '#dddddd'
     },
     img: {
         width: '100%',
         height: '100%',
 
         borderRadius: 40
+    },
+    crownContainer: {
+        alignItems :'center',
+        justifyContent: 'center',
+
+        position: 'absolute',
+        top: 0,
+        left: 0,
+
+        width: 14,
+        height: 14,
+
+        borderRadius: 30,
+
+        backgroundColor: '#ffd037'
     },
     nicknameComtainer: {
         flexDirection: 'row',
@@ -1094,6 +1451,8 @@ const styles = StyleSheet.create({
         borderColor: '#eeeeee'
     },
     typeBox: {
+        flexDirection: 'row',
+
         width: 52,
         height: (Dimensions.get('window').width - 122) / 9,
 
@@ -1318,6 +1677,48 @@ const styles = StyleSheet.create({
 
         borderRadius: 3,
         backgroundColor: '#121619'
+    },
+    compContainer: {
+        paddingVertical: 16,
+        paddingHorizontal: 13,
+        marginBottom: 30,
+
+        backgroundColor: '#ffffff'
+    },
+    compCircle: {
+        alignItems: 'center',
+        justifyContent: 'center',
+
+        width: 26,
+        height: 26,
+
+        marginRight: 5,
+
+        borderRadius: 30,
+        backgroundColor: '#ffd037'
+    },
+    compType: {
+        paddingVertical: 5,
+        paddingHorizontal: 12,
+        marginRight: 5,
+
+        borderWidth: 1,
+        borderColor: '#949494',
+        borderRadius: 18,
+        backgroundColor: '#949494'
+    },
+    courseType: {
+        paddingVertical: 5,
+        paddingHorizontal: 12,
+
+        borderWidth: 1,
+        borderRadius: 18,
+        borderColor: '#949494'
+    } ,
+    resultContainer: {
+        alignItems: 'center',
+
+        marginVertical: 15,
     }
 })
 

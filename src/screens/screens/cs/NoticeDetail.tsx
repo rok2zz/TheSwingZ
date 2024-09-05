@@ -64,7 +64,7 @@ const NoticeDetail = ({ route }: Props) => {
         setNotice(payload?.noticeResult)
     }
 
-    // format date
+    // format date need modify
     const formatDate = (createdAt: string) => {
         const date = new Date(createdAt)
         const now = new Date()
@@ -86,17 +86,20 @@ const NoticeDetail = ({ route }: Props) => {
         }
 
         return year + '.' + (month < 10 ? '0' + (month + 1) : (month + 1)) + '.' + (day < 10 ? '0' + day : day)
-    }
+    } 
+
     const htmlContent = `
         <html>
             <head>
                 <style>
                     body {
                         font-size: 45pt;
-                        font-family: Arial, sans-serif;
+                    }
+                    img {
+                        width: calc(100vw - 100px);
                     }
                 </style>
-            </head/>
+            </head>
             <body>
                 ${notice?.detail.detail}
             </body>

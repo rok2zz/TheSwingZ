@@ -140,8 +140,8 @@ export const useUsers = (): UsersHook => {
 
                 // 성공시 복호화 후 AsyncStorage, redux에 저장
                 if (loginData.token) {
-                    saveRefreshToken(loginData.token.refreshToken ?? null)
                     saveAccessToken(loginData.token.accessToken ?? null)
+                    saveRefreshToken(loginData.token.refreshToken ?? null)
                     saveUserInfo(loginData.userInfo)
                         
                     if (auto) {
@@ -311,23 +311,6 @@ export const useUsers = (): UsersHook => {
                         refreshToken: refreshToken
                     }
                 }
-                
-                if (res.data.result.profileImg) {
-                    const img = res.data.result.profileImg
-
-
-                }
-
-
-                // 휴면상태 code 1001
-                if (loginData.userInfo.status === 'S') { 
-                    const payload: Payload = {
-                        code: 1001,
-                        uid: loginData.userInfo.uid
-                    }
-
-                    return payload
-                } 
 
                 // 성공시 복호화 후 AsyncStorage, redux에 저장
                 if (loginData.token) {
@@ -620,6 +603,16 @@ export const useUsers = (): UsersHook => {
                         }
 
                         return payload
+                    }
+
+                    if (res.data.result && res.data.result.accessToken) {
+                        saveAccessToken(res.data.result.accessToken)
+
+                        const token = {
+                            accessToken: res.data.result?.accessToken,
+                            refreshToken: refreshToken
+                        }
+                        await AsyncStorage.setItem('token', JSON.stringify(token))
                     }
                     
                     return { code: 1000 }
@@ -1198,6 +1191,7 @@ export const useUsers = (): UsersHook => {
         const jsonBody: string = JSON.stringify(body)   
         try {
             const res: Response = await axios.post(gameURL, jsonBody)
+            console.log(res.data.result?.confList)
             if (res.data.code !== 1000) {
                 const payload: Payload = {
                     code: res.data.code,

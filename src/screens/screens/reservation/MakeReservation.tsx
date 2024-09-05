@@ -7,13 +7,12 @@ import ChangeReservation from "../../../components/tabBar/ChangeReservation"
 import { useIsOpen, useReservation, useReservationInfo, useRevList } from "../../../hooks/useReservation"
 import { useReservationActions } from "../../../hooks/useReservationActions"
 import { Payload } from "../../../types/apiTypes"
+import { RevSet } from "../../../types/screenTypes"
 
 // svg
 import Check from "../../../assets/imgs/login/check_terms.svg"
 import GrayCheck from "../../../assets/imgs/login/check_terms_gray.svg"
 import Loading from "../../../components/Loading"
-import { ReservationTime } from "../../../slices/reservation"
-import { RevSet } from "../../../types/screenTypes"
 
 interface Props {
     route: RouteProp<RootStackParamList, 'MakeReservation'>
@@ -41,6 +40,9 @@ const MakeReservation = ({ route }: Props) => {
     const [linkedRoom, setLinkedRoom] = useState<boolean>(false)
     const [twoRoom, setTwoRoom] = useState<boolean>(false)
     const [twoGame, setTwoGame] = useState<boolean>(false)
+    const [house, setHouse] = useState<boolean>(false)
+    const [isMan, setIsMan] = useState<boolean>(true)
+    const [isWoman, setIsWoman] = useState<boolean>(false)
     const [isAvailable, setIsAvailable] = useState<boolean[]>([true, true, true, true, true, true])
 
     const revSet: Set<RevSet> = new Set([])
@@ -66,10 +68,8 @@ const MakeReservation = ({ route }: Props) => {
     }, [revInfo])
 
     useEffect(() => {
-        if (revTime && revTimeList && revTimeList.length > 0) {
             getAvailableTime()
-        }
-    }, [revTime])
+    }, [revTime, revTimeList])
     
     useEffect(() => {
         Animated.timing(indicatorPosition, {
@@ -82,12 +82,13 @@ const MakeReservation = ({ route }: Props) => {
     const getAvailableTime = () => {
         const available: boolean[] = [true, true, true, true, true, true]
         const openTime= shopInfo.openedAt.split(':')
+
         const open = new Date()
         open.setDate(revTime.getDate())
         open.setHours(parseInt(openTime[0], 10))
         open.setMinutes(parseInt(openTime[1], 10))
 
-        const closeTime= shopInfo.closedAt.split(':')
+        const closeTime = shopInfo.closedAt.split(':')
         const close = new Date()
         const closeHour = parseInt(closeTime[0], 10)
         const closeMin = parseInt(closeTime[1], 10)
@@ -141,7 +142,6 @@ const MakeReservation = ({ route }: Props) => {
                 }
             }
         }
-
         // add shop rev list
         if (shopInfo) {
             let setIndex = 0
@@ -173,7 +173,10 @@ const MakeReservation = ({ route }: Props) => {
         }
 
         // compare rev time
-        if (available.every(value => value === false)) return
+        if (available.every(value => value === false)) {
+            setIsAvailable(available)
+            return
+        }
         for (let i = Number((revTime.getMinutes() / 10).toFixed(0)); i < 6; i++) {
             let selectedValue = revTime.getFullYear() * 100000000 + (revTime.getMonth() + 1) * 1000000 + revTime.getDate() * 10000 + revTime.getHours() * 100 + i * 10
 
@@ -193,7 +196,6 @@ const MakeReservation = ({ route }: Props) => {
                 available[i] = false
             } 
         }
-
         setIsAvailable(available)
     }
 
@@ -231,10 +233,18 @@ const MakeReservation = ({ route }: Props) => {
                     text: '확인', 
                     onPress: async (): Promise<void> => { 
                         setIsConnected(true)
-                        const payload: Payload = await registReservation(shopInfo.id, revInfo, userInfo.realName, userInfo.phone, gameMode, selectedHole, isLeft, linkedRoom, twoRoom, twoGame)
+                        let gender = ''
+
+                        if (house) {
+                            if (isMan && isWoman) gender += '하우스채 대여(남, 여)'
+                            if (isMan && !isWoman) gender += '하우스채 대여(남)'
+                            if (!isMan && isWoman) gender += '하우스채 대여(여)'
+                        }
+
+                        const payload: Payload = await registReservation(shopInfo.id, revInfo, userInfo.realName, userInfo.phone, gameMode, selectedHole, isLeft, linkedRoom, twoRoom, twoGame, house, gender)
                         if (payload.code !== 1000) {
                             setIsConnected(false)
-                            Alert.alert('알림','예약을 할 수 없습니다.')
+                            Alert.alert('알림', payload.msg ?? '예약을 할 수 없습니다.')
                             return
                         }
 
@@ -318,17 +328,41 @@ const MakeReservation = ({ route }: Props) => {
                                             <Text style={[ styles.btnText, revTime.getMinutes() === (timeIndex) * 10 && { color: '#ffffff' }]}>{ getHour() }:{ timeIndex }0 ~</Text>
                                         </Pressable>
                                     )}
-                                     
-                                    
                                 </View> 
                             )
                         })}
                     </ScrollView>
 
+                    <View style={{ marginTop: 30 }}>
+                        <Text style={[ styles.boldText, { fontSize: 18, marginBottom: 18, color: '#121619' }]}>홀 수</Text>
+                        <View style={ styles.rowContainer }>
+                            <Pressable style={[ styles.holeBtn, selectedHole === 18 && { borderColor: '#fd780f', backgroundColor: '#fd780f' }]} onPress={ () => setSelectedHole(18) }>
+                                <Text style={[ styles.btnText, selectedHole === 18 && { color: '#ffffff' }]}>18홀</Text>
+                            </Pressable>
+                            <Pressable style={[ styles.holeBtn, selectedHole === 9 && { borderColor: '#fd780f', backgroundColor: '#fd780f' }]} onPress={ () => setSelectedHole(9)  }>
+                                <Text style={[ styles.btnText, selectedHole === 9 && { color: '#ffffff' }]}>9홀</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                    
                     <View style={{ alignItems: 'flex-start', marginTop: 48 }}>
                         <Text style={[ styles.boldText, { fontSize: 18, color: '#121619' }]}>요청사항</Text>
-                        <Pressable style={[ styles.rowContainer, { marginTop: 18, paddingRight: 50 }]} onPress={ () => setIsLeft(prev => !prev) }>
+                        <Pressable style={[ styles.rowContainer, { marginTop: 18, paddingRight: 50 }]} onPress={ () => {} }>
                             { isLeft ? (
+                                <View style={ styles.filledCircle }>
+                                    <Check width={ 16 } height={ 16 } />
+                                </View>
+                                    ) : (
+                                <View style={[ styles.circle, { borderColor: '#eeeeee', backgroundColor: '#eeeeee' }]}>
+                                    {/* <GrayCheck /> */}
+                                    <Check width={ 16 } height={ 16 } />
+                                </View>
+                            )}
+                            <Text style={ styles.regularText }>좌타석​(업데이트 예정)</Text>
+                        </Pressable>
+
+                        <Pressable style={[ styles.rowContainer, { marginTop: 24, paddingRight: 50 }]} onPress={ () => setHouse(prev => !prev) }>
+                            { house ? (
                                 <View style={ styles.filledCircle }>
                                     <Check width={ 16 } height={ 16 } />
                                 </View>
@@ -337,7 +371,18 @@ const MakeReservation = ({ route }: Props) => {
                                     <GrayCheck />
                                 </View>
                             )}
-                            <Text style={ styles.regularText }>좌타석</Text>
+                            <Text style={ styles.regularText }>하우스채 대여</Text>
+
+                            { house && 
+                                <View style={[ styles.rowContainer, { marginLeft: 11 }]}>
+                                    <Pressable style={[ styles.selectBox, { marginRight: 8 }, isMan && { paddingVertical: 6, paddingHorizontal: 8, borderWidth: 0, backgroundColor: '#fd780f' }]} onPress={ () => setIsMan(prev => !prev)}>
+                                        <Text style={[ styles.regularText, isMan && { color: '#ffffff' }]}>남</Text>
+                                    </Pressable>
+                                    <Pressable style={[ styles.selectBox , isWoman && { paddingVertical: 6, paddingHorizontal: 8, borderWidth: 0, backgroundColor: '#fd780f' } ]} onPress={ () => setIsWoman(prev => !prev) }>
+                                        <Text style={[ styles.regularText, isWoman && { color: '#ffffff' }]}>여</Text>
+                                    </Pressable>
+                                </View>
+                            }
                         </Pressable>
 
                         <Pressable style={[ styles.rowContainer, { marginTop: 24, paddingRight: 50 }]} onPress={ () => setLinkedRoom(prev => !prev) }>
@@ -485,6 +530,9 @@ const styles = StyleSheet.create({
     timeBtn: {
         marginRight: 9,
 
+        paddingHorizontal: 15,
+        paddingVertical: 13,
+
         borderRadius: 3,
         borderWidth: 1,
         borderColor: '#949494',
@@ -494,9 +542,6 @@ const styles = StyleSheet.create({
         includeFontPadding: false,
         fontSize: 16,
         fontFamily: 'Pretendard-Bold',
-
-        paddingHorizontal: 15,
-        paddingVertical: 13,
 
         color: '#121619'
     },
@@ -542,6 +587,27 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
 
         color: '#ffffff'
+    },
+    selectBox: {
+        paddingVertical: 5,
+        paddingHorizontal: 7,
+
+        borderWidth: 1,
+        borderRadius: 3,
+        borderColor: '#cccccc'
+    },
+    holeBtn: {
+        width: 88,
+
+        alignItems: 'center',
+
+        paddingVertical: 13,
+        marginRight: 9,
+
+        borderRadius: 3,
+        borderWidth: 1,
+        borderColor: '#949494',
+        backgroundColor: '#ffffff'
     }
 })
 

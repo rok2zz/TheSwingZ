@@ -22,6 +22,7 @@ import TopTabBar from "../../../components/tabBar/TopTabBar"
 import EmptyImg from "../../../assets/imgs/my/empty_img.svg"
 import EditImg from "../../../assets/imgs/my/edit_img.svg"
 import Flag from "../../../assets/imgs/main/flag.svg"
+import Competition from "../../../assets/imgs/main/icon_competition.svg"
 
 interface Props {
     route: RouteProp<MainTabParamList, 'MyZ'>
@@ -44,14 +45,12 @@ const MyZ = ({ route }: Props): JSX.Element => {
     const { saveRecord, saveRecentAvgRecord, saveStat, saveRecentAvgStat } = useRecordActions()
         
     const [isScrolled, setIsScrolled] = useState<boolean>(false)
-    const [isLoading, setIsLoading] = useState<boolean>(false)
     const [isConnected, setIsConnected] = useState<boolean>(false)
     const [startIndex, setStartIndex] = useState<number>(0)
     const [imageUri, setImageUri] = useState<string>('')
 
     const [type, setType] = useState<number>(0)
     const [chartType, setChartType] = useState<number>(0)
-    const [refreshing, setRefreshing] = useState(false)
 
     useEffect(() => {
         setType(routeType ?? 0)
@@ -222,7 +221,7 @@ const MyZ = ({ route }: Props): JSX.Element => {
                     <View style={ styles.profile }>
                         <Pressable style={ styles.profileImg }>
                         { imageUri === '' ? 
-                            <EmptyImg /> 
+                            <EmptyImg width={50} height={50} /> 
                             : 
                             <FastImage 
                                 style={ styles.img } 
@@ -241,11 +240,11 @@ const MyZ = ({ route }: Props): JSX.Element => {
 
                         <View style={ styles.profileInfo }>
                             <Text style={ styles.nickname } onPress={ () => navigation.navigate('ModifyProfile') }>{ myProfile.nick ?? 'nickname' }</Text>
-                            <View style={ styles.settingContainer }>
+                            {/* <View style={ styles.settingContainer }>
                                 <Pressable style={ styles.settingBox } onPress={ () => navigation.navigate('ScreenSetting') }>
                                     <Text style={ styles.settingText }>스크린설정</Text>
                                 </Pressable>
-                            </View>
+                            </View> */}
                         </View>
                     </View>
 
@@ -308,6 +307,10 @@ const MyZ = ({ route }: Props): JSX.Element => {
                             </View>
                         ) : (
                             <>
+                                <View style={[ styles.rowContainer, { marginBottom: 15 }]}>
+                                    <Text style={ styles.regularText }>총</Text>
+                                    <Text style={ styles.boldText }>{ record.totCount }건</Text>
+                                </View>
                                 { record.parcount && record.parcount.map((item: Count, index: number) => {
                                     let totalShotCount: number = 0	
                                     const month = (item.date ?? '').slice(4, 6)
@@ -327,8 +330,8 @@ const MyZ = ({ route }: Props): JSX.Element => {
                                     }
 
                                     const getCcName = () => {
-                                        if (record.ccArr) {
-                                           const a =  record.ccArr[index].courseName.split('(')[1]
+                                        if (record.ccArr && record.ccArr[index].courseName) {
+                                           const a = record.ccArr[index].courseName.split('(')[1]
                                            const coruseName = a.split(')')[0]
 
                                            return (record.ccArr[index].ccName + '-' + coruseName) ?? ''
@@ -336,15 +339,62 @@ const MyZ = ({ route }: Props): JSX.Element => {
                                         return ''
                                     }
 
+                                    const getPlayMode = () => {
+                                        switch (record.inArr && record.inArr[index].playMode) {
+                                            case 'Stroke':
+                                                return '스트로크'
+                                            case 'Match':
+                                                return '매치'
+                                            case 'Foursome':
+                                                return '포썸'
+                                        }
+                                    }
+
                                     return (
                                         <Pressable style={ styles.recordCard } key={ index } onPress={ goScoreCard }>
+                                            { record.inArr && record.inArr[index].gameMode ==='Competition' &&
+                                                <View style={ styles.circle }>
+                                                    <Competition width={16} height={16} />
+                                                </View>
+                                            }
                                             <Text style={ styles.infoText }>{ month }.{ date }</Text>
-                                            <Text style={ styles.ccText }>{ cutString(getCcName()) } </Text>
+                                            <Text style={ styles.ccText }>{ cutString(getCcName()) }</Text>
                                             <View style={[ styles.rowContainer, { alignItems: 'flex-end' }]}>
-                                                <Text style={ styles.shotText }>{ totalShotCount }</Text>
+                                                { record.inArr && record.inArr[index].playMode === 'Match' ? (
+                                                    <>
+                                                        { (() => {
+                                                            let count: number = 0
+                                                    
+                                                            for (let i = 1; i <= 18; i++) {
+                                                                if ((record.inArr[index] as any)[`hole${i}`] === null) return
+
+                                                                count += (record.shotcount[index] as any)[`hole${i}`]
+                                                            }
+
+                                                            const getResult = () => {
+                                                                if (count > 0) {
+                                                                    return 'Up'
+                                                                } else if (count < 0) {
+                                                                    return 'Dn'
+                                                                } else {
+                                                                    return 'A/S'
+                                                                }                                                                
+                                                            }
+
+                                                            return (
+                                                                <View style={[ styles.rowContainer, { flex: 1, alignItems: 'baseline' }]}>
+                                                                    <Text style={ styles.shotText }>{ count < 0 ? count * -1 : count }</Text>
+                                                                    <Text style={[ styles.regularText, { fontSize: 25, color: '#fd780f' }]}>{ getResult() }</Text>
+                                                                </View>
+                                                            )
+                                                        })()}
+                                                    </>
+                                                ) : (
+                                                    <Text style={[ styles.shotText, { flex: 1 }]}>{ totalShotCount }</Text>
+                                                )}
 
                                                 <View style={ styles.rowContainer }>
-                                                    <Text style={ styles.infoText }>stroke</Text>
+                                                    <Text style={ styles.infoText }>{ getPlayMode() }</Text>
                                                     <View style={ styles.bar }></View>
                                                     <Text style={ styles.infoText }>{ record.inArr && record.inArr[index].userCount }인</Text>
                                                 </View>
@@ -465,12 +515,15 @@ const styles = StyleSheet.create({
         paddingLeft: 36
     },
     profileImg: {
+        alignItems: 'center',
+        justifyContent: 'center',
+
         width: 96,
         height: 96,
 
         borderRadius: 40,
 
-        backgroundColor: '#f1f3f8'
+        backgroundColor: '#dddddd'
     },
     img: {
         width: '100%',
@@ -783,8 +836,6 @@ const styles = StyleSheet.create({
         color: '#121619'
     },
     shotText: {
-        flex: 1,
-
         includeFontPadding: false,
         fontSize: 42,
         fontFamily: 'Pretendard-Regular',
@@ -800,6 +851,36 @@ const styles = StyleSheet.create({
         transform: [{ translateY: -2 }],
 
         backgroundColor: '#cccccc'
+    },
+    circle: {
+        alignItems: 'center',
+        justifyContent: 'center',
+
+        width: 26,
+        height: 26,
+
+        position: 'absolute',
+        top: 24,
+        right: 24,
+
+        borderRadius: 30,
+        backgroundColor: '#ffd037'
+    },
+    regularText: {
+        includeFontPadding: false,
+        fontSize: 16,
+        fontFamily: 'Pretendard-Regular',
+
+        marginRight: 6,
+
+        color: '#121619'
+    },
+    boldText: {
+        includeFontPadding: false,
+        fontSize: 16,
+        fontFamily: 'Pretendard-Bold',
+
+        color: '#121619'
     }
 })
 

@@ -39,6 +39,7 @@ export interface Response {
         
             payload?: string,
             url?: string,
+            message?: string,
         
             users?: UserProfileImgs[]
 
@@ -52,6 +53,12 @@ export interface Response {
             inquiryList?: InquiryListResult
             inquiry?: Inquiry
 
+            // competition
+            listArr?: CompetitionListResult[],
+            detailArr?: CompetitionDetailResult[],
+            cRankArr?: CompetitionRankResult[],
+            uRankArr?: CompetitionRankResult[],
+
             // user config
             confList?: UserSetting[],
             optionList?: SettingOption[],
@@ -62,6 +69,70 @@ export interface Response {
             refreshToken?: string,
         }
     }
+}
+
+// competition result
+export interface CompetitionListResult {
+    compId: number,
+    compType: string,
+    shopId: number | null,
+    shopName: string | null,
+    compName: string,
+    compExplan: string,
+    stDate: string,
+    edDate: string,
+    qualified: string,
+    format: string,
+    ccId1: string,
+    ccName1: string,
+    ccId2: string,
+    ccName2: string,
+    ccId3: string,
+    ccName3: string,
+}
+
+export interface CompetitionDetailResult {
+    compId: number,
+    compType: string,
+    shopId: number | null,
+    shopName: string | null,
+    compName: string,
+    compExplan: string,
+    compDetail: string,
+    stDate: string,
+    edDate: string,
+    qualified: string,
+    format: string,
+    ccId1: string,
+    ccName1: string,
+    ccId2: string,
+    ccName2: string,
+    ccId3: string,
+    ccName3: string,
+    totUserCnt: number,
+    totRounds: number,
+    difficult1: string,
+    greenCondition1: string,
+    windCondition1: string,	
+    greenHardness1: string,	
+    greenLocation1: string,	
+    pinLocation1: string,	
+    concede1: string,	
+    mulligan1: string,	
+    teeBox1: string,
+    caddieYn1: string,
+}
+
+export interface CompetitionRankResult {
+    compId: number,
+    uid: number,
+    nick: string,
+    totScore: number,
+    totRounds: number,
+    ranking: number,
+    ccName: string,
+    ccScore: number,
+    ccRank: number
 }
 
 // board result
@@ -137,11 +208,13 @@ export interface Inquiry {
     detail: [{
         id: number,
         title: string,
+        detail: string,
         type: number,
         reference: number,
         createdAt: string
     }],
     files?: [{
+        id: number,
         boardId: number,
         fileName: string
     }]
@@ -193,7 +266,13 @@ export interface Payload {
     noticeResult?: NoticeResult,
     faqList?: FAQResult,
     inquiryList?: InquiryListResult,
-    inquiry?: Inquiry
+    inquiry?: Inquiry,
+
+    // competition
+    compList?: CompetitionListResult[],
+    compDetail?: CompetitionDetailResult[],
+    rankArr?: CompetitionRankResult[],
+    myRankArr?: CompetitionRankResult[]
 }
 
 export interface LoginResult {
@@ -247,8 +326,6 @@ export interface UserProfileImgs {
     profileImg: string,
     url: string
 }
-
-
 
 export interface LoginResponse {
     data: { 
@@ -419,11 +496,17 @@ export interface RoomInfo {
     shopId: number,
     deviceId: string,
     gameMode: string,
+    playMode: string,
     userCount: number,
     uid: number,
     nick: string,
     category: string,
-    shopName: string
+    shopName: string,
+    compId: number,
+    compName: string,
+    compType: string,
+    compStDate: string,
+    compEdDate: string
 }
 
 export interface DtStat {
@@ -520,7 +603,6 @@ export interface GoogleResponse {
         photo: string | null
     }
 }
-
 
 // youtube api
 interface YoutubeVideoSnippet {

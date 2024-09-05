@@ -15,6 +15,8 @@ interface BoardHooks {
     makeInquiry: (title: string, detail: string, type: number, files: string[]) => Promise<Payload>,
     getInquiryList: () => Promise<Payload>,
     getInquiry: (id: number) => Promise<Payload>,
+
+    getNotify: () => Promise<Payload>
 }
 
 export const useBoard = (): BoardHooks => {
@@ -362,7 +364,43 @@ export const useBoard = (): BoardHooks => {
         return  { code: -1, msg: '서버에 연결할 수 없습니다.' }
     }
 
-    return { getNoticeList, getNotice, getFAQList, makeInquiry, getInquiryList, getInquiry }
+    const getNotify= async () => {
+        const body: Body = {
+            cls: 'Board',
+            method: 'notify'
+        }
+
+        const jsonBody: string = JSON.stringify(body)
+
+        try {
+            const res: Response = await axios.post(appURL, jsonBody)
+            console.log(res.data.result)
+            if (res.data.code !== 1000) {
+                const payload: Payload = {
+                    code: res.data.code ?? -1,
+                    msg: res.data.msg
+                }
+
+                return payload
+            }
+
+            if (res.data.result?.message) {
+                const payload: Payload = {
+                    code: res.data.code,
+                    msg: res.data.result?.message
+                }
+    
+                return payload
+            }
+            
+        } catch (error: any) {
+            errorHandler(error)
+        }
+
+        return  { code: 1000, msg: '' }
+    }
+
+    return { getNoticeList, getNotice, getFAQList, makeInquiry, getInquiryList, getInquiry, getNotify }
 }
 
 const errorHandler = (error: any): void => {

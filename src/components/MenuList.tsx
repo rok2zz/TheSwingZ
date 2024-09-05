@@ -6,6 +6,7 @@ import { MainTabNavigationProp, MainTabScreenName, RootStackNavigationProp, Root
 
 //
 import RightArrow from "../assets/imgs/my/arrow_right_gray.svg"
+import { useUserInfo } from "../hooks/useUsers"
 
 interface MenuListProps {
     listItem: ListProps[]
@@ -14,9 +15,14 @@ interface MenuListProps {
 // 메뉴 리스트
 const MenuList = ({ listItem }: MenuListProps): JSX.Element => {
     const navigation = useNavigation<RootStackNavigationProp>()
+    const userInfo = useUserInfo()
 
     const list = listItem.map((item: ListProps, index: number): JSX.Element => {
         const onPress = () => {
+            if (item.screen === 'CheckPW' && userInfo.category !== 'NORMAL') {
+                navigation.navigate('ModifyUserInfo')
+                return
+            }
             navigation.push(item.screen as RootStackScreenName)
         }
 

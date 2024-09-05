@@ -16,7 +16,7 @@
      options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
 
       // naver
-      if ([url.scheme isEqualToString:@"{{ CUSTOM URL SCHEME }}"]) {
+      if ([url.scheme isEqualToString:@"com.theswinggolf.theswingz"]) {
         return [[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options];
       }
       // kakao

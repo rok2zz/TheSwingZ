@@ -64,13 +64,14 @@ export const useVideos = (): VideosHooks => {
             ]
         }
         const jsonBody: string = JSON.stringify(body)
-   
+
         try {
             const res: any = await axios.post(appURL, jsonBody, {
                 headers: {
                     "accessToken": accessToken
                 }
             })
+
             if (res.data.code !== 1000) {
                 if (res.data.code === -5000) {
                     const res: VideoResponse = await axios.post(appURL, jsonBody, {

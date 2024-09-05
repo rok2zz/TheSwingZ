@@ -151,26 +151,31 @@ const ModifyUserInfo = (): JSX.Element => {
                         <Text style={[ styles.regularText, { textDecorationLine: 'underline', color: '#949494' }]} onPress={ () => navigation.navigate('Withdrawal') }>회원탈퇴</Text>
                     </View>
 
-                    <View style={{ marginTop: 30 }}>
-                        <Text style={[ styles.boldText, { marginBottom: 18 }]}>비밀번호 변경​</Text>
-                        <View style={ styles.rowContainer }>
-                            <TextInput style={[ styles.input, isFocused.ref === passwordRef && isFocused.isFocused ? { borderBottomColor: '#fd780f'} : { borderBottomColor: '#cccccc'} ]} 
-                                placeholder="비밀번호 입력" placeholderTextColor="#aaaaaa" ref={ passwordRef } returnKeyType="next" autoCapitalize='none' secureTextEntry  
-                                onFocus={ () => handleFocus(passwordRef) } onBlur={ () => handleBlur(passwordRef)} textContentType="oneTimeCode"
-                                onChangeText={(password: string): void => setPassword(password) } onSubmitEditing={ () => passwordCheckRef.current && passwordCheckRef.current.focus() } />
-                        </View>
-                        { message.type === 'password' ? <Text style={[ styles.message, { marginBottom: 9 }]}>{ message.msg }</Text> : <View style={{ marginBottom: 9 }}></View> }
+                    { myProfile.category === 'NORMAL' ? (
+                        <>
+                            <View style={{ marginTop: 30 }}>
+                                <Text style={[ styles.boldText, { marginBottom: 18 }]}>비밀번호 변경​</Text>
+                                <View style={ styles.rowContainer }>
+                                    <TextInput style={[ styles.input, isFocused.ref === passwordRef && isFocused.isFocused ? { borderBottomColor: '#fd780f'} : { borderBottomColor: '#cccccc'} ]} 
+                                        placeholder="비밀번호 입력" placeholderTextColor="#aaaaaa" ref={ passwordRef } returnKeyType="next" autoCapitalize='none' secureTextEntry  
+                                        onFocus={ () => handleFocus(passwordRef) } onBlur={ () => handleBlur(passwordRef)} textContentType="oneTimeCode"
+                                        onChangeText={(password: string): void => setPassword(password) } onSubmitEditing={ () => passwordCheckRef.current && passwordCheckRef.current.focus() } />
+                                </View>
+                                { message.type === 'password' ? <Text style={[ styles.message, { marginBottom: 9 }]}>{ message.msg }</Text> : <View style={{ marginBottom: 9 }}></View> }
 
-                        <View style={ styles.rowContainer }>
-                            <TextInput style={[ styles.input, isFocused.ref === passwordCheckRef && isFocused.isFocused ? { borderBottomColor: '#fd780f'} : { borderBottomColor: '#cccccc'} ]} 
-                                placeholder="비밀번호 확인 입력​" placeholderTextColor="#aaaaaa" ref={ passwordCheckRef } returnKeyType="next" autoCapitalize='none' secureTextEntry  
-                                onFocus={ () => handleFocus(passwordCheckRef) } onBlur={ () => handleBlur(passwordCheckRef)} textContentType="oneTimeCode"
-                                onChangeText={(passwordCheck: string): void => setPasswordCheck(passwordCheck) } onSubmitEditing={ Keyboard.dismiss } />
-                        </View>
-                        { message.type === 'passwordCheck' ? <Text style={ styles.message }>{ message.msg }</Text> : <></> }
-                    </View>
-
-                    <View style={ styles.blank }></View>
+                                <View style={ styles.rowContainer }>
+                                    <TextInput style={[ styles.input, isFocused.ref === passwordCheckRef && isFocused.isFocused ? { borderBottomColor: '#fd780f'} : { borderBottomColor: '#cccccc'} ]} 
+                                        placeholder="비밀번호 확인 입력​" placeholderTextColor="#aaaaaa" ref={ passwordCheckRef } returnKeyType="next" autoCapitalize='none' secureTextEntry  
+                                        onFocus={ () => handleFocus(passwordCheckRef) } onBlur={ () => handleBlur(passwordCheckRef)} textContentType="oneTimeCode"
+                                        onChangeText={(passwordCheck: string): void => setPasswordCheck(passwordCheck) } onSubmitEditing={ Keyboard.dismiss } />
+                                </View>
+                                { message.type === 'passwordCheck' ? <Text style={ styles.message }>{ message.msg }</Text> : <></> }
+                            </View>
+                            <View style={ styles.blank }></View>
+                        </>
+                    ) : (
+                        <View style={{ marginBottom: 30 }}></View>
+                    )}
 
                     <View style={{ marginBottom: 27 }}>
                         <Text style={[ styles.boldText, { marginBottom: 18 }]}>회원가입 정보 변경</Text>

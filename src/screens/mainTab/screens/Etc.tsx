@@ -26,11 +26,11 @@ const myPageList: ListProps[] = [
     //     screen: '',
     //     stack: 'root'
     // },
-    {
-        title: '알림설정',
-        screen: 'AlarmSetting',
-        stack: 'root'
-    },
+    // {
+    //     title: '알림설정',
+    //     screen: 'AlarmSetting',
+    //     stack: 'root'
+    // },
 ]
 
 const reservationList: ListProps[] = [
@@ -50,6 +50,11 @@ const recordList: ListProps[] = [
     {
         title: '마이 스윙폼 영상',
         screen: 'SwingVideo',
+        stack: 'root'
+    },
+    {
+        title: '대회',
+        screen: 'Competition',
         stack: 'root'
     },
     {
@@ -78,21 +83,21 @@ const brandList: ListProps[] = [
 ]
 
 const serviceList: ListProps[] = [
-    {
-        title: '공지사항',
-        screen: 'Notice',
-        stack: 'root'
-    },
-    {
-        title: 'FAQ',
-        screen: 'FAQ',
-        stack: 'root'
-    },
-    {
-        title: '1:1문의',
-        screen: 'Inquiry',
-        stack: 'root'
-    },
+    // {
+    //     title: '공지사항',
+    //     screen: 'Notice',
+    //     stack: 'root'
+    // },
+    // {
+    //     title: 'FAQ',
+    //     screen: 'FAQ',
+    //     stack: 'root'
+    // },
+    // {
+    //     title: '1:1문의',
+    //     screen: 'Inquiry',
+    //     stack: 'root'
+    // },
     {
         title: '창업안내',
         screen: 'Foundation',

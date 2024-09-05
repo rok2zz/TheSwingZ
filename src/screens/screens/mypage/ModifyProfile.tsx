@@ -231,7 +231,6 @@ const ModifyProfile = (): JSX.Element => {
                             setMessage('올바른 닉네임 형식이 아닙니다')
                             return 
                         } 
-
                         const nick = nickname === '' ? myProfile.nick : nickname
                         const isImgChanged = !(myProfile.profileImg === imageUri)
 
@@ -241,6 +240,7 @@ const ModifyProfile = (): JSX.Element => {
                         if (payload.code !== 1000) {
                             setMessage(payload.msg ?? '')
                             setImageUri(myProfile.profileImg ?? '')
+                            setNickname('')
                             if (nicknameRef.current) {
                                 nicknameRef.current.setNativeProps({ text: '' })
                             }             
@@ -250,6 +250,7 @@ const ModifyProfile = (): JSX.Element => {
                         if (nicknameRef.current) {
                             nicknameRef.current.setNativeProps({ text: '' })
                         }                        
+                        setNickname('')
 
                         Alert.alert('알림', '저장되었습니다.',
                             [{
@@ -383,7 +384,7 @@ const ModifyProfile = (): JSX.Element => {
                 <View style={ styles.profileContainer }>
                     <Pressable style={ styles.profileImg } onPress={ () => {} }>
                         { imageUri === '' ? 
-                            <EmptyImg /> 
+                            <EmptyImg width={50} height={50} /> 
                             : 
                             <FastImage 
                                 style={ styles.img } 
@@ -478,7 +479,7 @@ const styles = StyleSheet.create({
 
         borderRadius: 40,
 
-        backgroundColor: '#f1f3f8'
+        backgroundColor: '#dddddd'
     },
     img: {
         width: '100%',

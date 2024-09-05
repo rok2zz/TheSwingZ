@@ -16,7 +16,7 @@ interface ReservationHook {
     getShopInfo: (shopId: number) => Promise<Payload>,
     getReservationInfo: (date: Date, count: number, shopId: number) => Promise<Payload>,
     getMyReservation: (revId: number | null) => Promise<Payload>,
-    registReservation: (shopId: number, revInfo: ReservationSetting, name: string, phone: string, gameMode: string, selectedHole: number, isLeft: boolean, linkedRoom: boolean, twoRoom: boolean, twoGame: boolean) => Promise<Payload>
+    registReservation: (shopId: number, revInfo: ReservationSetting, name: string, phone: string, gameMode: string, selectedHole: number, isLeft: boolean, linkedRoom: boolean, twoRoom: boolean, twoGame: boolean, house: boolean, gender: string) => Promise<Payload>
     deleteReservation: (revId: number) => Promise<Payload>,
     setFavoriteShop: (shopId: number, isFavorite: number) => Promise<Payload>
 }
@@ -422,7 +422,7 @@ export const useReservation = (): ReservationHook => {
 
     } 
 
-    const registReservation = async (shopId: number, revInfo: ReservationSetting, name: string, phone: string, gameMode: string, selectedHole: number, isLeft: boolean, linkedRoom: boolean, twoRoom: boolean, twoGame: boolean) => { 
+    const registReservation = async (shopId: number, revInfo: ReservationSetting, name: string, phone: string, gameMode: string, selectedHole: number, isLeft: boolean, linkedRoom: boolean, twoRoom: boolean, twoGame: boolean, house: boolean, gender: string) => { 
         const beginAt = formatDate(new Date(revInfo.date))
         const endAt = twoGame ? formatDate(new Date(new Date(revInfo.date).setHours(new Date(beginAt).getHours() + (revInfo.people + 1) * 2))) : formatDate(new Date(new Date(revInfo.date).setHours(new Date(beginAt).getHours() + revInfo.people + 1)))
 
@@ -431,7 +431,8 @@ export const useReservation = (): ReservationHook => {
             if (isLeft) userMemo += '좌타석​,'
             if (linkedRoom) userMemo += '연결된 방​,'
             if (twoRoom) userMemo += '방2개로 예약​,' 
-            if (twoGame) userMemo += '2게임 연속 예약​'
+            if (twoGame) userMemo += '2게임 연속 예약​,'
+            if (gender) userMemo += gender
 
             return userMemo
         }
@@ -758,5 +759,4 @@ export const useReservation = (): ReservationHook => {
 }
 
 const errorHandler = (error: any): void => {
-    Alert.alert('알림', '서버에 연결할 수 없습니다.')
 }

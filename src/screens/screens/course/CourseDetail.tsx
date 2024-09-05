@@ -135,7 +135,7 @@ const CourseDetail = ({ route }: Props): JSX.Element => {
 
                     <View style={ styles.courseRow }>
                         <Text style={ styles.infoText }>코스정보</Text>
-                        <Text style={ styles.courseText }>{ course.hole }홀, { course.courseName1 }, { course.courseName2 }</Text>
+                        <Text style={ styles.courseText }>18홀, { course.courseName1 }, { course.courseName2 }</Text>
                     </View>
                     <View style={ styles.courseRow }>
                         <Text style={ styles.infoText }>지역</Text>

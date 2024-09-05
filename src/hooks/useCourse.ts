@@ -41,7 +41,6 @@ export const useCourse = (): CourseHooks => {
 
         try {
             const res: Response = await axios.post(appURL, jsonBody)
-
             if (res.data.code !== 1000) {
                 const payload: Payload = {
                     code: res.data.code ?? -1,

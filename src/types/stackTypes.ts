@@ -90,6 +90,13 @@ export type RootStackParamList = {
 		thumbnailIndex: number
 	}
 
+	// Competition
+	Competition: undefined,
+	CompetitionDetail: {
+		id: number,
+		before: string
+	}
+
 	// CS
 	Notice: undefined,
 	NoticeDetail: {

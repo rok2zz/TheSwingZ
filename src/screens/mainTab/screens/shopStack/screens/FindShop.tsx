@@ -14,7 +14,7 @@ import { useReservationActions } from "../../../../../hooks/useReservationAction
 import Menu from "../../../../../assets/imgs/store/menu.svg"
 import Map from "../../../../../assets/imgs/store/map.svg"
 import Eraser from "../../../../../assets/imgs/login/eraser.svg"
-import Search from "../../../../../assets/imgs/main/search.svg"
+import Search from "../../../../../assets/imgs/common/icon_search.svg"
 import Flag from "../../../../../assets/imgs/store/flag.svg"
 import Location from "../../../../../assets/imgs/store/location.svg"
 import Store from "../../../.././../assets/imgs/store/store.svg"
@@ -28,7 +28,6 @@ import FastImage from "react-native-fast-image"
 
 
 const FindShop = () => {
-    const navigation = useNavigation<ShopStackNavigationProp>()
     const rootNavigation = useNavigation<RootStackNavigationProp>()
 
     const shopList = useShopList()
@@ -36,8 +35,6 @@ const FindShop = () => {
     const { setIsFavorite } = useReservationActions()
     const isTabFocused = useIsFocused()
     const [tabType, setTabType] = useState<number>(0)
-
-    const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false)
     const [searchText, setSearchText] = useState<string>('')
 
     const [sortedShop, setSortedShop] = useState<ShopInfo[]>([])
@@ -64,13 +61,19 @@ const FindShop = () => {
             const payload: Payload = await getShop(null, null)
             saveIsTabConnected(false)
             if (payload.code !== 1000) {
-                Alert.alert('알림', '서버에 연결할 수 없습니다.')
+                Alert.alert('알림', payload.msg)
             }
         }
+        
         if (shopList && shopList.length === 0) {
             getShopInfo()
         }
-        setSortedShop(shopList)
+
+        if (shopList && shopList.length > 0) {
+            let list = [...shopList]
+            list.splice(0, 1)
+            setSortedShop(list)       
+        }
     }, [shopList])
     
     useEffect(() => {
@@ -118,6 +121,7 @@ const FindShop = () => {
                     result[i] = sortedShop[searchIndex[i]]
                 }
             }
+            
             setSearchedShop(result)
             return
         }
@@ -134,18 +138,27 @@ const FindShop = () => {
                 </Pressable> */}
 
                 <View style={ styles.inputContainer }>
-                    <TextInput style={[ styles.input, { marginBottom: 20 }, isSearchFocused ? { borderBottomColor: '#fd780f'} : { borderBottomColor: '#121619'}]} 
-                        placeholder="매장명, 주소검색" placeholderTextColor="#cccccc" ref={ searchRef } returnKeyType="next" autoCapitalize='none' onFocus={ () => setIsSearchFocused(true) } onBlur={ () => setIsSearchFocused(false) }
+                    <Search style={ styles.searchIcon } />
+                    <TextInput style={ styles.input } 
+                        placeholder="매장명, 주소검색" placeholderTextColor="#cccccc" ref={ searchRef } returnKeyType="search" autoCapitalize='none'
                         onChangeText={(text: string): void => setSearchText(text)} onSubmitEditing={ onPressSearch }/>
                     { searchText !== '' && <Eraser style={ styles.eraser } onPress={ clearTextInput } /> }
-                    <Search style={ styles.searchIcon } onPress={ onPressSearch } />
                 </View>
             </View>
             <TopTabBar type={ tabType } typeChange={ handleTypeChange } tab1="주변 매장" tab2="즐겨찾기 매장" />
 
             <ScrollView showsVerticalScrollIndicator={ false }>
                 <View style={ styles.listContainer }>
-                    { (searchedShop&& searchedShop.length > 0) && searchedShop.map((item: ShopInfo, index: number) => {
+                    { searchedShop && searchedShop.length === 0 && 
+                        <View style={{ alignItems: 'center' }}>
+                            <View style={ styles.nonFavorite }>
+                                <Flag style={{ transform: [{ translateX: 5 }]}} />
+                            </View>
+
+                            <Text>검색 결과가 없습니다.</Text>
+                        </View>
+                    }
+                    { (searchedShop && searchedShop.length > 0) && searchedShop.map((item: ShopInfo, index: number) => {
                         if (item.id === 13) return
                         const available: boolean[] = [true, true, true, true, true, true]
                         let reason = ''
@@ -219,7 +232,7 @@ const FindShop = () => {
 
                         const favoriteShops = shopList.filter(shop => shop.favorite !== null && shop.favorite.toLowerCase() === 'f')
                         const favoriteExist = favoriteShops.length > 0 ? true : false
-
+                        
                         const onClickRev = () => {
                             if (available.every(value => value === false)) {
                                 if (reason === 'time') {
@@ -365,13 +378,13 @@ const FindShop = () => {
                                             ) : (
                                             <>
                                                 { index === 0 &&
-                                                <View style={{ alignItems: 'center' }}>
-                                                    <View style={ styles.nonFavorite }>
-                                                        <Flag style={{ transform: [{ translateX: 5 }]}} />
+                                                    <View style={{ alignItems: 'center' }}>
+                                                        <View style={ styles.nonFavorite }>
+                                                            <Flag style={{ transform: [{ translateX: 5 }]}} />
+                                                        </View>
+        
+                                                        <Text>즐겨찾기 매장이 없습니다.</Text>
                                                     </View>
-    
-                                                    <Text>즐겨찾기 매장이 없습니다.</Text>
-                                                </View>
                                                 }
                                             </>
                                         )}
@@ -403,33 +416,37 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+
+        marginHorizontal: 15,
+        marginBottom: 13,
+
+        borderWidth: 1,
+        borderColor: '#dddddd',
+        borderRadius: 5,
+
+        backgroundColor: '#ffffff'
     },
     input: {
         flex: 1,
-        height: 45,
 
         paddingHorizontal: 10,
-        marginLeft: 17,
+        paddingVertical: 13,
         marginRight: 15,
 
         includeFontPadding: false,
         fontSize: 16,
         fontFamily: 'Pretendard-Bold',
 
-        borderBottomWidth: 1,
-
-        color: '#121619'
+        color: '#121619',
 	},
     eraser: {
         position: 'absolute',
-        right: 57,
+        right: 17,
         top: 13,
     },
     searchIcon: {
-        position: 'absolute',
-        right: 15,
-        top: 13,
+        marginLeft: 15
     },
     listText: {
         includeFontPadding: false,

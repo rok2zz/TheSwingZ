@@ -46,14 +46,15 @@ import NoticeDetail from "./screens/cs/NoticeDetail";
 import Inquiry from "./screens/cs/Inquiry";
 import Notice from "./screens/cs/Notice";
 import FAQ from "./screens/cs/FAQ";
-import { useNavigation } from "@react-navigation/native";
 import ScreenSetting from "./screens/mypage/ScreenSetting";
 import AlarmSetting from "./screens/mypage/AlarmSetting";
 import InquiryDetail from "./screens/cs/InquiryDetail";
+import Competition from "./screens/competition/Competition";
+import CompetitionDetail from "./screens/competition/CompetitionDetail";
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
-export const version = '1.1.1'
+export const version = '1.1.4'
 
 // kakao native key
 const kakaoKey = 'ba013042f5a0f6ae1e923f20137aad80'
@@ -315,6 +316,10 @@ const RootStack = (): JSX.Element => {
 								header: () => <Header type={ 0 } title="마이 스윙폼" isFocused />
 							 }} />	
 							<Stack.Screen name='VideoDetail' component={ VideoDetail } options={{ headerShown: false }} />	
+
+							{/* competition */}
+							<Stack.Screen name='Competition' component={ Competition } options={{ headerShown: false }} />	
+							<Stack.Screen name='CompetitionDetail' component={ CompetitionDetail } options={{ headerShown: false }} />	
 
 							{/* CS */}
 							<Stack.Screen name='Notice' component={ Notice } options={{ 

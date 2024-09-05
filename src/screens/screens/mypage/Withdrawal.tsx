@@ -119,11 +119,11 @@ const Withdrawal = (): JSX.Element => {
                         <Text style={[ styles.boldText, { fontSize: 16, color: '#d61111' }]}>데이터는 복구가 불가능</Text>
                         <Text style={ styles.regularText }>합니다.</Text>
                     </View>
-                    <View style={ styles.rowContainer }>
+                    <View style={[ styles.rowContainer, { marginBottom: 0 }]}>
                         <View style={ styles.dot }></View>
-                        <Text style={[ styles.boldText, { fontSize: 16, color: '#d61111' }]}>같은 아이디로 6개월 내에 재가입​ 불가능</Text>
-                        <Text style={ styles.regularText }>합니다.</Text>
+                        <Text style={[ styles.boldText, { fontSize: 16, color: '#d61111' }]}>사용중이던 아이디는 영구적으로 사용이 중지되며,</Text>
                     </View>
+                    <Text style={[ styles.boldText, { fontSize: 16, marginLeft: 8, color: '#d61111' }]}>해당 아이디로 다시 가입하실 수 없습니다.</Text>
                 </View>
 
                 <Text style={ styles.boldText }>탈퇴 사유 선택​</Text>
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
         width: 3,
         height: 3,
 
-        marginRight: 3,
+        marginRight: 5,
 
         borderRadius: 50,
         backgroundColor: '#d61111'

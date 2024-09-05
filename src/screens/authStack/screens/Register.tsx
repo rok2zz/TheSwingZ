@@ -166,7 +166,7 @@ const Register = ({ route }: Props): JSX.Element =>  {
         setIsConnected(false)
 
         if (payload.code !== 1000) {
-            setMessage({ type: 'id', msg: '이미 사용중인 아이디입니다.' })
+            setMessage({ type: 'id', msg: payload.msg ?? '이미 사용중인 아이디입니다.' })
             return
         }   
 

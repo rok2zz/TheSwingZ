@@ -54,6 +54,7 @@ const Course = (): JSX.Element => {
             setSearchedCourse(sortedCourse.sort((a, b) => a.ccName.localeCompare(b.ccName)))
         }
     }, [sortedCourse])
+
     const getCourse = async () => {
         if (isConnected) return
 
@@ -198,9 +199,9 @@ const Course = (): JSX.Element => {
     }
 
     const onPressSearch = () => {
-        if (searchText !== '') {
-            setSearchedCourse(sortedCourse.filter((course) =>
-                course.ccName.toLowerCase().includes(searchText.toLowerCase()) || course.location.toLowerCase().includes(searchText.toLowerCase())
+        if (searchText !== '' && searchText) {
+            setSearchedCourse(sortedCourse.filter((course) => 
+                (course.ccName && course.ccName.toLowerCase().includes(searchText.toLowerCase())) || (course.location && course.location.toLowerCase().includes(searchText.toLowerCase()))
             ))
             return
         }
@@ -245,12 +246,12 @@ const Course = (): JSX.Element => {
                 </ScrollView> */}
                 <Text style={[ styles.title, { fontSize: 20 }]}>코스 목록</Text>
                 <View style={ styles.searchContainer }>
-                    <View style={ styles.rowContainer }>
-                        <TextInput style={[ styles.input, { marginBottom: 20 }, isSearchFocused ? { borderBottomColor: '#cccccc'} : { borderBottomColor: '#cccccc'}]} 
-                            placeholder="코스명을 검색해 보세요." placeholderTextColor="#aaaaaa" ref={ searchRef } returnKeyType="next" autoCapitalize='none' onFocus={ () => setIsSearchFocused(true) } onBlur={ () => setIsSearchFocused(false) }
+                    <View style={ styles.inputContainer }>
+                        <Search style={ styles.searchIcon } />
+                        <TextInput style={ styles.input } 
+                            placeholder="코스명을 검색해 보세요." placeholderTextColor="#cccccc" ref={ searchRef } returnKeyType="search" autoCapitalize='none'
                             onChangeText={(text: string): void => setSearchText(text)} onSubmitEditing={ onPressSearch }/>
                         { searchText !== '' && <Eraser style={ styles.eraser } onPress={ clearTextInput } /> }
-                        <Search style={ styles.searchIcon } onPress={ onPressSearch } />
                     </View>
 
                     <View style={ styles.rowContainer }>
@@ -333,7 +334,7 @@ const Course = (): JSX.Element => {
                                     </View>
 
                                     <View>
-                                        <Text style={ styles.courseText }>{ item.hole }홀, { item.course1 }, { item.course2 }</Text>
+                                        <Text style={ styles.courseText }>18홀, { item.courseName1 }, { item.courseName2 }</Text>
                                         <Text style={ styles.courseText }>{ item.location }</Text>
                                         <View style={[ styles.courseRow, { marginBottom: 14 }]}>
                                             { Array.from({ length: Number(item.courseDifficult.toFixed(0)) }, (_, i) => i).map((index: number) => {
@@ -447,29 +448,38 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center'
     },
+    inputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+
+        marginBottom: 13,
+
+        borderWidth: 1,
+        borderColor: '#dddddd',
+        borderRadius: 5,
+
+        backgroundColor: '#ffffff'
+    },
     input: {
         flex: 1,
-        height: 45,
 
         paddingHorizontal: 10,
+        paddingVertical: 13,
+        marginRight: 15,
 
         includeFontPadding: false,
         fontSize: 16,
         fontFamily: 'Pretendard-Bold',
 
-        borderBottomWidth: 1,
-
-        color: '#121619'
+        color: '#121619',
 	},
     eraser: {
         position: 'absolute',
-        right: 57,
+        right: 17,
         top: 13,
     },
     searchIcon: {
-        position: 'absolute',
-        right: 15,
-        top: 13,
+        marginLeft: 15
     },
     filter: {
         marginRight: 6,

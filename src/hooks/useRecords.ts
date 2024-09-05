@@ -66,7 +66,6 @@ export const useRecords = (): RecordsHook => {
             ]
         }
         const jsonBody: string = JSON.stringify(body)
-		
         try {
 			const res: RecordResponse = await axios.post(gameURL, jsonBody)
 			// 오류 발생시

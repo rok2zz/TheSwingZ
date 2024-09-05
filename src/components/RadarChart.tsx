@@ -144,7 +144,8 @@ const RadarChart = ({ record, stat }: Props): JSX.Element => {
                                 strokeOpacity='0.3'
                             />
                         ))}
-                        { data[0] !== undefined && 
+
+                        { data[0] !== undefined && record?.ccArr?.length > 4 &&
                             <Polygon
                                 fill='#ef7617'
                                 fillOpacity={ 0.3 }
@@ -160,10 +161,10 @@ const RadarChart = ({ record, stat }: Props): JSX.Element => {
                             />
                         }
                        
-                        { points && points.map((item: Point, index: number) => (
+                        { points && record?.ccArr?.length > 4 && points.map((item: Point, index: number) => (
                             <Circle key={ index } cx={ item[0] } cy={ item[1] } r="6" fill="#ff580f" fillOpacity={ 0.38 } />
                         ))}
-                        { points && points.map((item: Point, index: number) => (
+                        { points && record?.ccArr?.length > 4 && points.map((item: Point, index: number) => (
                             <Circle key={ index } cx={ item[0] } cy={ item[1] } r="3" fill="#ef7617" />
                         ))}
                         
@@ -195,7 +196,7 @@ const RadarChart = ({ record, stat }: Props): JSX.Element => {
                     <Text style={ styles.userTypeText }>동급</Text>
                 </View>
             </View>
-            { record?.ccArr?.length === 0 && <Text style={ styles.noRecordText }>5경기 이상 플레이하면​ 나의 기록분석 그래프를​ 확인할 수 있습니다.​</Text> }
+            { record?.ccArr?.length <= 5 && <Text style={ styles.noRecordText }>5경기 이상 플레이하면​ 나의 기록분석 그래프를​ 확인할 수 있습니다.​</Text> }
         </View>  
     )
 }

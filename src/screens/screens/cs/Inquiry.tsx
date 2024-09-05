@@ -43,7 +43,7 @@ const Inquiry = () => {
     const [inquiryList, setInquiryList] = useState<InquiryList[]>([])
 
     const headerList = ['1:1문의', '나의 문의내역']
-    const inquiryTypeList = ['홈페이지 이용문의', '스크린골프', '예약문의', '제휴문의', '광고문의']
+    const inquiryTypeList = ['스크린골프', '앱 이용문의', '회원정보', '오류/불편접수', '기타']
 
     useEffect(() => {
         getInquiry()  
@@ -122,6 +122,21 @@ const Inquiry = () => {
         }
 
         return year + '.' + (month < 10 ? '0' + (month + 1) : (month + 1)) + '.' + (day < 10 ? '0' + day : day)
+    }
+
+    const getType = (type: number) => {
+        switch (type) {
+            case 0:
+                return '스크린골프'
+            case 1:
+                return '앱 이용문의'
+            case 2:
+                return '회원정보'
+            case 3:
+                return '오류/불편접수'
+            case 4:
+                return '기타'
+        }
     }
 
     return (

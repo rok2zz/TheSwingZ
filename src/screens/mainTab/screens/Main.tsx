@@ -7,7 +7,7 @@ import { Stat } from "../../../slices/record"
 import { UserInfo } from "../../../slices/auth"
 import { Record } from "../../../slices/record"
 import { useIsMainLoaded, useUserInfo } from "../../../hooks/useUsers"
-import { CcInfo, Payload } from "../../../types/apiTypes"
+import { CcInfo, CompetitionListResult, Payload } from "../../../types/apiTypes"
 import { MainTabNavigationProp, MainTabParamList, RootStackNavigationProp } from "../../../types/stackTypes"
 import { useRecordActions } from "../../../hooks/useRecordActions"
 import { useMyRevList, useReservation } from "../../../hooks/useReservation"
@@ -19,6 +19,8 @@ import FastImage from "react-native-fast-image"
 import { useAccessToken } from "../../../hooks/useToken"
 import { useAuthActions } from "../../../hooks/useAuthActions"
 import { useCourse } from "../../../hooks/useCourse"
+import { useBoard } from "../../../hooks/useBoard"
+import { useCompetition } from "../../../hooks/useCompetition"
 
 import RadarChart from "../../../components/RadarChart"
 
@@ -39,6 +41,7 @@ import BlackActiveDot from "../../../assets/imgs/main/paging_active_dot_black.sv
 import DottedLine from "../../../assets/imgs/main/line_dotted.svg"
 import Flag from "../../../assets/imgs/main/flag.svg"
 import EmptyVideo from "../../../assets/imgs/main/video_empty.svg"
+import Competition from "../../../assets/imgs/main/icon_competition.svg"
 import BrandLogo from "../../../assets/imgs/brand/logo.svg"
 import Play from "../../../assets/imgs/swing/play.svg"
 
@@ -55,6 +58,8 @@ const Main = ({ route }: Props): JSX.Element => {
     const { getMySwingVideoList } = useVideos()
     const { getMyReservation } = useReservation()
     const { getCourseInfo } = useCourse()
+    const { getNotify } = useBoard()
+    const { getCompetitionList } = useCompetition()
     const { saveIsTabConnected, saveIsMainLoaded } = useAuthActions() 
     const isMainLoaded = useIsMainLoaded()
 
@@ -71,12 +76,14 @@ const Main = ({ route }: Props): JSX.Element => {
     const myRevList = useMyRevList()
     const myVideoList = useVideoList()
     const [revList, setRevList] = useState<ReservationInfo[]>([])
+    const [compList, setCompList] = useState<CompetitionListResult[]>([])
 
     const [avgRecord, setAvgRecord] = useState<Record>()
     const [avgStat, setAvgStat] = useState<Stat>()
     const [allRecord, setAllRecord] = useState<Record>()
     const [allStat, setAllStat] = useState<Stat>()
 
+    const textRef = useRef(null)
     const backPressedTimeRef = useRef(0)
     const [topBanner, setTopBanner] = useState<string>('highlight banner')
     const [banner, setBanner] = useState<string>('event banner')
@@ -143,11 +150,13 @@ const Main = ({ route }: Props): JSX.Element => {
                 getRevInfo()
                 getVideoList()
                 getCourseList()
+                getCompList()
                 setTimeout(()=> {
                     saveIsTabConnected(false)
                 }, 1500)
             }
             setProfileImg(userInfo.profileImg ?? '')
+            getNotification()
 
             saveIsMainLoaded(true)
         }
@@ -218,6 +227,15 @@ const Main = ({ route }: Props): JSX.Element => {
 		}
 	}
 
+    // get comp list
+    const getCompList = async () => {
+        const payload: Payload = await getCompetitionList(0, 0, 5, 0)
+        if (payload.code !== 1000) return
+        if (payload.compList) {
+            setCompList(payload.compList)
+        }
+    }
+
     // get recent 5 game's record in 18hole game
     const getMyRecentRecord = async (): Promise<void> => {
         const payload: Payload = await getScore('S', userInfo.uid, null, 5, 0)
@@ -270,7 +288,6 @@ const Main = ({ route }: Props): JSX.Element => {
         const payload: Payload = await getMySwingVideoList(0, 5)
         if (payload.code !== 1000) {
             Alert.alert('알림', payload.msg ?? '서버에 연결할 수 없습니다.')
-
             return
         }
     }
@@ -278,8 +295,8 @@ const Main = ({ route }: Props): JSX.Element => {
     const getCourseList = async () => {
         const payload: Payload = await getCourseInfo()
         if (payload.code !== 1000) {
-            Alert.alert('알림', payload.msg ?? '서버에 연결할 수 없습니다.')
 
+            Alert.alert('알림', payload.msg ?? '서버에 연결할 수 없습니다.')
             return
         }
     }
@@ -303,6 +320,23 @@ const Main = ({ route }: Props): JSX.Element => {
             saveIsMainLoaded(true)
         }, 2000)
     }, [])
+
+    const getNotification = async () => {
+        const payload: Payload = await getNotify()
+        if (payload.code !== 1000) {
+            return
+        }
+        if (payload.msg !== '') {
+            Alert.alert('알림', payload.msg)
+        }
+    }
+
+    const cutString = (val: string, length: number): string => {
+        if (!val) return ''
+
+        if (val.length > length) return val.substring(0, length) + ".."
+        return val
+    }
 
     return (
         <SafeAreaView style={ styles.wrapper }>
@@ -353,9 +387,13 @@ const Main = ({ route }: Props): JSX.Element => {
                             <Course />
                             <Text style={ styles.menuText }>코스소개</Text>
                         </Pressable>
-                        <Pressable style={ styles.menuIndex } onPress={ () => rootNavigation.navigate('ZTV') }>
+                        {/* <Pressable style={ styles.menuIndex } onPress={ () => rootNavigation.navigate('Competition') }>
                             <ZTV />   
                             <Text style={ styles.menuText }>제트TV</Text>
+                        </Pressable> */}
+                        <Pressable style={ styles.menuIndex } onPress={ () => rootNavigation.navigate('Competition') }>
+                            <Competition />   
+                            <Text style={ styles.menuText }>대회</Text>
                         </Pressable>
                         <Pressable style={[ styles.menuIndex, { transform: [{ translateY: 1 }]}]} onPress={ () => rootNavigation.navigate('Foundation') }>
                             <Customer style={{ marginBottom: 3 }} />   
@@ -368,6 +406,61 @@ const Main = ({ route }: Props): JSX.Element => {
 
                         </View>
                     }
+
+                    {/* competition banner */}
+                    { compList && compList.length > 0 &&
+                        <View style={ styles.competitionContainer }>
+                            <Swiper
+                                style={{ height: Dimensions.get('window').width * 115 / 345 }}
+                                paginationStyle={{ marginBottom: -10 }}
+                                dot={ <Dot style={{ marginHorizontal: 3 }} /> }
+                                activeDot={ <ActiveDot style={{ marginHorizontal: 3 }} /> }
+                                loop={ true }
+                                >
+                                { compList.map((item: CompetitionListResult, index: number) => {
+                                    const stDate = new Date(item.stDate)
+                                    const edDate = new Date(item.edDate)
+                                    edDate.setHours(23)
+                                    edDate.setMinutes(59)
+
+                                    let viewHeight = 0
+
+                                    const handleLayout = (event: any) => {
+                                        if (textRef.current) {
+                                            const { height } = event.nativeEvent.layout
+                                            viewHeight = height
+                                        }
+                                    }
+
+                                    const formatDate = () => {
+                                        const day = ['일', '월', '화', '수', '목', '금', '토']
+                                        const stMonth = (stDate.getMonth() + 1) < 10 ? '0' + (stDate.getMonth() + 1) : (stDate.getMonth() + 1)
+                                        const edMonth = (edDate.getMonth() + 1) < 10 ? '0' + (edDate.getMonth() + 1) : (edDate.getMonth() + 1)
+                                        const stDay = (stDate.getDate()) < 10 ? '0' + (stDate.getDate()) : (stDate.getDate())
+                                        const edDay = (edDate.getDate()) < 10 ? '0' + (edDate.getDate()) : (edDate.getDate())
+
+                                        return `${stMonth}.${stDay}(${day[stDate.getDay()]}) ~`  +
+                                                `${edMonth}.${edDay}(${day[edDate.getDay()]})`
+                                    }
+
+                                    if (index < 5) {
+                                        return (
+                                            <Pressable style={ styles.competitionInfo } key={ index } onPress={ () => rootNavigation.navigate('CompetitionDetail', { id: item.compId, before: 'Main' })}>
+                                                <Image style={ styles.reseravtionImg } source={ require('../../../assets/imgs/main/competition_banner_1.png')} resizeMode="cover"/>
+                                                <View style={[ styles.info, { left: 24 }]}>
+                                                    <View style={{ width: Dimensions.get('window').width * 2 / 3, height: 110 }}>
+                                                        <Text style={[ styles.boldText, { color: '#ffffff' }]} onLayout={ handleLayout } ref={ textRef }>{ cutString(item.compName, 30) }</Text>
+                                                        <Text style={[ styles.extraLightText, viewHeight < 30 && { marginTop: 25 }]}>{ formatDate() }</Text>
+                                                    </View>
+                                                </View>
+                                            </Pressable>
+                                        )
+                                    }
+                                })}
+                            </Swiper>
+                        </View>
+                    }
+                    
 
                     {/* reservation */}
                     { revList && revList.length > 0 &&
@@ -493,7 +586,7 @@ const Main = ({ route }: Props): JSX.Element => {
                                                 const date = allRecord?.parcount[index]?.date.slice(6, 8) 
 
                                                 const getCcName = () => {
-                                                    if (record.ccArr && record.ccArr[index].courseName) {
+                                                    if (record.ccArr && record.ccArr[index] && record.ccArr[index].courseName) {
                                                         if (!record.ccArr[index].courseName.includes('(')) {
                                                              return record.ccArr[index].courseName
                                                         }
@@ -565,7 +658,7 @@ const Main = ({ route }: Props): JSX.Element => {
                                             <View style={ styles.recordBox }>
                                                 <Text style={ styles.recordType }>평균 퍼팅 수</Text>
                                                 <View style={ styles.rowContainer }>
-                                                    <Text style={ styles.recordNum }>{ getRecentAvgPutts(recentAvgRecord) }</Text>
+                                                    <Text style={ styles.recordNum }>{ (avgStat?.dtStat && avgStat?.dtStat?.length < 5) ? '--' : getRecentAvgPutts(recentAvgRecord) }</Text>
                                                     <Text style={ styles.recordText }>개</Text>
                                                 </View>
                                             </View>
@@ -733,7 +826,7 @@ const styles = StyleSheet.create({
 
         paddingHorizontal: 16,
         paddingVertical: 20,
-        marginBottom:18,
+        marginBottom: 19,
 
         borderRadius: 3,
         borderWidth: 1,
@@ -752,6 +845,11 @@ const styles = StyleSheet.create({
         marginTop: 12,
 
         color: '#ffffff'
+    },
+    competitionContainer: {
+        marginBottom: 19
+    },
+    competitionInfo: {
     },
     reservationContainer: {
         marginBottom: 18,
@@ -791,7 +889,7 @@ const styles = StyleSheet.create({
         width: '100%',
         position: 'absolute',
         top: 15,
-        left: 15,
+        left: 20,
         
         zIndex: 2
     },
@@ -857,6 +955,15 @@ const styles = StyleSheet.create({
         fontFamily: 'Pretendard-Bold',
 
         color: '#121619'
+    },
+    extraLightText: {
+        includeFontPadding: false,
+        fontSize: 14,
+        fontFamily: 'Pretendard-ExtraLight',
+
+        marginTop: 5,
+
+        color: '#ffffff'
     },
     recentCard: {
         flexDirection: 'row',

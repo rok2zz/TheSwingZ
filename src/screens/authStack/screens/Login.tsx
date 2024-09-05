@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { Keyboard, Pressable, StyleSheet, Text, View, Image, Modal, Platform, BackHandler, ToastAndroid, Dimensions, PixelRatio, ScrollView, StatusBar } from "react-native"
+import { Keyboard, Pressable, StyleSheet, Text, View, Image, Modal, Platform, BackHandler, ToastAndroid, Dimensions, PixelRatio, ScrollView, StatusBar, Alert } from "react-native"
 import { TextInput } from "react-native"
 import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import { AuthStackNavigationProp } from "../../../types/stackTypes"
@@ -59,7 +59,6 @@ const Login = (): JSX.Element => {
     const [success, setSuccessResponse] = useState<NaverLoginResponse['successResponse']>()
     const [failure, setFailureResponse] = useState<NaverLoginResponse['failureResponse']>()
     const [getProfileRes, setGetProfileRes] = useState<GetProfileResponse>()
-
 
     // 뒤로가기 두번시 종료
     useFocusEffect(
@@ -197,9 +196,10 @@ const Login = (): JSX.Element => {
         }
 
         const { failureResponse, successResponse } = await NaverLogin.login()
+
+
         setSuccessResponse(successResponse)
         setFailureResponse(failureResponse)
-
         if (successResponse) {
             await AsyncStorage.setItem('naver', successResponse.refreshToken)
             const profileResult: GetProfileResponse = await NaverLogin.getProfile(successResponse.accessToken)
@@ -216,6 +216,7 @@ const Login = (): JSX.Element => {
             }
             setIsConnected(false)
         }
+
         setIsConnected(false)
     }
 
@@ -327,9 +328,8 @@ const Login = (): JSX.Element => {
             <StatusBar backgroundColor='#272727' />
 
             {/* 로그인 화면 */}
-            <ScrollView style={ styles.container } >
+            <ScrollView style={ styles.container } showsVerticalScrollIndicator={ false }>
                 <Logo width={ 202 } height={ 39 } style={ styles.logo } />
-
                 {/* id & password input */}
                 <View style={ styles.inputContainer }>
                     <TextInput style={[ styles.input, { marginBottom: 20 }, isFocused.ref === idRef && isFocused.isFocused ? { borderBottomColor: '#fd780f'} : { borderBottomColor: '#ffffff'}]} 

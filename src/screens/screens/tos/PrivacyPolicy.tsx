@@ -295,9 +295,9 @@ const PrivacyPolicy = (): JSX.Element => {
                     <Text style={ styles.semiBoldText}>제13조. 개인정보처리방침의 변경</Text>
                     <Text style={ styles.regularText }>본 개인정보처리방침은 정부의 정책 또는 회사의 필요에 의하여 변경될 수 있습니다. 개인정보처리방침은 시행일로부터 적용되며, 법령 및 방침에 따른 변경 내용의 추가, 삭제 및 정정이 있는 경우에는 변경사항의 시행 7일 전부터 공지사항을 통하여 고지할 것입니다. 다만, 개인정보의 수집 및 활용, 제3자 제공 등과 같이 이용자 권리의 중요한 내용 변경이 있을 경우에는 최소 30일전에 고지합니다.</Text>   
                     <Text style={ styles.regularText }>① 이 개인정보 처리방침은 2023년 11월 6일부터 적용됩니다.</Text>   
-                    <Text style={ styles.regularText }>■ 위와 같은 개인정보 수집 및 이용에 동의하십니까? [ 동의 □ ] / [ 미동의 □ ]</Text>   
+                    {/* <Text style={ styles.regularText }>■ 위와 같은 개인정보 수집 및 이용에 동의하십니까? [ 동의 □ ] / [ 미동의 □ ]</Text>   
                     <Text style={ styles.regularText }>■ 위의 제 4조 개인정보 제3자 제공 및 이용에 동의하십니까? [ 동의 □ ] / [ 미동의 □ ]</Text>   
-                    <Text style={ styles.regularText }>■ 위의 제 5조 개인정보 위탁 관리 및 이용에 동의하십니까? [ 동의 □ ] / [ 미동의 □ ]</Text>   
+                    <Text style={ styles.regularText }>■ 위의 제 5조 개인정보 위탁 관리 및 이용에 동의하십니까? [ 동의 □ ] / [ 미동의 □ ]</Text>    */}
                 </View>
             </View>
         </ScrollView>
